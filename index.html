@@ -993,21 +993,38 @@ if("IntersectionObserver" in window){
   var out   = document.getElementById("visitorCount");
   if(!badge || !out) return;
 
-  var NS  = "liproacademy-jazan-abu00salman";
-  var KEY = "site-visits";
-  var alreadyThisSession = sessionStorage.getItem("lipro_counted");
-  var endpoint = "https://api.countapi.xyz/" + (alreadyThisSession ? "get" : "hit") + "/" + NS + "/" + KEY;
+  /* مفتاح فريد خاص بالأكاديمية — العدادات عامة، فالمفتاح لازم يكون مميزًا */
+  var KEY  = "lipro_academy_jazan_site_visits";
+  var BASE = "https://countapi.mileshilliard.com/api/v1/";
 
-  fetch(endpoint).then(function(r){
-    if(!r.ok) throw new Error("bad response");
+  /* نحسب زيارة واحدة لكل جلسة متصفح، وبعدها نقرأ الرقم فقط */
+  var counted  = sessionStorage.getItem("lipro_counted");
+  var endpoint = BASE + (counted ? "get" : "hit") + "/" + KEY;
+
+  /* مهلة قصوى ٧ ثوانٍ حتى لا تعلق الشارة في حالة انتظار */
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 7000) : null;
+
+  fetch(endpoint, ctrl ? {signal: ctrl.signal} : undefined).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function(data){
-    if(typeof data.value !== "number") throw new Error("no value");
+    /* الخدمة ترجع القيمة كنص أحيانًا، فنحولها لرقم */
+    var n = Number(data && data.value);
+    if(!isFinite(n)) throw new Error("قيمة غير صالحة");
+
     sessionStorage.setItem("lipro_counted", "1");
-    out.textContent = new Intl.NumberFormat("ar-SA-u-nu-arab").format(data.value);
+    try{
+      out.textContent = new Intl.NumberFormat("ar-SA-u-nu-arab").format(n);
+    }catch(e){
+      out.textContent = String(n);
+    }
     badge.hidden = false;
   }).catch(function(){
-    badge.hidden = true; /* نخفي الشارة بهدوء لو الخدمة غير متاحة، بدون كسر الصفحة */
+    /* لو تعذر الاتصال نخفي الشارة بهدوء بدل عرض رقم مكسور */
+    badge.hidden = true;
+  }).then(function(){
+    if(timer) clearTimeout(timer);
   });
 })();
 </script>
