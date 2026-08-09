@@ -342,6 +342,12 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   margin-top:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;
 }
+.visitor-badge{
+  display:inline-flex;align-items:center;gap:7px;color:#9DBCB4;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  padding:5px 13px;border-radius:999px;
+}
+.visitor-badge b{color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums}
 
 /* ===== ظهور تدريجي ===== */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
@@ -774,7 +780,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
                 <p>أكاديمية كرة قدم مرخصة من وزارة الرياضة، تعمل في منطقة جازان وخميس مشيط.</p>
         <div class="socials">
           <a class="social" href="https://instagram.com/liproacademy" target="_blank" rel="noopener">إنستقرام</a>
-          <a class="social" href="https://twitter.com/liproacadem" target="_blank" rel="noopener">إكس</a>
+          <a class="social" href="https://twitter.com/liproacademy" target="_blank" rel="noopener">إكس</a>
           <a class="social" href="https://t.me/liproacademy" target="_blank" rel="noopener">تيليجرام</a>
           <a class="social" href="https://www.tiktok.com/@liproacademy" target="_blank" rel="noopener">تيك توك</a>
           <a class="social" href="https://wa.me/966530634750" target="_blank" rel="noopener">واتساب</a>
@@ -800,6 +806,10 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 
     <div class="footer__base">
       <span>© <span id="year"></span> أكاديمية ليبرو الرياضية — جميع الحقوق محفوظة.</span>
+      <span class="visitor-badge" id="visitorBadge" hidden>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>زوار الموقع: <b id="visitorCount">—</b></span>
+      </span>
       <span>liproacademy@ · 0530634750</span>
     </div>
   </div>
@@ -976,6 +986,30 @@ if("IntersectionObserver" in window){
 }else{
   document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
 }
+
+/* ===== عداد زوار الموقع ===== */
+(function(){
+  var badge = document.getElementById("visitorBadge");
+  var out   = document.getElementById("visitorCount");
+  if(!badge || !out) return;
+
+  var NS  = "liproacademy-jazan-abu00salman";
+  var KEY = "site-visits";
+  var alreadyThisSession = sessionStorage.getItem("lipro_counted");
+  var endpoint = "https://api.countapi.xyz/" + (alreadyThisSession ? "get" : "hit") + "/" + NS + "/" + KEY;
+
+  fetch(endpoint).then(function(r){
+    if(!r.ok) throw new Error("bad response");
+    return r.json();
+  }).then(function(data){
+    if(typeof data.value !== "number") throw new Error("no value");
+    sessionStorage.setItem("lipro_counted", "1");
+    out.textContent = new Intl.NumberFormat("ar-SA-u-nu-arab").format(data.value);
+    badge.hidden = false;
+  }).catch(function(){
+    badge.hidden = true; /* نخفي الشارة بهدوء لو الخدمة غير متاحة، بدون كسر الصفحة */
+  });
+})();
 </script>
 </body>
 </html>
