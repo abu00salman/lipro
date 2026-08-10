@@ -98,7 +98,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   position:relative;background:#03231F;overflow:hidden;
   border-bottom:2px solid var(--gold);
 }
-.banner__viewport{position:relative;height:440px;overflow:hidden}
+.banner__viewport{position:relative;height:440px;overflow:hidden;transition:height .45s ease}
 .slide{
   position:absolute;inset:0;opacity:0;visibility:hidden;
   transition:opacity .7s ease;
@@ -110,10 +110,12 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   position:absolute;inset:-40px;background-size:cover;background-position:center;
   filter:blur(28px) brightness(.42) saturate(1.1);transform:scale(1.1);
 }
+/* التموضع المطلق يضمن أن إطار الصورة = إطار البنر تمامًا،
+   فيتكفل object-fit:contain بإظهارها كاملة بلا قص */
 .slide__media{
-  position:relative;max-width:100%;max-height:100%;
-  width:auto;height:100%;object-fit:contain;display:block;
-  box-shadow:0 20px 50px -20px rgba(0,0,0,.8);
+  position:absolute;inset:0;margin:auto;
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 18px 40px rgba(0,0,0,.55));
 }
 .slide__cap{
   position:absolute;inset-inline:0;bottom:0;padding:56px 26px 22px;
@@ -316,6 +318,8 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   background:#fff;color:var(--pitch);border:1px solid var(--chalk-2);
 }
 .chip--dark{background:rgba(255,255,255,.08);color:#DCEDE8;border-color:rgba(255,255,255,.14)}
+.chip--top{background:var(--pitch);color:#fff;border-color:var(--pitch);font-weight:700}
+.chip--top::before{content:"★";color:var(--gold);margin-inline-end:6px;font-size:12px}
 
 /* ===== الفروع ===== */
 .branches{background:var(--pitch-2);color:#fff;position:relative;overflow:hidden}
@@ -681,7 +685,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
     <div class="stat"><b>٦</b><span>فروع في جازان وعسير</span></div>
     <div class="stat"><b>٣</b><span>أيام تدريب أسبوعيًا</span></div>
     <div class="stat"><b>٦–٢٢</b><span>سنة عمر اللاعبين</span></div>
-    <div class="stat"><b>٧+</b><span>أندية انتقل إليها لاعبونا</span></div>
+    <div class="stat"><b>٨+</b><span>أندية انتقل إليها لاعبونا</span></div>
   </div>
 </section>
 
@@ -700,7 +704,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
         لاعبونا انتقلوا إلى أندية سعودية، واختير عدد منهم في منتخب منطقة جازان.
       </p>
       <div class="chips">
-        <span class="chip">ضمك</span><span class="chip">أبها</span><span class="chip">الفيصلي</span>
+        <span class="chip chip--top">الهلال</span><span class="chip">ضمك</span><span class="chip">أبها</span><span class="chip">الفيصلي</span>
         <span class="chip">الفيحاء</span><span class="chip">الوطن</span><span class="chip">التهامي</span>
         <span class="chip">فيفا</span><span class="chip">وأندية أخرى</span>
       </div>
@@ -1088,17 +1092,19 @@ if("IntersectionObserver" in window){
   if(!vp) return;
 
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
+  /* w/h = الأبعاد الأصلية — يضبط بها البنر ارتفاعه لكل شريحة */
+  /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
-    {src:"banner-5.jpg", title:"بطل بطولة البراعم — جازان تحت ١١ سنة", noCap:true},
-    {src:"banner-1.jpg", title:"تتويج فريق ليبرو بلقب المنطقة", meta:"بطولة الاتحاد السعودي لكرة القدم"},
-    {src:"banner-3.jpg", title:"لحظة رفع الكأس", meta:"احتفال اللاعبين بعد النهائي"},
+    {src:"banner-5.jpg", w:562,  h:1000, title:"بطل بطولة البراعم — جازان تحت ١١ سنة", noCap:true},
+    {src:"banner-1.jpg", w:1280, h:720,  title:"تتويج فريق ليبرو بلقب المنطقة", meta:"بطولة الاتحاد السعودي لكرة القدم"},
+    {src:"banner-3.jpg", w:750,  h:1000, title:"لحظة رفع الكأس", meta:"احتفال اللاعبين بعد النهائي"},
     {type:"video", src:"banner-video.mp4", webm:"banner-video.webm",
-     poster:"banner-video-poster.jpg",
+     poster:"banner-video-poster.jpg", w:576, h:1024,
      title:"من أجواء التتويج", meta:"لقطات من داخل الملعب", dur:9000},
-    {src:"banner-6.jpg", title:"بطولة مونديال عسير ٢٠٢٣", noCap:true},
-    {src:"banner-7.jpg", title:"بطولة الصاروخ الرمضانية بجيزان — براعم ١٥", noCap:true},
-    {src:"banner-4.jpg", title:"ميداليات فريق الأكاديمية", meta:"منافسات الاتحاد السعودي"},
-    {src:"banner-2.jpg", title:"بطولة الاتحاد السعودي — جازان تحت ١١ سنة", noCap:true}
+    {src:"banner-6.jpg", w:977,  h:1000, title:"بطولة مونديال عسير ٢٠٢٣", noCap:true},
+    {src:"banner-7.jpg", w:934,  h:1000, title:"بطولة الصاروخ الرمضانية بجيزان — براعم ١٥", noCap:true},
+    {src:"banner-4.jpg", w:1280, h:853,  title:"ميداليات فريق الأكاديمية", meta:"منافسات الاتحاد السعودي"},
+    {src:"banner-2.jpg", w:562,  h:1000, title:"بطولة الاتحاد السعودي — جازان تحت ١١ سنة", noCap:true}
   ];
 
   var DUR = 5200;
@@ -1155,6 +1161,23 @@ if("IntersectionObserver" in window){
     bar.style.width = "100%";
   }
 
+  /* الارتفاع يتبع نسبة الصورة حتى تظهر الصور الطولية كاملة وواضحة */
+  function fitHeight(){
+    var s = SLIDES[idx];
+    var W  = vp.clientWidth || window.innerWidth;
+    var vh = window.innerHeight || 800;
+    var narrow = W < 700;
+
+    /* حدود دنيا وعليا تمنع القفزات المزعجة وتُبقي بقية الصفحة ظاهرة */
+    var minH = narrow ? 300 : 380;
+    var maxH = narrow ? Math.min(vh * 0.68, 580) : Math.min(vh * 0.72, 560);
+
+    /* الارتفاع الذي تحتاجه الصورة لتُعرض بعرض البنر كاملًا */
+    var ideal  = W * (s.h / s.w);
+    var target = Math.round(Math.max(minH, Math.min(ideal, maxH)));
+    vp.style.height = target + "px";
+  }
+
   function go(n, manual){
     if(n === idx && !manual) return;
 
@@ -1171,6 +1194,7 @@ if("IntersectionObserver" in window){
     dots[idx].setAttribute("aria-current","true");
 
     var s = SLIDES[idx];
+    fitHeight();
     var vid = slides[idx].querySelector("video");
     if(vid){
       if(vid.preload !== "auto"){ vid.preload = "auto"; vid.load(); }
@@ -1209,7 +1233,15 @@ if("IntersectionObserver" in window){
 
   /* تشغيل أول شريحة */
   slides[0].classList.add("is-active");
+  fitHeight();
   schedule(DUR);
+
+  var rzTimer = null;
+  window.addEventListener("resize", function(){
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(fitHeight, 120);
+  });
+  window.addEventListener("orientationchange", function(){ setTimeout(fitHeight, 260); });
 
   /* أزرار التنقل */
   document.getElementById("bPrev").addEventListener("click", function(){ go(idx - 1, true); });
