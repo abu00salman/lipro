@@ -93,6 +93,92 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 }
 @media(max-width:960px){.watermark{width:260px;inset-inline-end:-70px;bottom:-40px}}
 
+/* ===== بنر الإنجازات المتحرك ===== */
+.banner{
+  position:relative;background:#03231F;overflow:hidden;
+  border-bottom:2px solid var(--gold);
+}
+.banner__viewport{position:relative;height:440px;overflow:hidden}
+.slide{
+  position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .7s ease;
+  display:grid;place-items:center;
+}
+.slide.is-active{opacity:1;visibility:visible}
+/* خلفية ضبابية تملأ الفراغ حول الصور الطولية */
+.slide__bg{
+  position:absolute;inset:-40px;background-size:cover;background-position:center;
+  filter:blur(28px) brightness(.42) saturate(1.1);transform:scale(1.1);
+}
+.slide__media{
+  position:relative;max-width:100%;max-height:100%;
+  width:auto;height:100%;object-fit:contain;display:block;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.8);
+}
+.slide__cap{
+  position:absolute;inset-inline:0;bottom:0;padding:56px 26px 22px;
+  background:linear-gradient(to top,rgba(3,35,31,.94) 12%,rgba(3,35,31,.55) 55%,transparent);
+  text-align:center;pointer-events:none;
+}
+.slide__title{
+  font-family:var(--display);font-weight:800;font-size:22px;color:#fff;line-height:1.35;
+  text-shadow:0 2px 12px rgba(0,0,0,.6);
+}
+.slide__meta{font-size:13.5px;color:var(--gold);font-weight:600;margin-top:5px}
+
+.banner__label{
+  position:absolute;top:16px;inset-inline-start:20px;z-index:4;
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(3,35,31,.72);backdrop-filter:blur(8px);
+  border:1px solid rgba(245,179,37,.4);border-radius:999px;
+  padding:6px 15px;font-size:12.5px;font-weight:700;color:var(--gold);
+}
+
+.banner__nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:44px;height:44px;border-radius:50%;cursor:pointer;
+  background:rgba(3,35,31,.6);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.22);color:#fff;
+  display:grid;place-items:center;transition:.2s;
+}
+.banner__nav:hover{background:var(--gold);color:var(--pitch);border-color:var(--gold)}
+.banner__nav--prev{inset-inline-start:16px}
+.banner__nav--next{inset-inline-end:16px}
+
+.banner__dots{
+  position:absolute;bottom:14px;inset-inline:0;z-index:5;
+  display:flex;justify-content:center;gap:8px;
+}
+.dot{
+  width:9px;height:9px;border-radius:50%;padding:0;cursor:pointer;
+  background:rgba(255,255,255,.34);border:none;transition:.25s;
+}
+.dot:hover{background:rgba(255,255,255,.6)}
+.dot[aria-current="true"]{background:var(--gold);width:26px;border-radius:999px}
+
+/* شريط تقدم رفيع يوضح توقيت الانتقال */
+.banner__bar{position:absolute;bottom:0;inset-inline-start:0;height:3px;background:var(--gold);width:0;z-index:6}
+.banner__bar.run{transition:width linear}
+
+@media(max-width:960px){
+  .banner__viewport{height:390px}
+  .slide__title{font-size:18.5px}
+}
+@media(max-width:640px){
+  .banner__viewport{height:370px}
+  .slide__cap{padding:44px 18px 26px}
+  .slide__title{font-size:16.5px}
+  .slide__meta{font-size:12px}
+  .banner__nav{width:38px;height:38px}
+  .banner__nav--prev{inset-inline-start:8px}
+  .banner__nav--next{inset-inline-end:8px}
+  .banner__label{top:10px;inset-inline-start:12px;font-size:11.5px;padding:5px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .slide{transition:none}
+  .banner__bar{display:none}
+}
+
 /* ===== الترويسة ===== */
 .topbar{
   position:sticky;top:0;z-index:60;
@@ -522,6 +608,26 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
     </nav>
   </div>
 </header>
+
+<!-- بنر الإنجازات -->
+<section class="banner" id="banner" aria-roledescription="عرض متحرك" aria-label="إنجازات الأكاديمية">
+  <span class="banner__label">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v7a7 7 0 0 1-14 0Z"/><path d="M12 18v3M8 21h8"/></svg>
+    إنجازاتنا
+  </span>
+
+  <div class="banner__viewport" id="bannerViewport"></div>
+
+  <button class="banner__nav banner__nav--prev" id="bPrev" aria-label="السابق">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+  <button class="banner__nav banner__nav--next" id="bNext" aria-label="التالي">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+
+  <div class="banner__dots" id="bDots" role="tablist" aria-label="شرائح العرض"></div>
+  <div class="banner__bar" id="bBar"></div>
+</section>
 
 <!-- الواجهة -->
 <section class="hero" id="top">
@@ -975,6 +1081,182 @@ if("IntersectionObserver" in window){
 }else{
   document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
 }
+
+/* ===== بنر الإنجازات المتحرك ===== */
+(function(){
+  var vp = document.getElementById("bannerViewport");
+  if(!vp) return;
+
+  /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
+  var SLIDES = [
+    {src:"banner-5.jpg", title:"بطل بطولة البراعم — جازان تحت ١١ سنة", noCap:true},
+    {src:"banner-1.jpg", title:"تتويج فريق ليبرو بلقب المنطقة", meta:"بطولة الاتحاد السعودي لكرة القدم"},
+    {src:"banner-3.jpg", title:"لحظة رفع الكأس", meta:"احتفال اللاعبين بعد النهائي"},
+    {type:"video", src:"banner-video.mp4", webm:"banner-video.webm",
+     poster:"banner-video-poster.jpg",
+     title:"من أجواء التتويج", meta:"لقطات من داخل الملعب", dur:9000},
+    {src:"banner-6.jpg", title:"بطولة مونديال عسير ٢٠٢٣", noCap:true},
+    {src:"banner-7.jpg", title:"بطولة الصاروخ الرمضانية بجيزان — براعم ١٥", noCap:true},
+    {src:"banner-4.jpg", title:"ميداليات فريق الأكاديمية", meta:"منافسات الاتحاد السعودي"},
+    {src:"banner-2.jpg", title:"بطولة الاتحاد السعودي — جازان تحت ١١ سنة", noCap:true}
+  ];
+
+  var DUR = 5200;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var idx = 0, timer = null, paused = false;
+
+  /* بناء الشرائح */
+  var dotsWrap = document.getElementById("bDots");
+  SLIDES.forEach(function(s, i){
+    var el = document.createElement("div");
+    el.className = "slide";
+    el.setAttribute("role","group");
+    el.setAttribute("aria-label", (i+1) + " من " + SLIDES.length + ": " + s.title);
+
+    var bgSrc = s.type === "video" ? s.poster : s.src;
+    var media = s.type === "video"
+      ? '<video class="slide__media" poster="' + s.poster + '" muted playsinline loop ' +
+        'preload="none" aria-label="' + s.title + '">' +
+          '<source src="' + s.src + '" type="video/mp4">' +
+          '<source src="' + s.webm + '" type="video/webm">' +
+        '</video>'
+      : '<img class="slide__media" src="' + s.src + '" alt="' + s.title +
+        '" ' + (i === 0 ? 'fetchpriority="high"' : 'loading="lazy"') + '>';
+
+    el.innerHTML =
+      '<div class="slide__bg" style="background-image:url(' + bgSrc + ')"></div>' +
+      media +
+      (s.noCap ? '' :
+        '<div class="slide__cap"><div class="slide__title">' + s.title + '</div>' +
+        '<div class="slide__meta">' + s.meta + '</div></div>');
+    vp.appendChild(el);
+
+    var d = document.createElement("button");
+    d.className = "dot";
+    d.type = "button";
+    d.setAttribute("role","tab");
+    d.setAttribute("aria-label","الشريحة " + (i+1));
+    d.setAttribute("aria-current", i === 0 ? "true" : "false");
+    d.addEventListener("click", function(){ go(i, true); });
+    dotsWrap.appendChild(d);
+  });
+
+  var slides = vp.querySelectorAll(".slide");
+  var dots   = dotsWrap.querySelectorAll(".dot");
+  var bar    = document.getElementById("bBar");
+
+  function runBar(ms){
+    if(reduce || !bar) return;
+    bar.classList.remove("run");
+    bar.style.width = "0";
+    void bar.offsetWidth;                       /* إعادة تشغيل الحركة */
+    bar.classList.add("run");
+    bar.style.transitionDuration = ms + "ms";
+    bar.style.width = "100%";
+  }
+
+  function go(n, manual){
+    if(n === idx && !manual) return;
+
+    /* إيقاف فيديو الشريحة المغادرة */
+    var oldVid = slides[idx].querySelector("video");
+    if(oldVid){ oldVid.pause(); try{ oldVid.currentTime = 0; }catch(e){} }
+
+    slides[idx].classList.remove("is-active");
+    dots[idx].setAttribute("aria-current","false");
+
+    idx = (n + SLIDES.length) % SLIDES.length;
+
+    slides[idx].classList.add("is-active");
+    dots[idx].setAttribute("aria-current","true");
+
+    var s = SLIDES[idx];
+    var vid = slides[idx].querySelector("video");
+    if(vid){
+      if(vid.preload !== "auto"){ vid.preload = "auto"; vid.load(); }
+      var pr = vid.play();
+      if(pr && pr.catch) pr.catch(function(){});  /* بعض المتصفحات تمنع التشغيل التلقائي */
+    }
+
+    schedule(s.dur || DUR);
+  }
+
+  function schedule(ms){
+    clearTimeout(timer);
+    if(reduce || paused) return;
+    runBar(ms);
+    timer = setTimeout(function(){ go(idx + 1); }, ms);
+  }
+
+  /* إيقاف التنقل التلقائي فقط — الفيديو يواصل العمل */
+  function pause(){
+    paused = true;
+    clearTimeout(timer);
+    if(bar){ bar.classList.remove("run"); bar.style.width = "0"; }
+  }
+  function resume(){
+    if(!paused) return;
+    paused = false;
+    schedule(SLIDES[idx].dur || DUR);
+  }
+  /* إيقاف كل شيء عند مغادرة التبويب حفاظًا على البطارية */
+  function playVideo(on){
+    var v = slides[idx].querySelector("video");
+    if(!v) return;
+    if(on){ var pr = v.play(); if(pr && pr.catch) pr.catch(function(){}); }
+    else { v.pause(); }
+  }
+
+  /* تشغيل أول شريحة */
+  slides[0].classList.add("is-active");
+  schedule(DUR);
+
+  /* أزرار التنقل */
+  document.getElementById("bPrev").addEventListener("click", function(){ go(idx - 1, true); });
+  document.getElementById("bNext").addEventListener("click", function(){ go(idx + 1, true); });
+
+  /* إيقاف مؤقت عند المرور بالفأرة أو التركيز */
+  var banner = document.getElementById("banner");
+  banner.addEventListener("mouseenter", pause);
+  banner.addEventListener("mouseleave", resume);
+  banner.addEventListener("focusin", function(e){
+    /* التركيز بلوحة المفاتيح فقط يوقف التنقل، أما النقر باللمس فلا */
+    var kb = false;
+    try{ kb = e.target.matches(":focus-visible"); }catch(err){ kb = false; }
+    if(kb) pause();
+  });
+  banner.addEventListener("focusout", function(){
+    if(!banner.matches(":hover")) resume();
+  });
+
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){ pause(); playVideo(false); }
+    else { resume(); playVideo(true); }
+  });
+
+  /* التمرير باللمس */
+  var x0 = null, y0 = null;
+  vp.addEventListener("touchstart", function(e){
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; pause();
+  }, {passive:true});
+  vp.addEventListener("touchend", function(e){
+    if(x0 === null){ resume(); return; }
+    var dx = e.changedTouches[0].clientX - x0;
+    var dy = e.changedTouches[0].clientY - y0;
+    /* نتجاهل السحب الرأسي حتى لا نعطل تمرير الصفحة */
+    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+      go(idx + (dx < 0 ? 1 : -1), true);   /* الاتجاه معكوس لواجهة RTL */
+    }
+    x0 = y0 = null;
+    resume();
+  }, {passive:true});
+
+  /* أسهم لوحة المفاتيح */
+  banner.addEventListener("keydown", function(e){
+    if(e.key === "ArrowRight"){ go(idx - 1, true); }
+    else if(e.key === "ArrowLeft"){ go(idx + 1, true); }
+  });
+})();
 
 /* ===== عداد زوار الموقع ===== */
 (function(){
