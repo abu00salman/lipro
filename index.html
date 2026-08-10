@@ -366,6 +366,20 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   border-radius:var(--r);padding:24px;transition:.22s;display:flex;flex-direction:column;
 }
 .bcard:hover{background:rgba(255,255,255,.08);border-color:rgba(245,179,37,.45);transform:translateY(-4px)}
+.bcard__photo{
+  margin:-24px -24px 18px;border-radius:var(--r) var(--r) 0 0;overflow:hidden;
+  background:rgba(0,0,0,.25);
+}
+.bcard__photo img{
+  display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;
+  transition:transform .5s ease;
+}
+.bcard:hover .bcard__photo img{transform:scale(1.045)}
+.bcard__photo figcaption{
+  font-family:var(--display);font-weight:600;font-size:13.5px;text-align:center;
+  color:var(--gold);background:rgba(0,0,0,.32);
+  padding:9px 12px;border-top:1px solid rgba(245,179,37,.28);
+}
 .bcard__top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
 .bcard h3{font-size:21px}
 .pill{font-size:11px;font-weight:700;letter-spacing:.08em;padding:5px 11px;border-radius:999px}
@@ -570,6 +584,8 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   /* الفروع */
   .grid-branches{gap:14px;margin-top:30px}
   .bcard{padding:20px 18px}
+  .bcard__photo{margin:-20px -18px 15px}
+  .bcard__photo figcaption{font-size:12.5px;padding:8px 10px}
   .bcard h3{font-size:19px}
   .bcard dl{font-size:14px;gap:7px 12px}
   .bcard dt{font-size:12.5px}
@@ -979,25 +995,25 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 /* ===== بيانات الفروع ===== */
 /* days: 0=الأحد 1=الاثنين 2=الثلاثاء 3=الأربعاء 4=الخميس 5=الجمعة 6=السبت */
 var BRANCHES = [
-  {name:"ليبرو جيزان", city:"محافظة جيزان", days:[6,1,4],
+  {name:"ليبرو جيزان", city:"محافظة جيزان", days:[6,1,4], photo:"",
    time:"٥:٠٠ – ٧:٣٠ م", venue:"ملعب يارا — حي المعبوج",
    map:"https://maps.app.goo.gl/jESBcXjSMu929TM19"},
 
-  {name:"ليبرو بيش", city:"محافظة بيش", days:[0,2,3],
+  {name:"ليبرو بيش", city:"محافظة بيش", days:[0,2,3], photo:"branch-bish.jpg",
    time:"٧:٠٠ – ٩:٠٠ م", venue:"ملعب الشعلاني",
    map:"https://maps.app.goo.gl/MTAYUm6TBtkUSArR7"},
 
-  {name:"ليبرو خميس مشيط", city:"مدينة خميس مشيط", days:[0,1,4],
+  {name:"ليبرو خميس مشيط", city:"مدينة خميس مشيط", days:[0,1,4], photo:"branch-khamis.jpg",
    time:"٤:٠٠ – ٧:٠٠ م", venue:"ملعب الهدف — خلف كوبري السجون",
    map:"https://maps.app.goo.gl/NnZYt67jBhQ2ktnu7"},
 
-  {name:"ليبرو المضايا", city:"المضايا", days:[0,2,4],
+  {name:"ليبرو المضايا", city:"المضايا", days:[0,2,4], photo:"",
    time:"للاستفسار عن الموعد", venue:"تواصل معنا لتحديد الملعب", map:""},
 
-  {name:"ليبرو المطعن", city:"المطعن", days:[6,1,3],
+  {name:"ليبرو المطعن", city:"المطعن", days:[6,1,3], photo:"",
    time:"للاستفسار عن الموعد", venue:"تواصل معنا لتحديد الملعب", map:""},
 
-  {name:"ليبرو العالية", city:"العالية", days:[6,1,3],
+  {name:"ليبرو العالية", city:"العالية", days:[6,1,3], photo:"branch-aliyah.jpg",
    time:"للاستفسار عن الموعد", venue:"تواصل معنا لتحديد الملعب", map:""}
 ];
 
@@ -1084,7 +1100,15 @@ BRANCHES.forEach(function(br){
   var trainsToday = br.days.indexOf(todayKey) > -1;
   var card = document.createElement("article");
   card.className = "bcard";
+  var teamName = br.name.replace(/^ليبرو\s*/, "");
   card.innerHTML =
+    (br.photo
+      ? '<figure class="bcard__photo">' +
+          '<img src="' + br.photo + '" alt="لاعبو ' + br.name + '" ' +
+          'width="900" height="506" loading="lazy" decoding="async">' +
+          '<figcaption>لاعبو ليبرو ' + teamName + '</figcaption>' +
+        '</figure>'
+      : '') +
     '<div class="bcard__top"><h3>' + br.name + '</h3>' +
       (trainsToday ? '<span class="pill pill--b">تدريب اليوم</span>'
                    : '<span class="pill pill--a">٣ أيام أسبوعيًا</span>') +
