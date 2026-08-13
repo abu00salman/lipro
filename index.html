@@ -500,6 +500,20 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 }
 .field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--teal) 50%),linear-gradient(135deg,var(--teal) 50%,transparent 50%);
   background-position:calc(16px) calc(50% - 2px),calc(21px) calc(50% - 2px);background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.field__note{
+  margin-top:8px;font-size:13px;color:var(--gold);font-weight:600;
+}
+.field__note--warn{color:#FFB4A2}
+/* حقل التاريخ يبقى بمحاذاة يمين مثل بقية الحقول */
+.field input[type="date"]{
+  text-align:right;direction:rtl;min-height:49px;
+  font-family:var(--body);appearance:none;
+}
+.field input[type="date"]::-webkit-calendar-picker-indicator{
+  margin:0;margin-inline-end:auto;cursor:pointer;opacity:.65;
+}
+.field input[type="date"]::-webkit-date-and-time-value{text-align:right}
+
 .form .btn{width:100%;margin-top:6px}
 .form__hint{font-size:12.5px;color:#8FB2AA;text-align:center;margin-top:14px}
 .calls{display:flex;flex-direction:column;gap:12px;margin-top:26px}
@@ -1020,8 +1034,13 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
         <input id="fName" type="text" placeholder="مثال: سلمان محمد" autocomplete="name">
       </div>
       <div class="field">
-        <label for="fAge">العمر</label>
-        <input id="fAge" type="number" min="5" max="18" placeholder="من ٥ إلى ١٨ سنة" inputmode="numeric">
+        <label for="fDob">تاريخ الميلاد</label>
+        <input id="fDob" type="date" min="2006-01-01" autocomplete="bday">
+        <p class="field__note" id="ageNote" hidden></p>
+      </div>
+      <div class="field">
+        <label for="fCity">العنوان</label>
+        <input id="fCity" type="text" placeholder="مثال: جيزان — حي المعبوج" autocomplete="address-level2">
       </div>
       <div class="field">
         <label for="fBranch">الفرع</label>
@@ -1229,13 +1248,54 @@ BRANCHES.forEach(function(br){
 });
 
 /* ===== إرسال الطلب على واتساب ===== */
+var dobEl  = document.getElementById("fDob");
+var ageNote = document.getElementById("ageNote");
+
+/* نحسب العمر من تاريخ الميلاد بدل مطالبة الأهل بإدخاله يدويًا */
+function ageFrom(dobValue){
+  if(!dobValue) return null;
+  var d = new Date(dobValue);
+  if(isNaN(d.getTime())) return null;
+  var now = new Date();
+  var a = now.getFullYear() - d.getFullYear();
+  var m = now.getMonth() - d.getMonth();
+  if(m < 0 || (m === 0 && now.getDate() < d.getDate())) a--;
+  return a;
+}
+
+function fmtDate(v){
+  var d = new Date(v);
+  if(isNaN(d.getTime())) return v;
+  var p = function(n){ return n < 10 ? "0" + n : String(n); };
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+
+dobEl.addEventListener("change", function(){
+  var a = ageFrom(dobEl.value);
+  if(a === null){ ageNote.hidden = true; return; }
+
+  if(a < 5 || a > 18){
+    ageNote.textContent = "العمر " + a + " سنة — الأكاديمية تستقبل من ٥ إلى ١٨ سنة، تواصل معنا للتأكد.";
+    ageNote.className = "field__note field__note--warn";
+  }else{
+    ageNote.textContent = "العمر: " + a + " سنة";
+    ageNote.className = "field__note";
+  }
+  ageNote.hidden = false;
+});
+
 document.getElementById("sendWa").addEventListener("click", function(){
   var name = document.getElementById("fName").value.trim();
-  var age  = document.getElementById("fAge").value.trim();
+  var city = document.getElementById("fCity").value.trim();
+  var dob  = dobEl.value;
+  var age  = ageFrom(dob);
   var branch = sel.value;
+
   var msg = "السلام عليكم، أرغب بتسجيل ابني في أكاديمية ليبرو الرياضية."
           + "\nالاسم: " + (name || "—")
-          + "\nالعمر: " + (age || "—")
+          + "\nتاريخ الميلاد: " + (dob ? fmtDate(dob) : "—")
+          + (age !== null ? "\nالعمر: " + age + " سنة" : "")
+          + "\nالعنوان: " + (city || "—")
           + "\nالفرع: " + branch;
   window.open("https://wa.me/966530634750?text=" + encodeURIComponent(msg), "_blank", "noopener");
 });
