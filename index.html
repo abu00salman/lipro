@@ -465,6 +465,51 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 .bcard__link:hover{color:#FFD26B;gap:11px}
 .bcard--soon{border-style:dashed;opacity:.72}
 
+/* ===== البطولات والمشاركات القادمة ===== */
+.events{background:var(--surface)}
+.grid-events{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
+  gap:22px;margin-top:44px;
+}
+.event{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:18px;
+  overflow:hidden;display:flex;flex-direction:column;transition:.25s;
+}
+.event:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--teal)}
+
+.event__media{position:relative;background:var(--pitch);display:block}
+.event__media img{
+  display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;
+  background:#0B2E28;
+}
+.event__flag{
+  position:absolute;top:12px;inset-inline-start:12px;z-index:2;
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold);color:var(--pitch);border-radius:999px;
+  padding:5px 13px;font-family:var(--display);font-weight:700;font-size:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+}
+
+.event__body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
+.event__title{font-family:var(--display);font-weight:700;font-size:18.5px;line-height:1.4;color:var(--ink)}
+.event__meta{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.65}
+.event__tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.event__tags span{
+  font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;
+  background:rgba(14,122,107,.12);color:var(--teal);border:1px solid rgba(14,122,107,.24);
+}
+[data-mode="dark"] .event__tags span{
+  background:rgba(23,168,143,.16);color:#5FD9C2;border-color:rgba(23,168,143,.3);
+}
+
+@media(max-width:640px){
+  .grid-events{gap:16px;margin-top:30px}
+  .event__body{padding:17px 16px 19px}
+  .event__title{font-size:17px}
+  .event__meta{font-size:13.5px}
+  .event__flag{font-size:11.5px;padding:5px 11px;top:10px;inset-inline-start:10px}
+}
+
 /* ===== البرامج ===== */
 .grid-prog{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:44px}
 .prog{
@@ -773,6 +818,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
       <a href="#about">عن الأكاديمية</a>
       <a href="#branches">الفروع</a>
       <a href="#programs">البرامج</a>
+      <a href="#events">البطولات</a>
       <a href="#fees">الرسوم</a>
       <a class="nav__cta" href="#signup">سجّل ابنك</a>
     </nav>
@@ -995,6 +1041,61 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
         <h3>رحلات ومواصلات</h3>
         <p>باص للأكاديمية ينقل اللاعبين من وإلى التدريب، ورحلات ترفيهية خلال الموسم.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- البطولات والمشاركات القادمة -->
+<section class="section events" id="events">
+  <div class="wrap reveal">
+    <div class="eyebrow">على الأجندة</div>
+    <h2 class="section-title">بطولات ومشاركات قادمة</h2>
+    <p class="section-lead">
+      مشاركات الأكاديمية المقبلة في بطولات الفئات السنية — تابعنا لمعرفة مواعيد المباريات والنتائج.
+    </p>
+
+    <div class="grid-events">
+      <article class="event">
+        <div class="event__media">
+          <span class="event__flag">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="12"/></svg>
+            قادمة
+          </span>
+          <img src="event-alwasm.jpg" alt="بطولة أكاديمية الوسم السنوية الثانية بالقحمة" loading="lazy" decoding="async">
+        </div>
+        <div class="event__body">
+          <h3 class="event__title">بطولة أكاديمية الوسم السنوية الثانية</h3>
+          <p class="event__meta">
+            تشارك <b>ليبرو بيش</b> ضمن ١٢ أكاديمية موزّعة على ٤ مجموعات، ويتأهل الأول والثاني من كل مجموعة مباشرة.
+          </p>
+          <div class="event__tags">
+            <span>القحمة</span>
+            <span>١٢ فريقًا</span>
+            <span>٤ مجموعات</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="event">
+        <div class="event__media">
+          <span class="event__flag">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="12"/></svg>
+            قادمة
+          </span>
+          <img src="event-blues.jpg" alt="بطولة أكاديمية البلوز للفئات السنية" loading="lazy" decoding="async">
+        </div>
+        <div class="event__body">
+          <h3 class="event__title">بطولة أكاديمية البلوز للفئات السنية</h3>
+          <p class="event__meta">
+            بطولة بمشاركة ٦ أكاديميات لمواليد ٢٠٠٩ و٢٠١٠ و٢٠١١، ويُسمح بمشاركة لاعب من مواليد ٢٠٠٨.
+          </p>
+          <div class="event__tags">
+            <span>ملعب أكاديمية عهد</span>
+            <span>٦ أكاديميات</span>
+            <span>١٠ ضد ١٠</span>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 </section>
