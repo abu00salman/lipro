@@ -425,6 +425,26 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   transition:transform .5s ease;
 }
 .bcard:hover .bcard__photo img{transform:scale(1.045)}
+
+/* عدة صور للفرع الواحد: تتبادل الظهور في نفس المكان */
+.photo-stack{display:block;position:relative}
+.has-many .photo-stack img{
+  transition:opacity .8s ease,transform .5s ease;
+}
+.has-many .photo-stack img:not(.is-shown){
+  position:absolute;inset:0;opacity:0;pointer-events:none;
+}
+.has-many .photo-stack img.is-shown{position:relative;opacity:1}
+
+.photo-dots{
+  position:absolute;bottom:9px;inset-inline-start:0;inset-inline-end:0;
+  display:flex;justify-content:center;gap:6px;z-index:2;pointer-events:none;
+}
+.photo-dots i{
+  width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);
+  box-shadow:0 1px 3px rgba(0,0,0,.5);transition:.3s;
+}
+.photo-dots i.on{background:var(--gold);width:18px;border-radius:999px}
 .bcard__photo figcaption{
   font-family:var(--display);font-weight:600;font-size:13.5px;text-align:center;
   color:var(--gold);background:rgba(0,0,0,.32);
@@ -496,23 +516,40 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 .field label{display:block;font-size:14px;font-weight:600;color:#CFE3DD;margin-bottom:8px}
 .field select,.field input{
   width:100%;padding:13px 15px;border-radius:11px;font-family:var(--body);font-size:15.5px;
-  background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.2);color:var(--ink);
+  /* لون ثابت داكن: خلفية الحقل بيضاء دائمًا في الوضعين */
+  background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.2);color:#08201C;
+}
+.field input::placeholder{color:#8AA39C;opacity:1}
+.field select:focus,.field input:focus{
+  outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,179,37,.28);
 }
 .field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--teal) 50%),linear-gradient(135deg,var(--teal) 50%,transparent 50%);
   background-position:calc(16px) calc(50% - 2px),calc(21px) calc(50% - 2px);background-size:5px 5px,5px 5px;background-repeat:no-repeat}
 .field__note{
-  margin-top:8px;font-size:13px;color:var(--gold);font-weight:600;
+  margin-top:10px;display:inline-flex;align-items:center;gap:7px;
+  background:rgba(245,179,37,.14);border:1px solid rgba(245,179,37,.4);
+  border-radius:999px;padding:6px 14px;
+  font-size:13.5px;color:var(--gold);font-weight:700;
 }
-.field__note--warn{color:#FFB4A2}
+.field__note b{font-family:var(--display);font-size:15px}
 /* حقل التاريخ يبقى بمحاذاة يمين مثل بقية الحقول */
 .field input[type="date"]{
-  text-align:right;direction:rtl;min-height:49px;
-  font-family:var(--body);appearance:none;
+  text-align:right;direction:rtl;min-height:50px;
+  font-family:var(--body);appearance:none;color:#08201C;
+  font-variant-numeric:tabular-nums;
 }
+/* أيقونة التقويم بارزة وكبيرة لتُلمس بسهولة */
 .field input[type="date"]::-webkit-calendar-picker-indicator{
-  margin:0;margin-inline-end:auto;cursor:pointer;opacity:.65;
+  margin:0;margin-inline-end:auto;cursor:pointer;opacity:.85;
+  width:24px;height:24px;padding:2px;border-radius:6px;
 }
-.field input[type="date"]::-webkit-date-and-time-value{text-align:right}
+.field input[type="date"]::-webkit-calendar-picker-indicator:hover{
+  opacity:1;background:rgba(14,122,107,.14);
+}
+.field input[type="date"]::-webkit-date-and-time-value{text-align:right;color:#08201C}
+/* حين يكون الحقل فارغًا نخفت لون النص النائب */
+.field input[type="date"]:not(.has-value)::-webkit-datetime-edit{color:#8AA39C}
+.field input[type="date"].has-value::-webkit-datetime-edit{color:#08201C;font-weight:600}
 
 .form .btn{width:100%;margin-top:6px}
 .form__hint{font-size:12.5px;color:#8FB2AA;text-align:center;margin-top:14px}
@@ -1035,7 +1072,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
       </div>
       <div class="field">
         <label for="fDob">تاريخ الميلاد</label>
-        <input id="fDob" type="date" min="2006-01-01" autocomplete="bday">
+        <input id="fDob" type="date" autocomplete="bday" aria-describedby="ageNote">
         <p class="field__note" id="ageNote" hidden></p>
       </div>
       <div class="field">
@@ -1102,7 +1139,8 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 /* ===== بيانات الفروع ===== */
 /* days: 0=الأحد 1=الاثنين 2=الثلاثاء 3=الأربعاء 4=الخميس 5=الجمعة 6=السبت */
 var BRANCHES = [
-  {name:"ليبرو جيزان", city:"محافظة جيزان", days:[6,1,4], photo:"branch-jizan.jpg",
+  {name:"ليبرو جيزان", city:"محافظة جيزان", days:[6,1,4],
+   photos:["branch-jizan.jpg","branch-jizan-2.jpg"],
    time:"٥:٠٠ – ٧:٣٠ م", venue:"ملعب يارا — حي المعبوج",
    map:"https://maps.app.goo.gl/jESBcXjSMu929TM19"},
 
@@ -1211,14 +1249,29 @@ BRANCHES.forEach(function(br){
   var card = document.createElement("article");
   card.className = "bcard";
   var teamName = br.name.replace(/^ليبرو\s*/, "");
+  /* يقبل photo مفردة أو photos متعددة */
+  var pics = br.photos || (br.photo ? [br.photo] : []);
+  var many = pics.length > 1;
+
+  var figure = "";
+  if(pics.length){
+    var imgs = pics.map(function(src, i){
+      return '<img src="' + src + '" alt="لاعبو ' + br.name + '" width="900" height="506" ' +
+             'loading="lazy" decoding="async" class="' + (i === 0 ? 'is-shown' : '') + '">';
+    }).join("");
+
+    var dots = many ? '<span class="photo-dots">' + pics.map(function(_, i){
+      return '<i class="' + (i === 0 ? 'on' : '') + '"></i>';
+    }).join("") + '</span>' : "";
+
+    figure = '<figure class="bcard__photo' + (many ? ' has-many' : '') + '">' +
+               '<span class="photo-stack">' + imgs + dots + '</span>' +
+               '<figcaption>لاعبو ليبرو ' + teamName + '</figcaption>' +
+             '</figure>';
+  }
+
   card.innerHTML =
-    (br.photo
-      ? '<figure class="bcard__photo">' +
-          '<img src="' + br.photo + '" alt="لاعبو ' + br.name + '" ' +
-          'width="900" height="506" loading="lazy" decoding="async">' +
-          '<figcaption>لاعبو ليبرو ' + teamName + '</figcaption>' +
-        '</figure>'
-      : '') +
+    figure +
     '<div class="bcard__top"><h3>' + br.name + '</h3>' +
       (trainsToday ? '<span class="pill pill--b">تدريب اليوم</span>'
                    : '<span class="pill pill--a">٣ أيام أسبوعيًا</span>') +
@@ -1232,6 +1285,35 @@ BRANCHES.forEach(function(br){
     (br.map ? '<a class="bcard__link" href="' + br.map + '" target="_blank" rel="noopener">موقع الملعب على الخريطة ←</a>'
             : '<a class="bcard__link" href="#signup">اسأل عن الفرع ←</a>');
   grid.appendChild(card);
+
+  /* تبديل تلقائي لطيف بين صور الفرع، ويتوقف عند مرور المؤشر */
+  if(many){
+    var stack = card.querySelector(".photo-stack");
+    var shots = stack.querySelectorAll("img");
+    var dotEls = stack.querySelectorAll(".photo-dots i");
+    var at = 0, tm = null;
+
+    var step = function(){
+      shots[at].classList.remove("is-shown");
+      dotEls[at].classList.remove("on");
+      at = (at + 1) % shots.length;
+      shots[at].classList.add("is-shown");
+      dotEls[at].classList.add("on");
+    };
+    var start = function(){ if(!tm) tm = setInterval(step, 3600); };
+    var stop  = function(){ clearInterval(tm); tm = null; };
+
+    card.addEventListener("mouseenter", stop);
+    card.addEventListener("mouseleave", start);
+
+    /* لا نشغّل الدوران إلا حين تصبح البطاقة مرئية */
+    if("IntersectionObserver" in window){
+      var vo = new IntersectionObserver(function(en){
+        en.forEach(function(e){ e.isIntersecting ? start() : stop(); });
+      }, {threshold:.25});
+      vo.observe(card);
+    }else{ start(); }
+  }
 });
 
 /* ===== قائمة الفروع في التذييل + قائمة الاختيار ===== */
@@ -1270,19 +1352,25 @@ function fmtDate(v){
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
 }
 
-dobEl.addEventListener("change", function(){
+function showAge(){
   var a = ageFrom(dobEl.value);
-  if(a === null){ ageNote.hidden = true; return; }
+  dobEl.classList.toggle("has-value", !!dobEl.value);
 
-  if(a < 5 || a > 18){
-    ageNote.textContent = "العمر " + a + " سنة — الأكاديمية تستقبل من ٥ إلى ١٨ سنة، تواصل معنا للتأكد.";
-    ageNote.className = "field__note field__note--warn";
-  }else{
-    ageNote.textContent = "العمر: " + a + " سنة";
-    ageNote.className = "field__note";
-  }
+  if(a === null){ ageNote.hidden = true; return; }
+  /* نعرض العمر فقط بلا أي منع — التسجيل مفتوح لكل الأعمار */
+  ageNote.innerHTML = 'العمر: <b>' + a + '</b> ' + (a === 1 ? "سنة" : a === 2 ? "سنتان" : (a >= 3 && a <= 10) ? "سنوات" : "سنة");
   ageNote.hidden = false;
+}
+
+dobEl.addEventListener("change", showAge);
+dobEl.addEventListener("input", showAge);
+
+/* فتح التقويم بالضغط على أي مكان في الحقل، لا الأيقونة وحدها */
+dobEl.addEventListener("click", function(){
+  if(dobEl.showPicker){ try{ dobEl.showPicker(); }catch(e){} }
 });
+
+showAge();
 
 document.getElementById("sendWa").addEventListener("click", function(){
   var name = document.getElementById("fName").value.trim();
@@ -1378,7 +1466,6 @@ if("IntersectionObserver" in window){
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
     {src:"banner-5.jpg", w:562,  h:1000, title:"بطل بطولة البراعم — جازان تحت ١١ سنة", noCap:true},
-    {src:"banner-8.jpg", w:562,  h:1000, title:"المشاركة في بطولة الاتحاد السعودي — منطقة جازان", noCap:true},
     {src:"banner-1.jpg", w:1280, h:720,  title:"تتويج فريق ليبرو بلقب المنطقة", meta:"بطولة الاتحاد السعودي لكرة القدم"},
     {src:"banner-3.jpg", w:750,  h:1000, title:"لحظة رفع الكأس", meta:"احتفال اللاعبين بعد النهائي"},
     {type:"video", src:"banner-video.mp4", webm:"banner-video.webm",
