@@ -409,8 +409,22 @@
               </a>
 
               <p style="font-size:12.5px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.7">
-                يفتح واتساب برسالة تحمل كل بياناتك — أرفق صورة الإيصال وأرسلها.
+                يفتح واتساب برسالة تحمل كل بياناتك.
               </p>
+
+              <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line)">
+                <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px;line-height:1.7">
+                  أو احفظ <b style="color:var(--ink)">بطاقة الطلب كصورة</b> وشاركها مباشرة:
+                </p>
+                <button class="btn btn--teal" type="button" id="shareImg" style="width:100%">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+                  <span>مشاركة صورة الطلب</span>
+                </button>
+                <p class="f__hint" id="shareHint" style="text-align:center;margin-top:10px" hidden></p>
+                <div id="imgPreview" style="margin-top:16px" hidden>
+                  <img alt="بطاقة الطلب" style="width:100%;border-radius:14px;border:1px solid var(--line);display:block">
+                </div>
+              </div>
             </div>
 
             <div class="methods">
@@ -507,9 +521,12 @@
     currency: 'SAR',
     vat_included: true,
     programs: [
-      { id:'monthly', name:'اشتراك شهري', desc:'تدريب ٣ أيام في الأسبوع لمدة شهر كامل، مع متابعة فنية وبدنية.',
-        price_sar:350, duration:'شهر واحد', vat_included:true, badge:null,
+      { id:'monthly', name:'اشتراك شهري', desc:'لتسجيل لاعب جديد — تدريب ٣ أيام في الأسبوع لمدة شهر كامل، مع متابعة فنية وبدنية.',
+        price_sar:350, duration:'شهر واحد', vat_included:true, badge:'لاعب جديد',
         includes:['تدريب ٣ أيام أسبوعيًا','متابعة فنية وبدنية','مباريات داخلية'] },
+      { id:'renewal', name:'تجديد الاشتراك الشهري', desc:'لتجديد اشتراك لاعب مسجَّل سلفًا في الأكاديمية بعد انتهاء شهره الحالي.',
+        price_sar:200, duration:'شهر واحد', vat_included:true, badge:'لأعضاء الأكاديمية',
+        includes:['تجديد شهر إضافي','استمرار نفس الفرع والمدرب','بلا رسوم تسجيل جديدة'] },
       { id:'quarter', name:'اشتراك ٣ شهور', desc:'ثلاثة شهور متصلة بسعر أوفر، مع أولوية الترشيح لتجارب الأندية.',
         price_sar:900, duration:'٣ شهور', vat_included:true, badge:'الأكثر طلبًا',
         includes:['كل مزايا الاشتراك الشهري','أولوية تجارب الأندية','توفير ١٥٠ ريال'] },
@@ -532,6 +549,8 @@
   let currentStep = 1;
   let registration = null;    // نتيجة إنشاء التسجيل من الخادم
   let formMounted = false;
+  let receiptData = null;
+  let receiptBlob = null;
   let busy = false;
 
   /* ================= التنقل بين الخطوات ================= */
@@ -843,6 +862,18 @@
     const wa2 = $('#waReceipt');
     if (wa2) wa2.href = $('#offlineWa').href;
 
+    // بيانات بطاقة الصورة
+    receiptData = {
+      ref: registration.registration_number,
+      player: v.player_name,
+      dob: v.player_dob,
+      branch: br ? br.name : '',
+      program: selectedProgram.name + ' — ' + selectedProgram.duration,
+      guardian: v.guardian_name,
+      amount: registration.amount_sar,
+      paid: false
+    };
+
     track('registration_ready_offline', { program_id: selectedProgram.id });
   }
 
@@ -977,6 +1008,53 @@
     });
   });
 
+
+  /* ================= مشاركة صورة الطلب ================= */
+  var shareBtn = $('#shareImg');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async function () {
+      if (!receiptData || !window.LiproReceipt) return;
+
+      var label = shareBtn.querySelector('span');
+      var original = label.textContent;
+      shareBtn.disabled = true;
+      label.textContent = 'جاري التجهيز…';
+      $('#shareHint').hidden = true;
+
+      try {
+        // ننتظر تحميل الخطوط حتى يظهر النص العربي بشكله الصحيح
+        if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
+
+        if (!receiptBlob) receiptBlob = await window.LiproReceipt.build(receiptData);
+
+        // معاينة الصورة داخل الصفحة
+        var prev = $('#imgPreview');
+        prev.querySelector('img').src = URL.createObjectURL(receiptBlob);
+        prev.hidden = false;
+
+        var name = receiptData.ref + '.png';
+        var res = await window.LiproReceipt.share(
+          receiptBlob, name,
+          'طلب تسجيل في أكاديمية ليبرو الرياضية — رقم ' + receiptData.ref
+        );
+
+        var hint = $('#shareHint');
+        if (res === 'downloaded') {
+          hint.textContent = 'حُفظت الصورة في جهازك — أرفقها في محادثة واتساب.';
+          hint.hidden = false;
+        } else if (res === 'cancelled') {
+          hint.textContent = 'أُلغيت المشاركة. الصورة معروضة بالأسفل ويمكنك حفظها بالضغط المطوّل.';
+          hint.hidden = false;
+        }
+      } catch (e) {
+        $('#shareHint').textContent = 'تعذّر تجهيز الصورة. استخدم زر واتساب بالأعلى.';
+        $('#shareHint').hidden = false;
+      } finally {
+        shareBtn.disabled = false;
+        label.textContent = original;
+      }
+    });
+  }
 
   /* ================= الإقلاع ================= */
   (async function boot() {
