@@ -1865,29 +1865,49 @@ function fallback(text, cb){
   }catch(err){ /* لو تعذّر النسخ يبقى الرقم ظاهرًا للنسخ اليدوي */ }
 }
 
-/* ===== أخبار اليوم الرياضية ===== */
+/* ===== أخبار اليوم الرياضية — يتحدّث ذاتيًا ===== */
 /*
-  لتحديث الأخبار: عدّل مصفوفة NEWS بالأسفل فقط.
-  أول عنصر يظهر كخبر رئيسي كبير، والبقية في العمود الجانبي.
+  ┌──────────────────────────────────────────────────────────────┐
+  │  التحديث الوحيد المطلوب منك: أضف النتيجة بعد كل مباراة.      │
+  │  في مصفوفة FIXTURES بالأسفل، اكتب في result مثل "3-0".       │
+  │  الصفحة تتكفّل بالباقي: تعرض آخر نتيجة والمباراة القادمة      │
+  │  والعدّ التنازلي، وتتبدّل تلقائيًا كل يوم بلا تدخّل منك.        │
+  └──────────────────────────────────────────────────────────────┘
 
   الحقول:
-    tag    : وسم قصير فوق العنوان (مثال: "خبر اليوم")
-    live   : true تجعل الوسم أحمر بنقطة نابضة — للمباريات الجارية
-    title  : العنوان
-    body   : النص (اختياري)
-    time   : سطر التوقيت أسفل الخبر (اختياري)
-    match  : { a:"الفريق الأول", b:"الفريق الثاني", score:"٢ - ١" }
-             ضع في score وقت المباراة قبل انطلاقها، والنتيجة بعدها.
+    round   : رقم الجولة
+    date    : "YYYY-MM-DD" — اتركها "" إن لم يُعلن الموعد بعد
+    time    : "HH:MM" بتوقيت السعودية (24 ساعة)
+    home    : الفريق المستضيف
+    away    : الفريق الضيف
+    result  : "" قبل المباراة، ثم "3-0" (المستضيف أولًا)
+    note    : وصف اختياري يظهر تحت البطاقة
 */
-var NEWS = [
-  {
-    tag: "خبر اليوم",
-    live: true,
-    title: "أكاديمية ليبرو تتابع مواجهة الفيحاء والهلال الليلة",
-    body: "يحل الهلال ضيفًا على الفيحاء على ملعب مدينة المجمعة الرياضية ضمن الجولة الثانية من دوري روشن. الهلال يدخل اللقاء برصيد ٣ نقاط بعد فوزه على الفيصلي، ويسعى لانتصاره الثاني وصدارة مؤقتة للترتيب.",
-    match: { a: "الفيحاء", b: "الهلال", score: "٩:٠٠ م" },
-    time: "الجولة الثانية · دوري روشن السعودي"
-  },
+
+var TEAM = "الهلال";
+
+var FIXTURES = [
+  { round:1,  date:"2026-08-14", time:"21:00", home:"الهلال",   away:"الفيصلي", result:"4-2", note:"انطلاقة الموسم" },
+  { round:2,  date:"2026-08-20", time:"21:00", home:"الفيحاء",  away:"الهلال",  result:"0-3", note:"فوز كبير خارج الديار" },
+  { round:3,  date:"2026-09-01", time:"",      home:"الهلال",   away:"الأهلي",  result:"",    note:"كلاسيكو" },
+  { round:4,  date:"",           time:"",      home:"الخليج",   away:"الهلال",  result:"",    note:"" },
+  { round:5,  date:"",           time:"",      home:"الشباب",   away:"الهلال",  result:"",    note:"" },
+  { round:6,  date:"",           time:"",      home:"نيوم",     away:"الهلال",  result:"",    note:"" },
+  { round:7,  date:"",           time:"",      home:"التعاون",  away:"الهلال",  result:"",    note:"" },
+  { round:8,  date:"2026-09-17", time:"",      home:"الهلال",   away:"الاتحاد", result:"",    note:"كلاسيكو" },
+  { round:9,  date:"",           time:"",      home:"الرياض",   away:"الهلال",  result:"",    note:"" },
+  { round:10, date:"",           time:"",      home:"الهلال",   away:"الحزم",   result:"",    note:"" },
+  { round:11, date:"",           time:"",      home:"القادسية", away:"الهلال",  result:"",    note:"" },
+  { round:12, date:"",           time:"",      home:"الهلال",   away:"الفتح",   result:"",    note:"" },
+  { round:13, date:"",           time:"",      home:"الاتفاق",  away:"الهلال",  result:"",    note:"" },
+  { round:14, date:"",           time:"",      home:"الدرعية",  away:"الهلال",  result:"",    note:"" },
+  { round:15, date:"",           time:"",      home:"الهلال",   away:"الخلود",  result:"",    note:"" },
+  { round:16, date:"",           time:"",      home:"أبها",     away:"الهلال",  result:"",    note:"" },
+  { round:17, date:"2026-12-10", time:"",      home:"النصر",    away:"الهلال",  result:"",    note:"ديربي الرياض" }
+];
+
+/* أخبار الأكاديمية الثابتة — تظهر في العمود الجانبي */
+var ACADEMY_NEWS = [
   {
     tag: "أكاديمية ليبرو",
     title: "التسجيل مفتوح في جميع الفروع الستة",
@@ -1907,16 +1927,195 @@ var NEWS = [
   var dateEl = document.querySelector("#newsDate span");
   if(!grid) return;
 
-  /* التاريخ بتوقيت الرياض بالتقويمين الميلادي والهجري */
-  try{
-    var d = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" }));
-    var greg = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-arab",
-      { weekday:"long", day:"numeric", month:"long", year:"numeric" }).format(d);
-    dateEl.textContent = greg;
-  }catch(e){
-    dateEl.textContent = "نشرة اليوم";
+  var AR_DIGITS = function(n){
+    try{ return new Intl.NumberFormat("ar-SA-u-nu-arab").format(n); }
+    catch(e){ return String(n); }
+  };
+
+  /* التاريخ والوقت الحاليان بتوقيت الرياض */
+  function riyadhNow(){
+    try{ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
+    catch(e){ return new Date(); }
+  }
+  var now = riyadhNow();
+
+  if(dateEl){
+    try{
+      dateEl.textContent = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-arab",
+        { weekday:"long", day:"numeric", month:"long", year:"numeric" }).format(now);
+    }catch(e){ dateEl.textContent = "نشرة اليوم"; }
   }
 
+  /* يحوّل المباراة إلى تاريخ قابل للمقارنة */
+  function kickoff(f){
+    if(!f.date) return null;
+    var t = f.time || "21:00";
+    var d = new Date(f.date + "T" + t + ":00");
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  var todayStr = f2(now.getFullYear()) + "-" + f2(now.getMonth()+1, 2) + "-" + f2(now.getDate(), 2);
+  function f2(v, pad){
+    var s = String(v);
+    if(pad === 2 && s.length < 2) s = "0" + s;
+    return s;
+  }
+
+  /* تصنيف المباريات */
+  var played = [], upcoming = [], today = null;
+
+  FIXTURES.forEach(function(f){
+    var k = kickoff(f);
+    if(f.result){ played.push(f); return; }
+    if(f.date === todayStr){ today = f; return; }
+    if(k && k > now) upcoming.push(f);
+  });
+
+  var lastPlayed = played.length ? played[played.length - 1] : null;
+  var nextMatch  = upcoming.length ? upcoming[0] : null;
+
+  /* أول مباراة بلا موعد معلن — تُعرض إن لم توجد مباراة مجدولة */
+  if(!nextMatch && !today){
+    for(var i = 0; i < FIXTURES.length; i++){
+      if(!FIXTURES[i].result && !FIXTURES[i].date){ nextMatch = FIXTURES[i]; break; }
+    }
+  }
+
+  /* "الهلال" → "للهلال" — دمج لام الجر مع أل التعريف */
+  function lamPrefix(name){
+    return name.indexOf("ال") === 0 ? "لل" + name.slice(2) : "لـ" + name;
+  }
+
+  /* هل فاز فريقنا؟ */
+  function outcome(f){
+    if(!f.result) return null;
+    var p = f.result.split("-");
+    var h = Number(p[0]), a = Number(p[1]);
+    if(isNaN(h) || isNaN(a)) return null;
+    var weAreHome = f.home === TEAM;
+    var ours = weAreHome ? h : a, theirs = weAreHome ? a : h;
+    return { win: ours > theirs, draw: ours === theirs, ours: ours, theirs: theirs,
+             rival: weAreHome ? f.away : f.home, home: weAreHome };
+  }
+
+  /* المدة المتبقية بصيغة مقروءة */
+  function untilText(k){
+    var ms = k - now;
+    if(ms <= 0) return "";
+    var days = Math.floor(ms / 86400000);
+    var hours = Math.floor((ms % 86400000) / 3600000);
+    if(days > 0) return "بعد " + AR_DIGITS(days) + (days === 1 ? " يوم" : days === 2 ? " يومين" : days <= 10 ? " أيام" : " يومًا");
+    if(hours > 0) return "بعد " + AR_DIGITS(hours) + (hours === 1 ? " ساعة" : hours === 2 ? " ساعتين" : hours <= 10 ? " ساعات" : " ساعة");
+    return "خلال أقل من ساعة";
+  }
+
+  function arDate(str){
+    if(!str) return "الموعد يُعلن لاحقًا";
+    try{
+      return new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-arab",
+        { weekday:"long", day:"numeric", month:"long" }).format(new Date(str + "T12:00:00"));
+    }catch(e){ return str; }
+  }
+
+  function ar12(t){
+    if(!t) return "";
+    var p = t.split(":"), h = Number(p[0]), m = p[1];
+    var suffix = h >= 12 ? "م" : "ص";
+    var h12 = h % 12 || 12;
+    return AR_DIGITS(h12) + ":" + AR_DIGITS(m) + " " + suffix;
+  }
+
+  /* ===== بناء الخبر الرئيسي ===== */
+  var lead;
+
+  if(today){
+    /* مباراة اليوم */
+    lead = {
+      tag: "مباراة اليوم", live: true,
+      title: "أكاديمية ليبرو تتابع مواجهة " + today.home + " و" + today.away,
+      body: "ضمن الجولة " + AR_DIGITS(today.round) + " من دوري روشن السعودي"
+            + (today.note ? " — " + today.note : "") + ".",
+      match: { a: today.home, b: today.away, score: today.time ? ar12(today.time) : "اليوم" },
+      time: "الجولة " + AR_DIGITS(today.round) + " · دوري روشن السعودي"
+    };
+  } else if(lastPlayed && isRecent(lastPlayed)){
+    /* نتيجة حديثة — خلال ٣ أيام */
+    var o = outcome(lastPlayed);
+    if(o && o.win){
+      lead = {
+        tag: "خبر اليوم",
+        title: "أكاديمية ليبرو تبارك " + lamPrefix(TEAM) + " فوزه على " + o.rival,
+        body: "تتقدم أكاديمية ليبرو الرياضية بالتهنئة لنادي " + TEAM + " بمناسبة فوزه على "
+              + o.rival + " بنتيجة " + AR_DIGITS(o.ours) + "-" + AR_DIGITS(o.theirs)
+              + " في الجولة " + AR_DIGITS(lastPlayed.round) + " من دوري روشن السعودي.",
+        match: { a: lastPlayed.home, b: lastPlayed.away, score: arScore(lastPlayed.result) },
+        time: "الجولة " + AR_DIGITS(lastPlayed.round) + " · " + arDate(lastPlayed.date)
+      };
+    } else if(o){
+      lead = {
+        tag: "نتيجة الجولة",
+        title: TEAM + " " + (o.draw ? "يتعادل مع " : "أمام ") + o.rival,
+        body: "انتهت مواجهة الجولة " + AR_DIGITS(lastPlayed.round) + " من دوري روشن السعودي.",
+        match: { a: lastPlayed.home, b: lastPlayed.away, score: arScore(lastPlayed.result) },
+        time: arDate(lastPlayed.date)
+      };
+    }
+  }
+
+  /* لا مباراة اليوم ولا نتيجة حديثة → المباراة القادمة */
+  if(!lead && nextMatch){
+    var k = kickoff(nextMatch);
+    lead = {
+      tag: "المباراة القادمة",
+      title: nextMatch.home + " × " + nextMatch.away
+             + (nextMatch.note ? " — " + nextMatch.note : ""),
+      body: "الجولة " + AR_DIGITS(nextMatch.round) + " من دوري روشن السعودي · " + arDate(nextMatch.date)
+            + (nextMatch.time ? " الساعة " + ar12(nextMatch.time) : ""),
+      match: { a: nextMatch.home, b: nextMatch.away,
+               score: k ? (untilText(k) || "قريبًا") : "قريبًا" },
+      time: "دوري روشن السعودي · موسم ٢٠٢٦-٢٠٢٧"
+    };
+  }
+
+  /* احتياط أخير */
+  if(!lead){
+    lead = {
+      tag: "دوري روشن",
+      title: "موسم ٢٠٢٦-٢٠٢٧ من دوري روشن السعودي",
+      body: "تابع معنا أخبار الدوري ومباريات " + TEAM + " أولًا بأول.",
+      time: "نشرة الأكاديمية"
+    };
+  }
+
+  function isRecent(f){
+    var k = kickoff(f);
+    if(!k) return false;
+    return (now - k) < 3 * 86400000;   /* ٣ أيام */
+  }
+
+  function arScore(r){
+    var p = String(r).split("-");
+    return AR_DIGITS(p[0]) + " - " + AR_DIGITS(p[1]);
+  }
+
+  /* ===== العمود الجانبي ===== */
+  var side = [];
+
+  /* المباراة القادمة كخبر جانبي إن كان الرئيسي نتيجة */
+  if(nextMatch && lead.tag !== "المباراة القادمة"){
+    var kk = kickoff(nextMatch);
+    side.push({
+      tag: "المباراة القادمة",
+      title: nextMatch.home + " × " + nextMatch.away,
+      body: "الجولة " + AR_DIGITS(nextMatch.round) + " · " + arDate(nextMatch.date)
+            + (nextMatch.time ? " الساعة " + ar12(nextMatch.time) : ""),
+      time: kk ? untilText(kk) : "الموعد يُعلن لاحقًا"
+    });
+  }
+
+  ACADEMY_NEWS.forEach(function(n){ side.push(n); });
+
+  /* ===== العرض ===== */
   function esc(t){
     return String(t == null ? "" : t)
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -1951,13 +2150,13 @@ var NEWS = [
     return el;
   }
 
-  grid.appendChild(build(NEWS[0], true));
+  grid.appendChild(build(lead, true));
 
-  if(NEWS.length > 1){
-    var side = document.createElement("div");
-    side.className = "news__side";
-    NEWS.slice(1).forEach(function(n){ side.appendChild(build(n, false)); });
-    grid.appendChild(side);
+  if(side.length){
+    var col = document.createElement("div");
+    col.className = "news__side";
+    side.forEach(function(n){ col.appendChild(build(n, false)); });
+    grid.appendChild(col);
   }
 })();
 
