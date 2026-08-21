@@ -120,6 +120,14 @@
           <p class="step__lead">كل البرامج تشمل التدريب ثلاثة أيام أسبوعيًا تحت إشراف مدربين معتمدين. <b>جميع الأسعار شاملة ضريبة القيمة المضافة.</b></p>
         </div>
 
+        <div class="alert alert--info" id="offlineNote" hidden>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8v.01"/></svg>
+          <span>
+            الدفع الإلكتروني بالبطاقة قيد التفعيل حاليًا. أكمل بياناتك وستصلك تعليمات
+            <b>التحويل البنكي</b> في الخطوة الأخيرة — والتسجيل يُعتمد فور استلام الإيصال.
+          </span>
+        </div>
+
         <div class="programs" id="programs" role="group" aria-label="برامج الأكاديمية"></div>
 
         <div class="alert alert--err" id="err1">
@@ -371,6 +379,40 @@
             <!-- نموذج ميسر الرسمي يُركّب هنا -->
             <div class="mysr-form" id="moyasarForm"></div>
 
+            <!-- الوضع الاحتياطي: تعليمات التحويل البنكي -->
+            <div id="offlinePay" hidden>
+              <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:18px">
+                سُجّلت بياناتك برقم طلب خاص. لإتمام التسجيل، حوّل المبلغ على حساب
+                الأكاديمية ثم أرسل <b style="color:var(--ink)">صورة الإيصال</b> على واتساب —
+                يصلك تأكيد من مشرف الفرع خلال ساعات العمل.
+              </p>
+
+              <div class="iban-row" style="margin-bottom:10px">
+                <span class="iban-row__k">المستفيد</span>
+                <span class="iban-row__v" style="direction:rtl;font-family:var(--body)">أكاديمية ليبرو الرياضية</span>
+              </div>
+              <div class="iban-row" style="margin-bottom:10px">
+                <span class="iban-row__k">الآيبان</span>
+                <span class="iban-row__v" id="ibanValue2">SA7110000001400005896803</span>
+                <button class="iban-copy" type="button" id="ibanCopy2" aria-label="نسخ رقم الآيبان">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                </button>
+              </div>
+              <div class="iban-row">
+                <span class="iban-row__k">البنك</span>
+                <span class="iban-row__v" style="direction:rtl;font-family:var(--body)">البنك الأهلي السعودي — SNB</span>
+              </div>
+
+              <a class="btn btn--gold" id="offlineWa" href="https://wa.me/966530634750" target="_blank" rel="noopener" style="width:100%;margin-top:20px">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+                أرسل الطلب والإيصال على واتساب
+              </a>
+
+              <p style="font-size:12.5px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.7">
+                يفتح واتساب برسالة تحمل كل بياناتك — أرفق صورة الإيصال وأرسلها.
+              </p>
+            </div>
+
             <div class="methods">
               <span>مدى</span><span>Apple&nbsp;Pay</span><span>تحويل بنكي</span>
               <span class="is-soon">تابي</span><span class="is-soon">تمارا</span>
@@ -454,6 +496,36 @@
 
   Theme.init();
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ------------------------------------------------------------------
+     إعدادات احتياطية — تُستخدم حين لا يكون خادم الدفع منشورًا بعد.
+     الصفحة تبقى تعمل بالكامل، ويتم التسجيل عبر التحويل البنكي وواتساب.
+     لتعديل الأسعار قبل تفعيل الدفع الإلكتروني: غيّرها هنا.
+     ------------------------------------------------------------------ */
+  const FALLBACK = {
+    offline: true,
+    currency: 'SAR',
+    vat_included: true,
+    programs: [
+      { id:'monthly', name:'اشتراك شهري', desc:'تدريب ٣ أيام في الأسبوع لمدة شهر كامل، مع متابعة فنية وبدنية.',
+        price_sar:350, duration:'شهر واحد', vat_included:true, badge:null,
+        includes:['تدريب ٣ أيام أسبوعيًا','متابعة فنية وبدنية','مباريات داخلية'] },
+      { id:'quarter', name:'اشتراك ٣ شهور', desc:'ثلاثة شهور متصلة بسعر أوفر، مع أولوية الترشيح لتجارب الأندية.',
+        price_sar:900, duration:'٣ شهور', vat_included:true, badge:'الأكثر طلبًا',
+        includes:['كل مزايا الاشتراك الشهري','أولوية تجارب الأندية','توفير ١٥٠ ريال'] },
+      { id:'half_year', name:'اشتراك ٦ شهور', desc:'موسم كامل تقريبًا، يشمل المشاركة في البطولات والمعسكرات.',
+        price_sar:1650, duration:'٦ شهور', vat_included:true, badge:'أفضل قيمة',
+        includes:['كل مزايا الـ ٣ شهور','مشاركة في البطولات','معسكرات إعدادية'] }
+    ],
+    branches: [
+      { id:'jizan',  name:'ليبرو جيزان' },
+      { id:'bish',   name:'ليبرو بيش' },
+      { id:'khamis', name:'ليبرو خميس مشيط' },
+      { id:'madaya', name:'ليبرو المضايا' },
+      { id:'mataan', name:'ليبرو المطعن' },
+      { id:'aliyah', name:'ليبرو العالية' }
+    ]
+  };
 
   let CONFIG = null;          // إعدادات الخادم (المفتاح المنشور + البرامج)
   let selectedProgram = null;
@@ -682,8 +754,20 @@
 
     try {
       track('checkout_started', { program_id: selectedProgram.id });
-      registration = await Api.createRegistration(collect());
 
+      if (CONFIG.offline) {
+        // بلا خادم: نولّد مرجعًا محليًا وننتقل لتعليمات التحويل
+        registration = {
+          registration_number: localRef(),
+          amount_sar: selectedProgram.price_sar,
+          currency: 'SAR'
+        };
+        goto(5, true);
+        showOfflinePayment();
+        return;
+      }
+
+      registration = await Api.createRegistration(collect());
       goto(5, true);
       mountMoyasar();
     } catch (e) {
@@ -705,6 +789,61 @@
       btn.innerHTML = original;
       busy = false;
     }
+  }
+
+  /* ================= الوضع الاحتياطي (بلا خادم) ================= */
+
+  /* مرجع محلي بنفس صيغة الخادم — يساعد الإدارة على ربط الإيصال بالطلب */
+  function localRef() {
+    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let out = '';
+    const rnd = (window.crypto && crypto.getRandomValues)
+      ? crypto.getRandomValues(new Uint8Array(5))
+      : Array.from({ length: 5 }, () => Math.floor(Math.random() * 256));
+    for (const b of rnd) out += A[b % A.length];
+    return 'LPA-' + new Date().getFullYear() + '-' + out;
+  }
+
+  function showOfflinePayment() {
+    const v = collect();
+    const br = CONFIG.branches.find((b) => b.id === v.branch_id);
+
+    $('#payRef').textContent = registration.registration_number;
+    $('#payPlayer').textContent = v.player_name;
+    $('#payProgram').textContent = selectedProgram.name;
+    $('#payTotal').textContent = arNum(registration.amount_sar);
+
+    // نخفي نموذج البطاقة ونُظهر تعليمات التحويل
+    $('#moyasarForm').hidden = true;
+    $('#offlinePay').hidden = false;
+    $('#payLoading').classList.remove('is-shown');
+    $('#payGrid').hidden = false;
+
+    // رسالة واتساب تحمل كل بيانات التسجيل — المشرف يعتمدها مباشرة
+    const msg = 'السلام عليكم، أرغب بتسجيل ابني في أكاديمية ليبرو الرياضية.'
+      + '\nرقم الطلب: ' + registration.registration_number
+      + '\nاللاعب: ' + v.player_name
+      + '\nتاريخ الميلاد: ' + v.player_dob
+      + (v.nationality ? '\nالجنسية: ' + v.nationality : '')
+      + (v.school ? '\nالمدرسة: ' + v.school : '')
+      + '\nالمركز: ' + (POS[v.preferred_position] || '')
+      + (v.jersey_size ? '\nمقاس الطقم: ' + v.jersey_size : '')
+      + '\nالفرع: ' + (br ? br.name : '')
+      + '\n— — —'
+      + '\nولي الأمر: ' + v.guardian_name + ' (' + (REL[v.relationship] || '') + ')'
+      + '\nالجوال: ' + (normMobile(v.guardian_mobile) || v.guardian_mobile)
+      + (v.guardian_email ? '\nالبريد: ' + v.guardian_email : '')
+      + (v.emergency_mobile ? '\nالطوارئ: ' + (normMobile(v.emergency_mobile) || v.emergency_mobile) : '')
+      + '\n— — —'
+      + '\nالبرنامج: ' + selectedProgram.name + ' — ' + selectedProgram.duration
+      + '\nالمبلغ: ' + registration.amount_sar + ' ريال (شامل الضريبة)';
+
+    $('#offlineWa').href = 'https://wa.me/966530634750?text=' + encodeURIComponent(msg);
+
+    const wa2 = $('#waReceipt');
+    if (wa2) wa2.href = $('#offlineWa').href;
+
+    track('registration_ready_offline', { program_id: selectedProgram.id });
   }
 
   /* ================= تركيب نموذج ميسر ================= */
@@ -814,14 +953,16 @@
 
   $('#toPayment').addEventListener('click', startPayment);
 
-  // نسخ الآيبان
-  var ibanBtn = $('#ibanCopy');
-  if (ibanBtn) {
-    ibanBtn.addEventListener('click', function () {
-      var txt = $('#ibanValue').textContent.trim();
+  // نسخ الآيبان (الزرّان: نموذج ميسر والوضع الاحتياطي)
+  ['#ibanCopy', '#ibanCopy2'].forEach(function (sel) {
+    var el = $(sel);
+    if (!el) return;
+    var valId = sel === '#ibanCopy2' ? '#ibanValue2' : '#ibanValue';
+    el.addEventListener('click', function () {
+      var txt = $(valId).textContent.trim();
       var ok = function () {
-        ibanBtn.classList.add('done');
-        setTimeout(function () { ibanBtn.classList.remove('done'); }, 1800);
+        el.classList.add('done');
+        setTimeout(function () { el.classList.remove('done'); }, 1800);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(ok).catch(function () {});
@@ -834,30 +975,31 @@
         } catch (e) {}
       }
     });
-  }
-
-  // حفظ المسودة عند كل تغيير
-  ['input', 'change'].forEach((ev) => {
-    document.addEventListener(ev, function (e) {
-      if (e.target.closest('.fields, .consent')) saveDraft();
-    });
   });
+
 
   /* ================= الإقلاع ================= */
   (async function boot() {
     try {
-      CONFIG = await Api.config();
-      if (!CONFIG.publishable_key) throw new Error('missing key');
-
-      renderPrograms();
-      restoreDraft();
-
-      $('#bootLoading').classList.remove('is-shown');
-      $('#flow').hidden = false;
+      // مهلة ٦ ثوانٍ — لا نترك الزائر ينتظر إن كان الخادم بطيئًا
+      const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000));
+      CONFIG = await Promise.race([Api.config(), timeout]);
+      if (!CONFIG || !CONFIG.publishable_key) throw new Error('no key');
     } catch (e) {
-      $('#bootLoading').classList.remove('is-shown');
-      $('#bootError').classList.add('is-shown');
+      // الخادم غير منشور بعد → نكمل بالوضع الاحتياطي بدل إيقاف الصفحة
+      CONFIG = FALLBACK;
     }
+
+    renderPrograms();
+    restoreDraft();
+
+    if (CONFIG.offline) {
+      $('#offlineNote').hidden = false;
+      $('#toPayment').innerHTML = 'أكمل التسجيل';
+    }
+
+    $('#bootLoading').classList.remove('is-shown');
+    $('#flow').hidden = false;
   })();
 })();
 </script>
