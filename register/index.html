@@ -128,6 +128,20 @@
           </span>
         </div>
 
+        <!-- التعرّف على الأهالي العائدين — تظهر فقط عندما تتوفر قاعدة بيانات حقيقية -->
+        <div class="returning-box" id="returningBox" hidden>
+          <div class="returning-box__head">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+            <span>سبق وسجّلت معنا؟</span>
+          </div>
+          <p>أدخل جوال ولي الأمر لنعرض لك التجديد مباشرة — بلا إعادة كتابة كل البيانات.</p>
+          <div class="returning-box__row">
+            <input id="lookupMobile" type="tel" inputmode="numeric" placeholder="05XXXXXXXX">
+            <button class="btn btn--teal" type="button" id="lookupBtn">تحقق</button>
+          </div>
+          <p class="returning-box__msg" id="lookupMsg" hidden></p>
+        </div>
+
         <div class="programs" id="programs" role="group" aria-label="برامج الأكاديمية"></div>
 
         <div class="alert alert--err" id="err1">
@@ -268,6 +282,16 @@
             <label for="guardianEmail">البريد الإلكتروني</label>
             <input id="guardianEmail" type="email" autocomplete="email" placeholder="name@example.com" dir="ltr" style="text-align:right">
             <p class="f__err">البريد الإلكتروني غير صحيح.</p>
+          </div>
+
+          <div class="f">
+            <label for="fatherJob">وظيفة الأب</label>
+            <input id="fatherJob" type="text" placeholder="مثال: موظف حكومي (اختياري)">
+          </div>
+
+          <div class="f">
+            <label for="motherJob">وظيفة الأم</label>
+            <input id="motherJob" type="text" placeholder="مثال: ربة منزل (اختياري)">
           </div>
 
           <div class="f">
@@ -517,7 +541,8 @@
      لتعديل الأسعار قبل تفعيل الدفع الإلكتروني: غيّرها هنا.
      ------------------------------------------------------------------ */
   const FALLBACK = {
-    offline: true,
+    ok: true,
+    publishable_key: '',
     currency: 'SAR',
     vat_included: true,
     programs: [
@@ -587,6 +612,8 @@
       relationship: $('#relation').value,
       guardian_mobile: $('#guardianMobile').value.trim(),
       guardian_email: $('#guardianEmail').value.trim(),
+      father_job: $('#fatherJob').value.trim(),
+      mother_job: $('#motherJob').value.trim(),
       emergency_mobile: $('#emergency').value.trim(),
       terms_accepted: $('#terms').checked
     };
@@ -608,6 +635,7 @@
     set('#branch', v.branch_id);
     set('#guardianName', v.guardian_name); set('#relation', v.relationship);
     set('#guardianMobile', v.guardian_mobile); set('#guardianEmail', v.guardian_email);
+    set('#fatherJob', v.father_job); set('#motherJob', v.mother_job);
     set('#emergency', v.emergency_mobile);
     if (v.terms_accepted) $('#terms').checked = true;
     if (d.program) {
@@ -655,6 +683,90 @@
     $('#err1').classList.remove('is-shown');
     track('program_selected', { program_id: p.id });
     saveDraft();
+  }
+
+  /* ================= التحقق من تسجيل سابق ================= */
+  var returningData = null;
+
+  function wireLookup() {
+    var btn = $('#lookupBtn');
+    var input = $('#lookupMobile');
+    var msg = $('#lookupMsg');
+
+    function showMsg(text, cls) {
+      msg.textContent = text;
+      msg.className = 'returning-box__msg ' + cls;
+      msg.hidden = false;
+    }
+
+    async function run() {
+      var mobile = normMobile(input.value);
+      if (!mobile) { showMsg('رقم جوال غير صحيح — مثال: 0501234567', 'is-err'); return; }
+
+      var original = btn.textContent;
+      btn.disabled = true; btn.textContent = 'جاري التحقق…';
+
+      try {
+        var out = await Api.lookup(mobile);
+        if (out.found) {
+          returningData = out;
+          showMsg('أهلًا بعودتك يا ' + out.guardian_name + '! عرضنا لك التجديد أولًا — تقدر تشوف باقي الباقات أيضًا.', 'is-ok');
+
+          // نبرز خيار التجديد وتُخفى بقية الباقات خلف زر اختياري
+          var wrap = $('#programs');
+          wrap.classList.add('is-filtered');
+          var renewalCard = wrap.querySelector('.prog-card[data-id="renewal"]');
+          if (renewalCard) {
+            renewalCard.classList.add('is-recommended');
+            var badge = document.createElement('span');
+            badge.className = 'prog-card__recommend';
+            badge.textContent = 'الأنسب لك';
+            renewalCard.appendChild(badge);
+          }
+          if (!$('#showAllPrograms')) {
+            var toggle = document.createElement('button');
+            toggle.type = 'button'; toggle.id = 'showAllPrograms';
+            toggle.className = 'show-all-toggle';
+            toggle.textContent = 'عرض كل الباقات';
+            toggle.addEventListener('click', function () {
+              wrap.classList.remove('is-filtered');
+              toggle.remove();
+            });
+            wrap.insertAdjacentElement('afterend', toggle);
+          }
+
+          // نملأ بيانات ولي الأمر مسبقًا لتوفير وقته
+          $('#guardianName').value = out.guardian_name || '';
+          $('#guardianEmail').value = out.guardian_email || '';
+          $('#fatherJob').value = out.father_job || '';
+          $('#motherJob').value = out.mother_job || '';
+          $('#guardianMobile').value = input.value.trim();
+          if (REL[out.relationship]) $('#relation').value = out.relationship;
+
+          // ولو لاعب واحد سابق فقط، نملأ اسمه وتاريخ ميلاده أيضًا
+          if (out.players && out.players.length === 1) {
+            $('#playerName').value = out.players[0].name || '';
+            $('#playerDob').value = out.players[0].dob || '';
+            $('#playerDob').dispatchEvent(new Event('change'));
+            if (out.players[0].branch_id) $('#branch').value = out.players[0].branch_id;
+          }
+
+          if (selectedProgram === null) {
+            var rc = $('.prog-card[data-id="renewal"]');
+            if (rc) rc.click();
+          }
+        } else {
+          showMsg('ما لقينا تسجيلًا سابقًا بهذا الرقم — أكمل تسجيلًا جديدًا بكل أريحية.', 'is-new');
+        }
+      } catch (e) {
+        showMsg('تعذّر التحقق الآن، تقدر تكمل التسجيل مباشرة.', 'is-err');
+      } finally {
+        btn.disabled = false; btn.textContent = original;
+      }
+    }
+
+    btn.addEventListener('click', run);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); run(); } });
   }
 
   /* ================= التحقق في الواجهة ================= */
@@ -750,6 +862,8 @@
       row('صلة القرابة', REL[v.relationship]) +
       row('الجوال', normMobile(v.guardian_mobile) || v.guardian_mobile) +
       row('البريد', v.guardian_email) +
+      row('وظيفة الأب', v.father_job) +
+      row('وظيفة الأم', v.mother_job) +
       row('الطوارئ', v.emergency_mobile ? (normMobile(v.emergency_mobile) || v.emergency_mobile) : '');
 
     if (selectedProgram) {
@@ -774,21 +888,25 @@
     try {
       track('checkout_started', { program_id: selectedProgram.id });
 
-      if (CONFIG.offline) {
-        // بلا خادم: نولّد مرجعًا محليًا وننتقل لتعليمات التحويل
+      if (CONFIG.hasBackend) {
+        // خادم حقيقي متاح — نحفظ التسجيل فعليًا في قاعدة البيانات
+        registration = await Api.createRegistration(collect());
+      } else {
+        // لا خادم بعد: مرجع محلي مؤقت فقط، بلا أي حفظ دائم
         registration = {
           registration_number: localRef(),
           amount_sar: selectedProgram.price_sar,
           currency: 'SAR'
         };
-        goto(5, true);
-        showOfflinePayment();
-        return;
       }
 
-      registration = await Api.createRegistration(collect());
       goto(5, true);
-      mountMoyasar();
+
+      if (CONFIG.publishable_key) {
+        mountMoyasar();
+      } else {
+        showOfflinePayment();
+      }
     } catch (e) {
       // نعرض أخطاء الحقول إن أعادها الخادم
       if (e.errors) {
@@ -852,6 +970,8 @@
       + '\nولي الأمر: ' + v.guardian_name + ' (' + (REL[v.relationship] || '') + ')'
       + '\nالجوال: ' + (normMobile(v.guardian_mobile) || v.guardian_mobile)
       + (v.guardian_email ? '\nالبريد: ' + v.guardian_email : '')
+      + (v.father_job ? '\nوظيفة الأب: ' + v.father_job : '')
+      + (v.mother_job ? '\nوظيفة الأم: ' + v.mother_job : '')
       + (v.emergency_mobile ? '\nالطوارئ: ' + (normMobile(v.emergency_mobile) || v.emergency_mobile) : '')
       + '\n— — —'
       + '\nالبرنامج: ' + selectedProgram.name + ' — ' + selectedProgram.duration
@@ -1062,18 +1182,25 @@
       // مهلة ٦ ثوانٍ — لا نترك الزائر ينتظر إن كان الخادم بطيئًا
       const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000));
       CONFIG = await Promise.race([Api.config(), timeout]);
-      if (!CONFIG || !CONFIG.publishable_key) throw new Error('no key');
+      if (!CONFIG || !CONFIG.ok) throw new Error('bad config');
+      CONFIG.hasBackend = true;   // وصلنا لخادم حقيقي — الحفظ الدائم متاح
     } catch (e) {
-      // الخادم غير منشور بعد → نكمل بالوضع الاحتياطي بدل إيقاف الصفحة
+      // الخادم غير منشور بعد → نكمل بالوضع الاحتياطي المحلي بلا حفظ دائم
       CONFIG = FALLBACK;
+      CONFIG.hasBackend = false;
     }
 
     renderPrograms();
     restoreDraft();
 
-    if (CONFIG.offline) {
+    if (!CONFIG.publishable_key) {
       $('#offlineNote').hidden = false;
       $('#toPayment').innerHTML = 'أكمل التسجيل';
+    }
+
+    if (CONFIG.hasBackend) {
+      $('#returningBox').hidden = false;
+      wireLookup();
     }
 
     $('#bootLoading').classList.remove('is-shown');
