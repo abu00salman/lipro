@@ -377,6 +377,27 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 /* ===== أخبار اليوم الرياضية ===== */
 .news{background:var(--surface)}
 .news__head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.news__head-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.btn--share-news{font-size:14px;padding:10px 18px;white-space:nowrap}
+.share-hint{
+  margin-top:-10px;margin-bottom:18px;font-size:13px;color:var(--muted);
+  text-align:end;line-height:1.7;
+}
+.share-hint.is-shown{display:block}
+.share-preview{
+  max-width:340px;margin:0 0 24px auto;display:none;
+}
+.share-preview.is-shown{display:block}
+.share-preview img{
+  width:100%;border-radius:16px;border:1px solid var(--line);
+  box-shadow:var(--shadow);display:block;
+}
+@media(max-width:640px){
+  .news__head-right{align-items:stretch;width:100%}
+  .btn--share-news{width:100%;justify-content:center}
+  .share-hint{text-align:center;margin-bottom:16px}
+  .share-preview{max-width:100%;margin-inline:auto}
+}
 .news__date{
   display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
   background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
@@ -458,36 +479,38 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.05em;
 }
 
-/* قائمة مباريات اليوم/الجولة داخل البطاقة الرئيسية */
-.nitem--sched .nscore{display:none}   /* لا نستخدم بطاقة النتيجة القديمة هنا */
+/* قائمة مباريات اليوم — بطاقات دوريات مستقلة، تعمل بالوضعين */
 .match-list{
   margin-top:16px;display:flex;flex-direction:column;gap:8px;position:relative;
 }
 .match-row{
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:11px;padding:11px 14px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:11px;padding:11px 10px;min-height:52px;
 }
 .match-row__team{
-  font-family:var(--display);font-weight:700;font-size:14.5px;color:#fff;
-  text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:var(--display);font-weight:700;font-size:13.5px;color:var(--ink);
+  text-align:center;line-height:1.35;
+  overflow-wrap:break-word;word-break:break-word;hyphens:auto;
 }
 .match-row__mid{
-  font-family:var(--display);font-weight:800;font-size:15px;color:var(--gold);
-  font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 6px;
-  min-width:64px;text-align:center;
+  font-family:var(--display);font-weight:800;font-size:14px;color:var(--gold-deep);
+  font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 4px;
+  min-width:56px;text-align:center;
 }
+[data-mode="dark"] .match-row__mid{color:var(--gold)}
+.match-row.is-live .match-row__mid{color:#D64545}
 .match-list__note{
-  margin-top:12px;font-size:12px;color:#8FB2AA;text-align:center;
+  margin-top:12px;font-size:12px;color:var(--muted);text-align:center;
 }
 @media(max-width:640px){
-  .match-row{padding:9px 11px;gap:6px}
-  .match-row__team{font-size:13px}
-  .match-row__mid{font-size:13.5px;min-width:52px}
+  .match-row{padding:9px 8px;gap:5px}
+  .match-row__team{font-size:12.5px}
+  .match-row__mid{font-size:13px;min-width:48px}
 }
 
-@media(max-width:1100px){
-  .news__grid{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1300px){
+  .news__grid{grid-template-columns:repeat(3,1fr)}
   .news__side{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 }
 @media(max-width:900px){ .news__grid{grid-template-columns:1fr} }
@@ -1171,11 +1194,20 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
         <div class="eyebrow">نشرة اليوم</div>
         <h2 class="section-title">أخبار اليوم الرياضية</h2>
       </div>
-      <span class="news__date" id="newsDate">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
-        <span></span>
-      </span>
+      <div class="news__head-right">
+        <span class="news__date" id="newsDate">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+          <span></span>
+        </span>
+        <button class="btn btn--teal btn--share-news" type="button" id="shareNewsBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m7 8 5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+          <span>مشاركة مباريات اليوم</span>
+        </button>
+      </div>
     </div>
+
+    <p class="share-hint" id="shareNewsHint" hidden></p>
+    <div class="share-preview" id="sharePreview"><img alt="صورة مباريات اليوم"></div>
 
     <div class="news__grid" id="newsGrid"></div>
   </div>
@@ -2076,6 +2108,321 @@ var TOP_NEWS = [
   side.className = "news__side";
   TOP_NEWS.forEach(function(n){ side.appendChild(buildNewsCard(n, false)); });
   grid.appendChild(side);
+})();
+
+
+/* =====================================================================
+   مشاركة صورة مباريات اليوم — يرسم بطاقة بهوية الأكاديمية تحوي
+   مباريات اليوم في الدوريات الثلاث، وتُشارك مباشرة عبر واتساب/سناب.
+   ===================================================================== */
+(function(){
+  var btn  = document.getElementById("shareNewsBtn");
+  var hint = document.getElementById("shareNewsHint");
+  var preview = document.getElementById("sharePreview");
+  if(!btn) return;
+
+  var SHIELD = "data:image/png;base64,data:image/png;base64,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";
+  var C = {
+    pitch:"#04322C", pitch2:"#0A3F37", gold:"#F5B325",
+    white:"#FFFFFF", mut:"#9FC0B8", line:"rgba(255,255,255,0.14)",
+    teal:"#17A88F", live:"#FF6B6B"
+  };
+
+  function loadImg(src){
+    return new Promise(function(res, rej){
+      var i = new Image();
+      i.onload = function(){ res(i); };
+      i.onerror = rej;
+      i.src = src;
+    });
+  }
+
+  function roundRect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  var arNum = function(n){
+    try{ return new Intl.NumberFormat("ar-SA-u-nu-arab").format(n); }
+    catch(e){ return String(n); }
+  };
+
+  function ar12(t){
+    if(!t) return "";
+    var pr = t.split(":"), h = Number(pr[0]), m = pr[1];
+    var suf = h >= 12 ? "م" : "ص";
+    var h12 = h % 12 || 12;
+    return arNum(h12) + ":" + arNum(m) + " " + suf;
+  }
+
+  function arScore(r){
+    var pr = String(r).split("-");
+    return arNum(pr[0]) + " - " + arNum(pr[1]);
+  }
+
+  /** يرسم فقرة نص عربي RTL بلفّ تلقائي، ويعيد ارتفاع ما رُسم. */
+  function wrapText(ctx, text, cx, y, maxWidth, lineHeight, maxLines){
+    var words = text.split(" ");
+    var line = "", lines = [];
+    for(var i = 0; i < words.length; i++){
+      var test = line ? line + " " + words[i] : words[i];
+      if(ctx.measureText(test).width > maxWidth && line){
+        lines.push(line);
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+    if(line) lines.push(line);
+    if(maxLines && lines.length > maxLines){
+      lines = lines.slice(0, maxLines);
+      lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, "") + "…";
+    }
+    lines.forEach(function(l, idx){
+      ctx.fillText(l, cx, y + idx * lineHeight);
+    });
+    return lines.length * lineHeight;
+  }
+
+  /** يبني الصورة كاملة ويعيد Blob بصيغة PNG. */
+  async function buildImage(){
+    var W = 1080;
+    var todayLabel = document.querySelector("#newsDate span").textContent || "";
+
+    /* نجمع مباريات اليوم فقط من نفس بيانات الموقع — مصدر واحد للحقيقة */
+    var now = (function(){
+      try{ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
+      catch(e){ return new Date(); }
+    })();
+    var p2 = function(n){ return n < 10 ? "0" + n : String(n); };
+    var todayStr = now.getFullYear() + "-" + p2(now.getMonth()+1) + "-" + p2(now.getDate());
+
+    var blocks = LEAGUES.map(function(lg){
+      return { name: lg.name, matches: lg.matches.filter(function(m){ return m.date === todayStr; }) };
+    });
+
+    /* ارتفاع ديناميكي بحسب عدد المباريات فعليًا */
+    var H_HEADER = 300;
+    var H_LEAGUE_TITLE = 58;
+    var H_ROW = 78;
+    var H_EMPTY = 56;
+    var H_FOOTER = 130;
+    var PAD = 34;
+
+    var bodyH = 0;
+    blocks.forEach(function(b){
+      bodyH += H_LEAGUE_TITLE;
+      bodyH += b.matches.length ? b.matches.length * H_ROW : H_EMPTY;
+      bodyH += 26; /* فراغ بين الدوريات */
+    });
+
+    var H = H_HEADER + bodyH + H_FOOTER + PAD;
+
+    var cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext("2d");
+
+    /* الخلفية */
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, C.pitch2);
+    g.addColorStop(1, C.pitch);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    /* خطوط ملعب خفيفة */
+    ctx.strokeStyle = "rgba(255,255,255,0.045)";
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(W/2, 220, 200, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, 260); ctx.stroke();
+
+    /* شريط علوي ذهبي */
+    ctx.fillStyle = C.gold;
+    ctx.fillRect(0, 0, W, 8);
+
+    ctx.textAlign = "center";
+    ctx.direction = "rtl";
+
+    /* الشعار */
+    try{
+      var logo = await loadImg(SHIELD);
+      var lh = 108, lw = logo.width * lh / logo.height;
+      ctx.drawImage(logo, W/2 - lw/2, 46, lw, lh);
+    }catch(e){}
+
+    ctx.fillStyle = C.white;
+    ctx.font = '700 42px "Changa","Tahoma",sans-serif';
+    ctx.fillText("أكاديمية ليبرو الرياضية", W/2, 196);
+
+    ctx.fillStyle = C.gold;
+    ctx.font = '700 26px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText("مباريات اليوم", W/2, 236);
+
+    ctx.fillStyle = C.mut;
+    ctx.font = '400 20px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText(todayLabel, W/2, 268);
+
+    /* خط فاصل */
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PAD*2, H_HEADER); ctx.lineTo(W - PAD*2, H_HEADER);
+    ctx.stroke();
+
+    /* جسم البطاقة: كل دوري وقائمة مبارياته */
+    var y = H_HEADER + 46;
+    var bx = PAD, bw = W - PAD*2;
+
+    blocks.forEach(function(b){
+      /* عنوان الدوري */
+      ctx.textAlign = "right";
+      ctx.fillStyle = C.gold;
+      ctx.font = '700 28px "Changa","Tahoma",sans-serif';
+      ctx.fillText(b.name, bx + bw - 6, y);
+
+      ctx.strokeStyle = "rgba(245,179,37,0.3)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bx, y + 14); ctx.lineTo(bx + bw, y + 14);
+      ctx.stroke();
+
+      y += H_LEAGUE_TITLE;
+
+      if(!b.matches.length){
+        ctx.textAlign = "center";
+        ctx.fillStyle = C.mut;
+        ctx.font = '400 22px "IBM Plex Sans Arabic",sans-serif';
+        ctx.fillText("لا توجد مباريات اليوم", W/2, y + 30);
+        y += H_EMPTY;
+      } else {
+        b.matches.forEach(function(m){
+          var rowH = H_ROW - 14;
+          var live = !!m.live;
+
+          ctx.fillStyle = live ? "rgba(214,69,69,0.14)" : "rgba(255,255,255,0.05)";
+          roundRect(ctx, bx, y, bw, rowH, 12);
+          ctx.fill();
+          if(live){
+            ctx.strokeStyle = "rgba(214,69,69,0.4)";
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, bx, y, bw, rowH, 12);
+            ctx.stroke();
+          }
+
+          var midY = y + rowH/2 + 9;
+
+          /* الفريق المضيف (يمين) */
+          ctx.textAlign = "right";
+          ctx.fillStyle = C.white;
+          ctx.font = '700 24px "Changa","Tahoma",sans-serif';
+          ctx.fillText(m.home, bx + bw - 24, midY);
+
+          /* الفريق الضيف (يسار) */
+          ctx.textAlign = "left";
+          ctx.fillText(m.away, bx + 24, midY);
+
+          /* الوقت أو النتيجة (وسط) */
+          ctx.textAlign = "center";
+          ctx.direction = "ltr";
+          ctx.fillStyle = live ? "#FF9B8A" : C.gold;
+          ctx.font = '800 26px "Changa","Tahoma",sans-serif';
+          var mid = m.result ? arScore(m.result) : ar12(m.time);
+          ctx.fillText(mid, W/2, midY);
+          ctx.direction = "rtl";
+
+          if(live){
+            ctx.beginPath();
+            ctx.arc(W/2 - 62, midY - 8, 5, 0, Math.PI*2);
+            ctx.fillStyle = "#FF6B6B";
+            ctx.fill();
+          }
+
+          y += H_ROW;
+        });
+      }
+      y += 26;
+    });
+
+    /* التذييل */
+    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.fillRect(0, H - H_FOOTER, W, H_FOOTER);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = C.gold;
+    ctx.font = '700 30px "Changa","Tahoma",sans-serif';
+    ctx.direction = "ltr";
+    ctx.fillText("liproacademy.com", W/2, H - 72);
+    ctx.direction = "rtl";
+
+    ctx.fillStyle = C.mut;
+    ctx.font = '400 22px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText("سجّل ابنك الآن — تسجيل إلكتروني ودفع مباشر", W/2, H - 36);
+
+    return new Promise(function(res){
+      cv.toBlob(function(b){ res(b); }, "image/png", 0.95);
+    });
+  }
+
+  function downloadBlob(blob, name){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
+  }
+
+  async function shareBlob(blob, name, text){
+    var file = new File([blob], name, { type:"image/png" });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      try{
+        await navigator.share({ files:[file], text: text || "" });
+        return "shared";
+      }catch(e){
+        if(e && e.name === "AbortError") return "cancelled";
+      }
+    }
+    downloadBlob(blob, name);
+    return "downloaded";
+  }
+
+  btn.addEventListener("click", async function(){
+    var label = btn.querySelector("span");
+    var original = label.textContent;
+    btn.disabled = true;
+    label.textContent = "جاري التجهيز…";
+    hint.hidden = true;
+
+    try{
+      if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+
+      var blob = await buildImage();
+
+      preview.querySelector("img").src = URL.createObjectURL(blob);
+      preview.classList.add("is-shown");
+
+      var todayLabel = document.querySelector("#newsDate span").textContent || "";
+      var res = await shareBlob(blob, "مباريات-اليوم.png",
+        "مباريات اليوم في دوري روشن السعودي والإسباني والإنجليزي — " + todayLabel + " · أكاديمية ليبرو الرياضية");
+
+      if(res === "downloaded"){
+        hint.textContent = "حُفظت الصورة في جهازك — شاركها من الصور في واتساب أو سناب شات.";
+        hint.hidden = false;
+      } else if(res === "cancelled"){
+        hint.textContent = "الصورة معروضة بالأسفل — اضغط عليها مطوّلًا لحفظها ومشاركتها.";
+        hint.hidden = false;
+      }
+    }catch(e){
+      hint.textContent = "تعذّر تجهيز الصورة، حاول مرة أخرى.";
+      hint.hidden = false;
+    }finally{
+      btn.disabled = false;
+      label.textContent = original;
+    }
+  });
 })();
 
 /* ===== بنر الإنجازات المتحرك ===== */
