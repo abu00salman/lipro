@@ -433,7 +433,8 @@
               </a>
 
               <p style="font-size:12.5px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.7">
-                يفتح واتساب برسالة تحمل كل بياناتك.
+                يفتح واتساب برسالة تحمل كل بياناتك.<br>
+                بعد الإرسال تقدر <a href="../status/" id="statusLink" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600">تتحقق من حالة تسجيلك</a> بأي وقت.
               </p>
 
               <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line)">
@@ -506,9 +507,16 @@
           <span id="err5Text"></span>
         </div>
 
-        <div class="actions">
+        <div class="actions" id="step5Actions">
           <button class="btn btn--ghost" type="button" data-prev="4">رجوع للمراجعة</button>
         </div>
+
+        <!-- تظهر بدل زر الرجوع بعد تسجيل رقم رسمي — لا يمكن تعديل تسجيل صادر -->
+        <p class="f__hint" id="lockedHint" style="text-align:center;margin-top:6px" hidden>
+          رقم تسجيلك صدر رسميًا ولا يمكن تعديل بياناته. أخطأت في شيء؟
+          <a href="https://wa.me/966530634750" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600">تواصل معنا على واتساب</a>
+          أو ابدأ <a href="javascript:location.reload()" style="color:var(--teal);font-weight:600">تسجيلًا جديدًا</a>.
+        </p>
       </section>
 
     </div>
@@ -950,11 +958,22 @@
     $('#payProgram').textContent = selectedProgram.name;
     $('#payTotal').textContent = arNum(registration.amount_sar);
 
+    // رابط صفحة الحالة يحمل رقم التسجيل مباشرة — يفتح النتيجة فورًا بلا كتابة يدوية
+    var stLink = $('#statusLink');
+    if (stLink) stLink.href = '../status/?ref=' + encodeURIComponent(registration.registration_number);
+
     // نخفي نموذج البطاقة ونُظهر تعليمات التحويل
     $('#moyasarForm').hidden = true;
     $('#offlinePay').hidden = false;
     $('#payLoading').classList.remove('is-shown');
     $('#payGrid').hidden = false;
+
+    // بعد صدور رقم تسجيل حقيقي محفوظ في قاعدة البيانات، نقفل التعديل
+    // نهائيًا حتى لا يُنشئ الرجوع والتعديل سجلًا مكررًا برقم مختلف.
+    if (CONFIG.hasBackend) {
+      $('#step5Actions').hidden = true;
+      $('#lockedHint').hidden = false;
+    }
 
     // رسالة واتساب تحمل كل بيانات التسجيل — المشرف يعتمدها مباشرة
     const msg = 'السلام عليكم، أرغب بتسجيل ابني في أكاديمية ليبرو الرياضية.'
@@ -975,7 +994,9 @@
       + (v.emergency_mobile ? '\nالطوارئ: ' + (normMobile(v.emergency_mobile) || v.emergency_mobile) : '')
       + '\n— — —'
       + '\nالبرنامج: ' + selectedProgram.name + ' — ' + selectedProgram.duration
-      + '\nالمبلغ: ' + registration.amount_sar + ' ريال (شامل الضريبة)';
+      + '\nالمبلغ: ' + registration.amount_sar + ' ريال (شامل الضريبة)'
+      + '\n— — —'
+      + '\nسأرسل صورة الإيصال في الرسالة التالية.';
 
     $('#offlineWa').href = 'https://wa.me/966530634750?text=' + encodeURIComponent(msg);
 
@@ -1004,6 +1025,11 @@
     $('#payProgram').textContent = selectedProgram.name;
     $('#payTotal').textContent = arNum(registration.amount_sar);
     if (CONFIG.test_mode) $('#payTestNote').hidden = false;
+
+    if (CONFIG.hasBackend) {
+      $('#step5Actions').hidden = true;
+      $('#lockedHint').hidden = false;
+    }
 
     // رسالة واتساب لإيصال التحويل تحمل رقم التسجيل والمبلغ
     var wa = $('#waReceipt');
