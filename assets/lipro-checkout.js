@@ -11,7 +11,7 @@
  * الرابط الحقيقي يظهر أعلى صفحة الـ Worker في لوحة Cloudflare،
  * بصيغة: https://lipro-backend.YOUR-SUBDOMAIN.workers.dev
  */
-window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.YOUR-SUBDOMAIN.workers.dev';
+window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.workers.dev';
 
 (function () {
   'use strict';
