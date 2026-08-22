@@ -384,7 +384,19 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 }
 .news__date svg{color:var(--teal);flex-shrink:0}
 
-.news__grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:38px;align-items:start}
+.news__grid{
+  display:grid;grid-template-columns:repeat(3,1fr) 1fr;
+  gap:20px;margin-top:38px;align-items:start;
+}
+.league-card{min-height:0}
+.league-empty{font-size:14px;color:var(--muted);margin-top:14px;line-height:1.7}
+.live-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:#D64545;margin-inline-end:6px;vertical-align:middle;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+.match-row.is-live{background:rgba(214,69,69,.1);border-color:rgba(214,69,69,.3)}
+[data-mode="dark"] .match-row.is-live{background:rgba(214,69,69,.14)}
 .news__side{display:flex;flex-direction:column;gap:14px}
 
 .nitem{
@@ -456,9 +468,6 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
   border-radius:11px;padding:11px 14px;
 }
-.match-row.is-ours{
-  background:rgba(245,179,37,.14);border-color:rgba(245,179,37,.45);
-}
 .match-row__team{
   font-family:var(--display);font-weight:700;font-size:14.5px;color:#fff;
   text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -477,7 +486,14 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   .match-row__mid{font-size:13.5px;min-width:52px}
 }
 
+@media(max-width:1100px){
+  .news__grid{grid-template-columns:repeat(2,1fr)}
+  .news__side{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+}
 @media(max-width:900px){ .news__grid{grid-template-columns:1fr} }
+@media(max-width:900px){
+  .news__side{grid-column:auto;display:flex;flex-direction:column;gap:14px}
+}
 @media(max-width:640px){
   .news__grid{gap:14px;margin-top:26px}
   .nitem{padding:18px 16px}
@@ -1897,72 +1913,71 @@ function fallback(text, cb){
   }catch(err){ /* لو تعذّر النسخ يبقى الرقم ظاهرًا للنسخ اليدوي */ }
 }
 
-/* ===== أخبار اليوم الرياضية — دوري روشن السعودي ===== */
+/* ===== أخبار اليوم الرياضية — مباريات اليوم في ٣ دوريات + أهم أخبار السعودية ===== */
 /*
   ┌────────────────────────────────────────────────────────────────┐
-  │  البطاقة الرئيسية تعرض تلقائيًا مباريات اليوم كاملة (كل الأندية)، │
-  │  وإن لم توجد مباريات اليوم تعرض أقرب جولة قادمة — بلا أي تدخل.   │
+  │  القسم يعرض تلقائيًا مباريات اليوم فقط (حسب تاريخ اليوم) في      │
+  │  الدوري السعودي والإسباني والإنجليزي — بلا تحيّز لأي فريق.        │
   │                                                                  │
-  │  ما يحتاج تحديثًا منك: النتيجة بعد كل مباراة (result)،            │
-  │  ومواعيد الجولات الجديدة إذا لم تكن مُدرجة بعد.                   │
-  │                                                                  │
-  │  ⚠️ ملاحظة صدق: هذا موقع ثابت بلا خادم بيانات مباشر، فـ"التحديث   │
-  │  الحي" هنا يعني أن الصفحة تعرض تلقائيًا مباراة اليوم الصحيحة حسب  │
-  │  التاريخ دون أي جهد منك — أما النتيجة النهائية فتحتاج كتابتها      │
-  │  يدويًا بعد صافرة النهاية (لا يوجد بث نتائج مباشر بلا اشتراك API  │
-  │  مدفوع). هذا أفضل حل ممكن لموقع مستضاف على GitHub Pages.          │
+  │  ⚠️ ملاحظة صدق: هذا موقع ثابت بلا خادم بيانات مباشر، فلا يوجد    │
+  │  "بث حي" فعلي للنتائج أثناء المباراة. البيانات أدناه هي مباريات   │
+  │  اليوم الحقيقية وقت آخر تحديث. **يحتاج الأمر تحديثًا يوميًا       │
+  │  يدويًا** — انسخ مباريات الغد من أي موقع رياضي (مثل Goal أو       │
+  │  كووورة) والصقها هنا بنفس الصيغة. بلا تحديث، القسم يعرض "لا       │
+  │  توجد مباريات اليوم" تلقائيًا بدل معلومات قديمة خاطئة — وهذا      │
+  │  أفضل من عرض بيانات بالية بصمت.                                  │
   └────────────────────────────────────────────────────────────────┘
 
-  الحقول لكل مباراة:
-    round   : رقم الجولة
-    date    : "YYYY-MM-DD"
-    time    : "HH:MM" بتوقيت السعودية (24 ساعة)
-    home    : الفريق المستضيف
-    away    : الفريق الضيف
-    result  : "" قبل المباراة، ثم مثل "3-0" (نتيجة المستضيف أولًا)
+  لكل مباراة:
+    date   : "YYYY-MM-DD"
+    time   : "HH:MM" بتوقيت السعودية (24 ساعة) — اتركه "" لو غير معروف
+    home   : الفريق المستضيف
+    away   : الفريق الضيف
+    result : "" قبل الانتهاء، أو "2-1" بعد الانتهاء (المستضيف أولًا)
+    live   : true إن كانت جارية الآن (تظهر شارة حمراء نابضة)
 */
 
-var OUR_TEAM = "الهلال";   /* الفريق الذي تبرزه الأكاديمية بمباركة/تنويه خاص */
-
-var MATCHES = [
-  /* ===== الجولة الأولى — الخميس ١٣ أغسطس ٢٠٢٦ ===== */
-  { round:1, date:"2026-08-13", time:"21:00", home:"الهلال",  away:"الفيصلي", result:"4-2" },
-
-  /* ===== الجولة الثانية — ٢٠ إلى ٢٢ أغسطس ٢٠٢٦ ===== */
-  { round:2, date:"2026-08-20", time:"21:00", home:"الفيحاء",  away:"الهلال",   result:"0-3" },
-  { round:2, date:"2026-08-21", time:"19:00", home:"النصر",    away:"الرياض",   result:"" },
-  { round:2, date:"2026-08-21", time:"19:15", home:"الدرعية",  away:"الحزم",    result:"" },
-  { round:2, date:"2026-08-21", time:"21:00", home:"الفيصلي",  away:"نيوم",     result:"" },
-  { round:2, date:"2026-08-21", time:"21:00", home:"الاتحاد",  away:"القادسية", result:"" },
-  { round:2, date:"2026-08-22", time:"18:45", home:"الفتح",    away:"الاتفاق",  result:"" },
-  { round:2, date:"2026-08-22", time:"19:10", home:"التعاون",  away:"الخلود",   result:"" },
-  { round:2, date:"2026-08-22", time:"21:00", home:"الخليج",   away:"الشباب",   result:"" },
-  { round:2, date:"2026-08-22", time:"21:00", home:"أبها",     away:"الأهلي",   result:"" },
-
-  /* ===== الجولة الثالثة — ٢٤ إلى ٢٦ أغسطس ٢٠٢٦ ===== */
-  { round:3, date:"2026-08-24", time:"19:40", home:"نيوم",     away:"القادسية", result:"" },
-  { round:3, date:"2026-08-24", time:"21:00", home:"الاتحاد",  away:"الحزم",    result:"" },
-  { round:3, date:"2026-08-25", time:"19:05", home:"أبها",     away:"الخليج",   result:"" },
-  { round:3, date:"2026-08-25", time:"19:10", home:"الفيحاء",  away:"التعاون",  result:"" },
-  { round:3, date:"2026-08-25", time:"21:00", home:"الاتفاق",  away:"النصر",    result:"" },
-  { round:3, date:"2026-08-25", time:"21:00", home:"الرياض",   away:"الهلال",   result:"" },
-  { round:3, date:"2026-08-26", time:"19:00", home:"الأهلي",   away:"الفيصلي",  result:"" },
-  { round:3, date:"2026-08-26", time:"21:00", home:"الدرعية",  away:"الخلود",   result:"" }
-];
-
-/* أخبار الأكاديمية الثابتة — تظهر دائمًا في العمود الجانبي */
-var ACADEMY_NEWS = [
+var LEAGUES = [
   {
-    tag: "أكاديمية ليبرو",
-    title: "التسجيل مفتوح في جميع الفروع الستة",
-    body: "من عمر ٥ إلى ١٨ سنة، بإشراف مدربين معتمدين من الاتحادين الآسيوي والأفريقي.",
-    time: "تسجيل إلكتروني ودفع مباشر"
+    id: "saudi", name: "دوري روشن السعودي",
+    matches: [
+      { date:"2026-08-22", time:"18:45", home:"الفتح",   away:"الاتفاق", result:"" },
+      { date:"2026-08-22", time:"19:10", home:"التعاون", away:"الخلود",  result:"" },
+      { date:"2026-08-22", time:"21:00", home:"الخليج",  away:"الشباب",  result:"" },
+      { date:"2026-08-22", time:"21:00", home:"أبها",    away:"الأهلي",  result:"" }
+    ]
   },
   {
-    tag: "بطولات قادمة",
-    title: "ليبرو بيش في بطولة أكاديمية الوسم السنوية الثانية",
-    body: "مشاركة ضمن ١٢ أكاديمية موزّعة على ٤ مجموعات، ويتأهل الأول والثاني مباشرة.",
-    time: "القحمة"
+    id: "epl", name: "الدوري الإنجليزي الممتاز",
+    matches: [
+      { date:"2026-08-22", time:"14:30", home:"هال سيتي",     away:"مانشستر يونايتد", result:"2-0", live:true },
+      { date:"2026-08-22", time:"17:00", home:"إيفرتون",      away:"كريستال بالاس",   result:"" },
+      { date:"2026-08-22", time:"17:00", home:"إبسويتش تاون", away:"سندرلاند",        result:"" },
+      { date:"2026-08-22", time:"17:00", home:"نوتنغهام فورست", away:"ليدز يونايتد",  result:"" },
+      { date:"2026-08-22", time:"19:30", home:"برينتفورد",    away:"توتنهام",         result:"" }
+    ]
+  },
+  {
+    id: "laliga", name: "الدوري الإسباني",
+    matches: [
+      { date:"2026-08-22", time:"18:00", home:"أتلتيك بلباو", away:"إشبيلية",      result:"" },
+      { date:"2026-08-22", time:"20:30", home:"فالنسيا",      away:"سلتا فيغو",    result:"" },
+      { date:"2026-08-22", time:"22:30", home:"إسبانيول",     away:"ريال مدريد",   result:"" }
+    ]
+  }
+];
+
+/* أهم خبرين في الرياضة السعودية — يحتاجان تحديثًا يوميًا يدويًا */
+var TOP_NEWS = [
+  {
+    title: "الأهلي يعلن رحيل رياض محرز بعد ثلاثة مواسم",
+    body: "ودّع نادي الأهلي لاعبه الجزائري رياض محرز رسميًا بعد ثلاثة مواسم قضاها مع الفريق في دوري روشن السعودي.",
+    time: "الدوري السعودي"
+  },
+  {
+    title: "القادسية يقترب من ضم رينديرز مقابل ٦١ مليون يورو",
+    body: "تقارير صحفية تفيد بتوصّل نادي القادسية لاتفاق شفهي مبدئي مع الهولندي تيجاني رينديرز.",
+    time: "سوق الانتقالات"
   }
 ];
 
@@ -1992,19 +2007,11 @@ var ACADEMY_NEWS = [
   }
 
   function ar12(t){
-    if(!t) return "";
+    if(!t) return "الموعد يُعلن لاحقًا";
     var pr = t.split(":"), h = Number(pr[0]), m = pr[1];
     var suf = h >= 12 ? "م" : "ص";
     var h12 = h % 12 || 12;
     return AR(h12) + ":" + AR(m) + " " + suf;
-  }
-
-  function arDate(str){
-    if(!str) return "";
-    try{
-      return new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-arab",
-        { weekday:"long", day:"numeric", month:"long" }).format(new Date(str + "T12:00:00"));
-    }catch(e){ return str; }
   }
 
   function arScore(r){
@@ -2012,170 +2019,63 @@ var ACADEMY_NEWS = [
     return AR(pr[0]) + " - " + AR(pr[1]);
   }
 
-  function lamPrefix(name){
-    return name.indexOf("ال") === 0 ? "لل" + name.slice(2) : "لـ" + name;
-  }
-
-  function outcome(m){
-    if(!m.result) return null;
-    var pr = m.result.split("-");
-    var h = Number(pr[0]), a = Number(pr[1]);
-    if(isNaN(h) || isNaN(a)) return null;
-    var weAreHome = m.home === OUR_TEAM;
-    var ours = weAreHome ? h : a, theirs = weAreHome ? a : h;
-    return { win: ours > theirs, draw: ours === theirs, rival: weAreHome ? m.away : m.home };
-  }
-
-  function untilText(target){
-    var ms = target - now;
-    if(ms <= 0) return "";
-    var days = Math.floor(ms / 86400000);
-    var hours = Math.floor((ms % 86400000) / 3600000);
-    if(days > 0) return "بعد " + AR(days) + (days === 1 ? " يوم" : days === 2 ? " يومين" : days <= 10 ? " أيام" : " يومًا");
-    if(hours > 0) return "بعد " + AR(hours) + (hours === 1 ? " ساعة" : hours === 2 ? " ساعتين" : hours <= 10 ? " ساعات" : " ساعة");
-    return "خلال أقل من ساعة";
-  }
-
-  /* ===== تصنيف المباريات ===== */
-  var todayMatches = MATCHES.filter(function(m){ return m.date === todayStr; });
-
-  var futureDates = [];
-  MATCHES.forEach(function(m){
-    if(m.date && m.date > todayStr && futureDates.indexOf(m.date) === -1) futureDates.push(m.date);
-  });
-  futureDates.sort();
-  var nextDate = futureDates[0];
-  var nextMatches = nextDate ? MATCHES.filter(function(m){ return m.date === nextDate; }) : [];
-
-  /* آخر مباراة لعبها فريقنا (لها نتيجة) قبل اليوم أو اليوم */
-  var ourPlayed = MATCHES.filter(function(m){
-    return (m.home === OUR_TEAM || m.away === OUR_TEAM) && m.result && m.date <= todayStr;
-  }).sort(function(a,b){ return a.date < b.date ? 1 : -1; });
-  var ourLast = ourPlayed[0];
-
-  function isRecent(m){
-    if(!m || !m.date) return false;
-    var k = new Date(m.date + "T21:00:00");
-    return (now - k) < 3 * 86400000 && (now - k) >= 0;
-  }
-
-  /* ===== بناء صف مباراة داخل قائمة الجدول ===== */
-  function matchRow(m, highlight){
-    var involved = m.home === OUR_TEAM || m.away === OUR_TEAM;
-    var cls = "match-row" + (highlight || involved ? " is-ours" : "");
-    var right = m.result ? arScore(m.result) : ar12(m.time);
-    return '<div class="' + cls + '">' +
-        '<span class="match-row__team">' + esc(m.home) + '</span>' +
-        '<span class="match-row__mid">' + esc(right) + '</span>' +
-        '<span class="match-row__team">' + esc(m.away) + '</span>' +
-      '</div>';
-  }
-
   function esc(t){
     return String(t == null ? "" : t)
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  /* ===== الخبر الرئيسي: جدول مباريات كامل ===== */
-  var leadEl = document.createElement("article");
-  leadEl.className = "nitem nitem--lead nitem--sched";
-
-  var schedTitle, schedRound, schedList, schedTag, schedLive;
-
-  if(todayMatches.length){
-    schedTag = "مباريات اليوم"; schedLive = true;
-    schedTitle = "جميع مباريات دوري روشن السعودي اليوم";
-    schedRound = todayMatches[0].round;
-    schedList = todayMatches.slice().sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
-  } else if(nextMatches.length){
-    schedTag = "الجولة القادمة"; schedLive = false;
-    schedTitle = "مباريات " + arDate(nextDate) + " في دوري روشن";
-    schedRound = nextMatches[0].round;
-    schedList = nextMatches.slice().sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
-  } else {
-    schedTag = "دوري روشن"; schedLive = false;
-    schedTitle = "موسم ٢٠٢٦-٢٠٢٧ من دوري روشن السعودي";
-    schedList = [];
-  }
-
-  var rowsHtml = schedList.map(function(m){ return matchRow(m); }).join("");
-
-  leadEl.innerHTML =
-    '<span class="ntag' + (schedLive ? ' ntag--live' : '') + '">' +
-      (schedLive ? '<i></i>' : '') + esc(schedTag) + '</span>' +
-    '<h3>' + esc(schedTitle) + '</h3>' +
-    (schedRound ? '<div class="nitem__time" style="margin-top:8px">' +
-      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>' +
-      'الجولة ' + AR(schedRound) + ' · دوري روشن السعودي' +
-    '</div>' : '') +
-    (rowsHtml ? '<div class="match-list">' + rowsHtml + '</div>' : '') +
-    (schedList.length ? '<p class="match-list__note">مباريات ' + esc(OUR_TEAM) + ' مُبرزة بالذهبي.</p>' : '');
-
-  grid.appendChild(leadEl);
-
-  /* ===== العمود الجانبي ===== */
-  var side = [];
-
-  /* مباركة/نتيجة الهلال إن كانت حديثة، أو موعد مباراته القادمة */
-  if(ourLast && isRecent(ourLast)){
-    var o = outcome(ourLast);
-    if(o && o.win){
-      side.push({
-        tag: "خبر اليوم",
-        title: "أكاديمية ليبرو تبارك " + lamPrefix(OUR_TEAM) + " فوزه على " + o.rival,
-        body: "بنتيجة " + arScore(ourLast.result) + " في الجولة " + AR(ourLast.round) + " من دوري روشن.",
-        match: { a: ourLast.home, b: ourLast.away, score: arScore(ourLast.result) },
-        time: arDate(ourLast.date)
-      });
-    } else if(o){
-      side.push({
-        tag: "نتيجة " + OUR_TEAM,
-        title: OUR_TEAM + " " + (o.draw ? "يتعادل مع " : "أمام ") + o.rival,
-        match: { a: ourLast.home, b: ourLast.away, score: arScore(ourLast.result) },
-        time: "الجولة " + AR(ourLast.round) + " · " + arDate(ourLast.date)
-      });
-    }
-  } else {
-    var ourNext = MATCHES.filter(function(m){
-      return (m.home === OUR_TEAM || m.away === OUR_TEAM) && !m.result && m.date >= todayStr;
-    }).sort(function(a,b){ return a.date < b.date ? -1 : 1; })[0];
-
-    if(ourNext){
-      var kk = new Date(ourNext.date + "T" + (ourNext.time || "21:00") + ":00");
-      side.push({
-        tag: "مباراة " + OUR_TEAM + " القادمة",
-        title: ourNext.home + " × " + ourNext.away,
-        match: { a: ourNext.home, b: ourNext.away, score: untilText(kk) || ar12(ourNext.time) },
-        time: "الجولة " + AR(ourNext.round) + " · " + arDate(ourNext.date)
-      });
-    }
-  }
-
-  ACADEMY_NEWS.forEach(function(n){ side.push(n); });
-
-  function buildSide(n){
+  /* ===== بطاقة دوري واحد: عنوان + قائمة مباريات اليوم ===== */
+  function buildLeagueCard(league, todayMatches){
     var el = document.createElement("article");
-    el.className = "nitem";
-    var tag = n.tag ? '<span class="ntag' + (n.live ? ' ntag--live' : '') + '">' +
-        (n.live ? '<i></i>' : '') + esc(n.tag) + '</span>' : '';
-    var match = n.match ? '<div class="nscore">' +
-        '<span class="nscore__team">' + esc(n.match.a) + '</span>' +
-        '<span class="nscore__vs">' + esc(n.match.score) + '</span>' +
-        '<span class="nscore__team">' + esc(n.match.b) + '</span></div>' : '';
-    var time = n.time ? '<div class="nitem__time">' +
-        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>' +
-        esc(n.time) + '</div>' : '';
-    el.innerHTML = tag + '<h3>' + esc(n.title) + '</h3>' +
-      (n.body ? '<p>' + esc(n.body) + '</p>' : '') + match + time;
+    el.className = "nitem league-card";
+
+    var hasLive = todayMatches.some(function(m){ return m.live; });
+
+    var rows = todayMatches.map(function(m){
+      var right = m.result ? arScore(m.result) : ar12(m.time);
+      var liveTag = m.live ? '<i class="live-dot"></i>' : '';
+      return '<div class="match-row' + (m.live ? ' is-live' : '') + '">' +
+          '<span class="match-row__team">' + esc(m.home) + '</span>' +
+          '<span class="match-row__mid">' + liveTag + esc(right) + '</span>' +
+          '<span class="match-row__team">' + esc(m.away) + '</span>' +
+        '</div>';
+    }).join("");
+
+    el.innerHTML =
+      '<span class="ntag' + (hasLive ? ' ntag--live' : '') + '">' +
+        (hasLive ? '<i></i>' : '') + esc(league.name) + '</span>' +
+      (rows
+        ? '<div class="match-list">' + rows + '</div>'
+        : '<p class="league-empty">لا توجد مباريات اليوم في ' + esc(league.name) + '.</p>');
+
     return el;
   }
 
-  if(side.length){
-    var col = document.createElement("div");
-    col.className = "news__side";
-    side.forEach(function(n){ col.appendChild(buildSide(n)); });
-    grid.appendChild(col);
+  /* ===== بطاقة خبر عام ===== */
+  function buildNewsCard(n, isLead){
+    var el = document.createElement("article");
+    el.className = "nitem" + (isLead ? " nitem--lead" : "");
+    el.innerHTML =
+      '<span class="ntag' + (isLead ? '' : '') + '">أهم أخبار اليوم</span>' +
+      '<h3>' + esc(n.title) + '</h3>' +
+      '<p>' + esc(n.body) + '</p>' +
+      '<div class="nitem__time">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>' +
+        esc(n.time) +
+      '</div>';
+    return el;
   }
+
+  /* ===== البناء: بطاقة الدوريات الثلاث + بطاقتا الأخبار ===== */
+  LEAGUES.forEach(function(league, i){
+    var todayMatches = league.matches.filter(function(m){ return m.date === todayStr; });
+    grid.appendChild(buildLeagueCard(league, todayMatches, i === 0));
+  });
+
+  var side = document.createElement("div");
+  side.className = "news__side";
+  TOP_NEWS.forEach(function(n){ side.appendChild(buildNewsCard(n, false)); });
+  grid.appendChild(side);
 })();
 
 /* ===== بنر الإنجازات المتحرك ===== */
