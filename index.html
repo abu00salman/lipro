@@ -71,7 +71,7 @@
 html{color-scheme:var(--scheme)}
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{
   margin:0;
   background:var(--bg);
@@ -634,6 +634,61 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 .stripes{position:absolute;inset:0;opacity:.045;pointer-events:none;
   background:repeating-linear-gradient(90deg,#fff 0 90px,transparent 90px 180px)}
 .grid-branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;margin-top:44px;position:relative}
+
+/* ===== شريط لاعبي الفروع (Filmstrip) ===== */
+.filmstrip{position:relative;margin-top:40px;overflow-x:clip}
+.filmstrip__track{
+  display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;
+  padding:6px 22px 22px;margin:0 -22px;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.filmstrip__track::-webkit-scrollbar{height:6px}
+.filmstrip__track::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.filmstrip__track::-webkit-scrollbar-track{background:transparent}
+
+.filmcard{
+  flex:0 0 auto;width:min(78vw,270px);aspect-ratio:3/4;position:relative;
+  border-radius:20px;overflow:hidden;scroll-snap-align:start;
+  box-shadow:0 20px 40px -22px rgba(4,50,44,.4);
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.filmcard:hover{transform:translateY(-8px) scale(1.015)}
+.filmcard img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .6s cubic-bezier(.16,1,.3,1);
+}
+.filmcard:hover img{transform:scale(1.06)}
+.filmcard::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(4,50,44,.88) 0%,rgba(4,50,44,.15) 42%,transparent 68%);
+  pointer-events:none;
+}
+.filmcard__tag{
+  position:absolute;inset-inline:16px;bottom:16px;z-index:1;
+  color:#fff;font-family:var(--display);font-weight:800;font-size:16px;
+  text-shadow:0 2px 10px rgba(0,0,0,.4);
+}
+
+.filmstrip__nav{
+  position:absolute;top:50%;translate:0 -50%;z-index:2;
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);display:grid;place-items:center;
+  cursor:pointer;box-shadow:var(--shadow);transition:.25s;
+}
+.filmstrip__nav:hover{background:var(--gold);border-color:var(--gold);color:var(--pitch)}
+.filmstrip__nav--prev{inset-inline-start:-6px}
+.filmstrip__nav--next{inset-inline-end:-6px}
+
+@media(max-width:900px){
+  .filmstrip__nav{display:none}
+}
+@media(max-width:640px){
+  .filmstrip{margin-top:28px}
+  .filmstrip__track{gap:13px;padding-inline:18px;margin-inline:-18px}
+  .filmcard{width:64vw}
+  .filmcard__tag{font-size:14.5px;inset-inline:13px;bottom:13px}
+}
+
 .bcard{
   background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
   border-radius:var(--r);padding:24px;transition:.22s;display:flex;flex-direction:column;
@@ -1101,6 +1156,63 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   *{animation:none!important;transition:none!important;scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
 }
+
+/* =====================================================================
+   طبقة تحسين "أسلوب آبل" — مسافات أوسع، طباعة أهدأ، حركة أنعم.
+   لا تُغيّر أي بنية HTML أو منطق JS — فقط تُعدّل القيم البصرية للقواعد
+   الموجودة أعلاه عبر خصوصية أعلى، فتبقى كل الوظائف المُختبرة سليمة.
+   ===================================================================== */
+
+/* إيقاع مسافات أوسع بين الأقسام — التنفّس البصري سمة آبل الأساسية */
+.section{padding:clamp(88px,11vw,148px) 0}
+.section--tight{padding:clamp(64px,8vw,104px) 0}
+
+/* طباعة أهدأ وأكبر: تباعد أحرف أضيق، وزن أخف قليلًا على العناوين الكبيرة */
+body{font-size:17px;line-height:1.8;letter-spacing:-.003em}
+h1,h2,h3,h4{letter-spacing:-.02em}
+.section-title{font-size:clamp(30px,5vw,52px);line-height:1.12}
+.section-lead{font-size:17.5px;line-height:1.85;max-width:58ch}
+
+/* حركة كشف أنعم وأبطأ — دفعة أعمق وزمن أطول يعطي إحساس "السحب" الهادئ */
+.reveal{
+  opacity:0;transform:translateY(34px) scale(.985);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in{opacity:1;transform:none}
+
+/* الأزرار: امتلاء أكبر، انتقال أنعم، ظل ناعم بدل حاد */
+.btn{
+  padding:15px 32px;font-size:16px;letter-spacing:-.01em;
+  transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1),background-color .3s ease;
+}
+.btn--gold:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 16px 32px -14px rgba(245,179,37,.55)}
+.btn--teal:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 16px 32px -14px rgba(14,122,107,.5)}
+.btn--ghost:hover:not(:disabled){transform:translateY(-2px)}
+
+/* البطاقات: زوايا أدور قليلًا، ظل أخفّ وأوسع انتشارًا، انتقال أبطأ عند التحويم */
+.bcard,.prog-card,.fee,.event,.nitem,.trophy{
+  transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1),border-color .5s ease;
+}
+.bcard:hover,.prog-card:hover,.event:hover{transform:translateY(-6px)}
+
+/* الشعار والعناصر الرئيسية: انتقال أنعم لكل تغيّر لوني عند تبديل الوضع */
+.topbar,.hero,.board,.feat,.stats,.intro__card,.fee--hero{
+  transition:background-color .5s ease,border-color .5s ease,box-shadow .5s ease;
+}
+
+/* تمرير أنعم فعليًا (لا يعتمد على المتصفح فقط) */
+html{scroll-behavior:smooth}
+
+@media(max-width:640px){
+  .section{padding:clamp(56px,14vw,80px) 0}
+  .section--tight{padding:clamp(44px,10vw,60px) 0}
+  .section-title{font-size:clamp(25px,7vw,34px)}
+  .btn{padding:14px 26px;font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  .reveal{transition:none}
+  .bcard,.prog-card,.fee,.event,.nitem,.trophy{transition:none}
+}
 </style>
 <script>
 /* يُطبَّق قبل رسم الصفحة حتى لا يومض المظهر الخاطئ للحظة */
@@ -1136,6 +1248,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
       <a href="#programs">البرامج</a>
       <a href="#news">الأخبار</a>
       <a href="#events">البطولات</a>
+      <a href="/store/">المتجر</a>
       <a href="#fees">الرسوم</a>
       <a class="nav__cta" href="/register/">سجّل الآن</a>
     </nav>
@@ -1389,6 +1502,54 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
       اختر يومًا من لوحة «التدريب اليوم في» بالأعلى لتعرف أين يوجد تدريب.
     </p>
     <div class="grid-branches" id="branchGrid"></div>
+  </div>
+</section>
+
+<!-- شريط لاعبي الفروع -->
+<section class="section section--tight players" id="players">
+  <div class="wrap reveal">
+    <div class="eyebrow">لاعبونا</div>
+    <h2 class="section-title">لاعبو ليبرو من كل فرع</h2>
+    <p class="section-lead">لمحة من فرقنا في الفروع الستة — اسحب لتتصفح.</p>
+  </div>
+
+  <div class="filmstrip" id="filmstrip" role="region" aria-label="شريط صور لاعبي الفروع">
+    <button class="filmstrip__nav filmstrip__nav--prev" type="button" id="filmPrev" aria-label="السابق">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div class="filmstrip__track" id="filmTrack">
+      <article class="filmcard">
+        <img src="branch-jizan.jpg" alt="لاعبو ليبرو جيزان" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو جيزان</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-jizan-2.jpg" alt="لاعبو ليبرو جيزان" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو جيزان</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-bish.jpg" alt="لاعبو ليبرو بيش" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو بيش</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-khamis.jpg" alt="لاعبو ليبرو خميس مشيط" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو خميس مشيط</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-madaya.jpg" alt="لاعبو ليبرو المضايا" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو المضايا</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-mataan.jpg" alt="لاعبو ليبرو المطعن" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو المطعن</div>
+      </article>
+      <article class="filmcard">
+        <img src="branch-aliyah.jpg" alt="لاعبو ليبرو العالية" loading="lazy" decoding="async">
+        <div class="filmcard__tag">ليبرو العالية</div>
+      </article>
+    </div>
+    <button class="filmstrip__nav filmstrip__nav--next" type="button" id="filmNext" aria-label="التالي">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
   </div>
 </section>
 
@@ -2672,6 +2833,41 @@ var TOP_NEWS = [
       label.textContent = original;
     }
   });
+})();
+
+/* ===== شريط لاعبي الفروع — أزرار التنقل ===== */
+(function(){
+  var track = document.getElementById("filmTrack");
+  var prev = document.getElementById("filmPrev");
+  var next = document.getElementById("filmNext");
+  if(!track || !prev || !next) return;
+
+  function cardStep(){
+    var card = track.querySelector(".filmcard");
+    if(!card) return 280;
+    var style = getComputedStyle(track);
+    var gap = parseFloat(style.columnGap || style.gap || "18");
+    return card.getBoundingClientRect().width + gap;
+  }
+
+  prev.addEventListener("click", function(){
+    track.scrollBy({ left: -cardStep(), behavior: "smooth" });
+  });
+  next.addEventListener("click", function(){
+    track.scrollBy({ left: cardStep(), behavior: "smooth" });
+  });
+
+  /* إخفاء السهم عند بلوغ أي طرف */
+  function updateNavState(){
+    var max = track.scrollWidth - track.clientWidth - 4;
+    prev.style.opacity = track.scrollLeft <= 4 ? ".35" : "1";
+    prev.style.pointerEvents = track.scrollLeft <= 4 ? "none" : "auto";
+    next.style.opacity = track.scrollLeft >= max ? ".35" : "1";
+    next.style.pointerEvents = track.scrollLeft >= max ? "none" : "auto";
+  }
+  track.addEventListener("scroll", updateNavState, { passive: true });
+  window.addEventListener("resize", updateNavState);
+  updateNavState();
 })();
 
 /* ===== بنر الإنجازات المتحرك ===== */
