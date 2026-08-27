@@ -661,10 +661,9 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 .pcard:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
 .pcard__media{
-  aspect-ratio:4/3;background:linear-gradient(135deg,var(--pitch-2),var(--pitch));
-  display:grid;place-items:center;color:var(--gold);position:relative;overflow:hidden;
+  aspect-ratio:4/3;position:relative;overflow:hidden;
 }
-.pcard__media svg{opacity:.9}
+.pcard__media svg{width:100%;height:100%;display:block}
 .pcard__body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1;gap:8px}
 .pcard__name{font-family:var(--display);font-weight:800;font-size:18px}
 .pcard__desc{font-size:13.5px;color:var(--muted);line-height:1.7;flex:1}
