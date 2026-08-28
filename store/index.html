@@ -453,6 +453,19 @@
     return wrapSvg(inner, catId);
   }
 
+  /* صور المنتجات الحقيقية — إن وُجدت، تُستخدم بدل الرسم التوضيحي */
+  function hasRealPhoto(p) {
+    return !!(p.images && p.images.length && /\.(jpg|jpeg|png|webp)$/i.test(p.images[0]));
+  }
+
+  function mediaFor(p) {
+    if (hasRealPhoto(p)) {
+      return '<img src="../assets/products/' + p.images[0] + '" alt="' + p.name +
+        '" loading="lazy" decoding="async">';
+    }
+    return iconFor(p.id, p.category);
+  }
+
   function renderProducts() {
     var grid = $('#productGrid');
     grid.innerHTML = '';
@@ -484,7 +497,7 @@
       var badge = p.new_arrival ? '<span class="prog-card__badge" style="position:static;display:inline-block;margin-bottom:6px">وصل حديثًا</span>' : '';
 
       card.innerHTML =
-        '<div class="pcard__media">' + iconFor(p.id, p.category) + '</div>' +
+        '<div class="pcard__media' + (hasRealPhoto(p) ? ' pcard__media--photo' : '') + '">' + mediaFor(p) + '</div>' +
         '<div class="pcard__body">' +
           badge +
           '<div class="pcard__name">' + p.name + '</div>' +
