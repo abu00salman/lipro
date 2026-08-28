@@ -2267,41 +2267,51 @@ function fallback(text, cb){
 var LEAGUES = [
   {
     id: "saudi", name: "دوري روشن السعودي",
+    /*
+      ⚠️ ملاحظة توثيق: موقع الرابطة الرسمي spl.com.sa يعرض توقيت
+      المباريات بصيغة غرينيتش (UTC) رغم أنه بالعربي — تحقّقتُ من ٤
+      مباريات مقابل مصدر إخباري ثانٍ (صحيفة البلاد) وطابقتها يدويًا:
+      فرق ثابت +٣ ساعات بالضبط. كل الأوقات أدناه بتوقيت الرياض الصحيح
+      بعد هذا التصحيح.
+    */
     matches: [
-      /* لا مباراة اليوم — الجولة الثانية انتهت ٢٢ أغسطس، والثالثة تبدأ ٢٤ أغسطس */
-      { date:"2026-08-24", time:"19:40", home:"نيوم",    away:"القادسية", result:"" },
-      { date:"2026-08-24", time:"21:00", home:"الاتحاد", away:"الحزم",    result:"" }
+      { date:"2026-08-28", time:"18:50", home:"الرياض",  away:"نيوم",    result:"" },
+      { date:"2026-08-28", time:"19:00", home:"الفيحاء", away:"أبها",    result:"" },
+      { date:"2026-08-28", time:"21:00", home:"النصر",   away:"التعاون", result:"" },
+      { date:"2026-08-28", time:"21:00", home:"الخليج",  away:"الهلال",  result:"" }
     ]
   },
   {
     id: "epl", name: "الدوري الإنجليزي الممتاز",
     matches: [
-      { date:"2026-08-23", time:"16:00", home:"برايتون",       away:"أستون فيلا", result:"4-0", live:true },
-      { date:"2026-08-23", time:"16:00", home:"مانشستر سيتي",  away:"بورنموث",    result:"0-1", live:true },
-      { date:"2026-08-23", time:"18:30", home:"نيوكاسل",       away:"ليفربول",    result:"" }
+      { date:"2026-08-28", time:"22:00", home:"كريستال بالاس", away:"مانشستر سيتي", result:"" }
     ]
   },
   {
     id: "laliga", name: "الدوري الإسباني",
     matches: [
-      { date:"2026-08-23", time:"18:00", home:"أتلتيكو مدريد", away:"فياريال",  result:"" },
-      { date:"2026-08-23", time:"20:30", home:"خيتافي",        away:"راسينغ",   result:"" },
-      { date:"2026-08-23", time:"22:30", home:"إلتشي",         away:"برشلونة",  result:"" }
+      { date:"2026-08-28", time:"20:00", home:"راسينغ سنتاندير", away:"إلتشي",     result:"" },
+      { date:"2026-08-28", time:"22:30", home:"ألافيس",          away:"فياريال",   result:"" }
     ]
   }
 ];
 
-/* أهم خبرين في الرياضة السعودية — يحتاجان تحديثًا يوميًا يدويًا */
+/*
+  أهم خبرين في الرياضة السعودية — يحتاجان تحديثًا يوميًا يدويًا.
+  محدَّثان ٢٨ أغسطس ٢٠٢٦، وتحقّقت من كل خبر عبر أكثر من مصدر:
+   - مارتينيلي: مؤكَّد عبر كووورة + الشرق الأوسط + سعودي سبورت (فابريزيو رومانو)
+   - رينديرز: مؤكَّد عبر الموقع الرسمي للرابطة spl.com.sa نفسه
+*/
 var TOP_NEWS = [
   {
-    title: "الأهلي يعلن رحيل رياض محرز بعد ثلاثة مواسم",
-    body: "ودّع نادي الأهلي لاعبه الجزائري رياض محرز رسميًا بعد ثلاثة مواسم قضاها مع الفريق في دوري روشن السعودي.",
-    time: "الدوري السعودي"
+    title: "الهلال يقترب من ضم مارتينيلي مقابل نحو ٦٠ مليون يورو",
+    body: "مفاوضات متقدمة بين الهلال وآرسنال لضم البرازيلي غابرييل مارتينيلي، وسط تفاوت في التقديرات المالية بين الأندية حول القيمة النهائية للصفقة.",
+    time: "سوق الانتقالات"
   },
   {
-    title: "القادسية يقترب من ضم رينديرز مقابل ٦١ مليون يورو",
-    body: "تقارير صحفية تفيد بتوصّل نادي القادسية لاتفاق شفهي مبدئي مع الهولندي تيجاني رينديرز.",
-    time: "سوق الانتقالات"
+    title: "القادسية يعزز صفوفه بضم رينديرز من مانشستر سيتي",
+    body: "أعلنت الرابطة السعودية للمحترفين رسميًا انضمام الهولندي تيجاني رينديرز إلى صفوف نادي القادسية.",
+    time: "الموقع الرسمي لدوري روشن"
   }
 ];
 
@@ -2348,17 +2358,34 @@ var TOP_NEWS = [
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
+  /*
+    كشف "جارية الآن" تلقائيًا من ساعة جهاز الزائر نفسه — لا حاجة لتعليم
+    مباراة كـ live يدويًا (كانت تنتهي صلاحيتها فور انتهاء المباراة الفعلية
+    بلا تحديث مني). أي مباراة بلا نتيجة مُدخلة، وبين وقت انطلاقها ونهايتها
+    التقريبية (١١٥ دقيقة تغطي الشوطين + الاستراحة + الوقت بدل الضائع)
+    تُعرض تلقائيًا "جارية الآن" بدل وقت انطلاق فات فعلًا.
+  */
+  var LIVE_WINDOW_MIN = 115;
+  function isLiveNow(m){
+    if(m.result || !m.date || !m.time) return false;
+    var kickoff = new Date(m.date + "T" + m.time + ":00");
+    if(isNaN(kickoff.getTime())) return false;
+    var diffMin = (now - kickoff) / 60000;
+    return diffMin >= 0 && diffMin <= LIVE_WINDOW_MIN;
+  }
+
   /* ===== بطاقة دوري واحد: عنوان + قائمة مباريات اليوم ===== */
   function buildLeagueCard(league, todayMatches){
     var el = document.createElement("article");
     el.className = "nitem league-card";
 
-    var hasLive = todayMatches.some(function(m){ return m.live; });
+    var hasLive = todayMatches.some(function(m){ return isLiveNow(m); });
 
     var rows = todayMatches.map(function(m){
-      var right = m.result ? arScore(m.result) : ar12(m.time);
-      var liveTag = m.live ? '<i class="live-dot"></i>' : '';
-      return '<div class="match-row' + (m.live ? ' is-live' : '') + '">' +
+      var live = isLiveNow(m);
+      var right = m.result ? arScore(m.result) : (live ? "جارية الآن" : ar12(m.time));
+      var liveTag = live ? '<i class="live-dot"></i>' : '';
+      return '<div class="match-row' + (live ? ' is-live' : '') + '">' +
           '<span class="match-row__team">' + esc(m.home) + '</span>' +
           '<span class="match-row__mid">' + liveTag + esc(right) + '</span>' +
           '<span class="match-row__team">' + esc(m.away) + '</span>' +
@@ -2413,11 +2440,11 @@ var TOP_NEWS = [
   var preview = document.getElementById("sharePreview");
   if(!btn) return;
 
-  var SHIELD = "data:image/png;base64,data:image/png;base64,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";
+  var SHIELD = "data:image/png;base64,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";
   var C = {
-    pitch:"#04322C", pitch2:"#0A3F37", gold:"#F5B325",
-    white:"#FFFFFF", mut:"#9FC0B8", line:"rgba(255,255,255,0.14)",
-    teal:"#17A88F", live:"#FF6B6B"
+    pitch:"#04322C", pitch2:"#0A3F37", gold:"#F5B325", goldDeep:"#C88908",
+    white:"#FFFFFF", ink:"#EFF4F1", mut:"#9FC0B8", line:"rgba(255,255,255,0.14)",
+    teal:"#17A88F", purple:"#3D195B", orange:"#E8491D", live:"#E8453F"
   };
 
   function loadImg(src){
@@ -2461,28 +2488,31 @@ var TOP_NEWS = [
     return arNum(pr[0]) + " - " + arNum(pr[1]);
   }
 
-  /** يرسم فقرة نص عربي RTL بلفّ تلقائي، ويعيد ارتفاع ما رُسم. */
-  function wrapText(ctx, text, cx, y, maxWidth, lineHeight, maxLines){
-    var words = text.split(" ");
-    var line = "", lines = [];
-    for(var i = 0; i < words.length; i++){
-      var test = line ? line + " " + words[i] : words[i];
-      if(ctx.measureText(test).width > maxWidth && line){
-        lines.push(line);
-        line = words[i];
-      } else {
-        line = test;
-      }
+  /* نسخة محلية من "الآن" وكاشف الحالة الحية — هذا IIFE منفصل عن كتلة
+     الأخبار أعلاه فلا يشارك متغيراتها؛ نفس منطق isLiveNow بالضبط. */
+  var now = (function(){
+    try{ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
+    catch(e){ return new Date(); }
+  })();
+  var LIVE_WINDOW_MIN = 115;
+  function isLiveNow(m){
+    if(m.result || !m.date || !m.time) return false;
+    var kickoff = new Date(m.date + "T" + m.time + ":00");
+    if(isNaN(kickoff.getTime())) return false;
+    var diffMin = (now - kickoff) / 60000;
+    return diffMin >= 0 && diffMin <= LIVE_WINDOW_MIN;
+  }
+
+  /* خط "تذكرة" منقّط — نفس فكرة خط التمزيق على تذاكر المباريات الحقيقية،
+     نستخدمه هنا حرفيًا لأن المحتوى تذكرة مباريات، لا زخرفة عامة. */
+  function perforation(ctx, x1, x2, y, color){
+    var gap = 15, r = 2.6;
+    ctx.fillStyle = color;
+    for(var x = x1 + r; x <= x2 - r; x += gap){
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
     }
-    if(line) lines.push(line);
-    if(maxLines && lines.length > maxLines){
-      lines = lines.slice(0, maxLines);
-      lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, "") + "…";
-    }
-    lines.forEach(function(l, idx){
-      ctx.fillText(l, cx, y + idx * lineHeight);
-    });
-    return lines.length * lineHeight;
   }
 
   /** يبني الصورة كاملة ويعيد Blob بصيغة PNG. */
@@ -2490,187 +2520,114 @@ var TOP_NEWS = [
     var W = 1080;
     var todayLabel = document.querySelector("#newsDate span").textContent || "";
 
-    /* نجمع مباريات اليوم فقط من نفس بيانات الموقع — مصدر واحد للحقيقة */
-    var now = (function(){
-      try{ return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }
-      catch(e){ return new Date(); }
-    })();
+    /* نجمع مباريات اليوم فقط من نفس بيانات الموقع — مصدر واحد للحقيقة،
+       ونحسب حالة "جارية الآن" بنفس دالة الموقع بلا ازدواجية منطق. */
     var p2 = function(n){ return n < 10 ? "0" + n : String(n); };
     var todayStr = now.getFullYear() + "-" + p2(now.getMonth()+1) + "-" + p2(now.getDate());
 
     var blocks = LEAGUES.map(function(lg){
-      return { name: lg.name, matches: lg.matches.filter(function(m){ return m.date === todayStr; }) };
+      return { id: lg.id, name: lg.name, matches: lg.matches.filter(function(m){ return m.date === todayStr; }) };
     });
 
-    /* ===== قياسات التصميم العصري: كل دوري بطاقة منفصلة قائمة بذاتها ===== */
+    /* هوية لونية مأخوذة من الشارة الحقيقية لكل دوري — لا ألوان عشوائية:
+       الذهبي هوية ليبرو نفسها للسعودي، وبنفسجي البريميرليغ الرسمي،
+       وبرتقالي الليغا الإسباني الرسمي. */
+    var LEAGUE_TAB = {
+      saudi:  C.goldDeep,
+      epl:    C.purple,
+      laliga: C.orange
+    };
+
+    /* ===== قياسات "بطاقة التذكرة": شريط ملوّن لكل دوري + صفوف صلبة اللون ===== */
     var PAD = 40;
-    var CARD_GAP = 22;
-    var CARD_PAD = 26;
-    var H_HEADER = 320;
-    var H_TITLE_ROW = 54;
-    var H_ROW = 74;
+    var CARD_GAP = 26;
+    var TAB_H = 46;
+    var H_ROW = 76;
     var H_ROW_GAP = 10;
-    var H_EMPTY = 70;
-    var H_FOOTER = 140;
+    var H_EMPTY = 64;
+    var H_HEADER = 300;
+    var H_FOOTER = 128;
+    var PERF_SPACE = 30;   // مساحة خط التمزيق أعلى وأسفل المحتوى
 
     var cardHeights = blocks.map(function(b){
       var rowsH = b.matches.length
         ? b.matches.length * H_ROW + (b.matches.length - 1) * H_ROW_GAP
         : H_EMPTY;
-      return CARD_PAD * 2 + H_TITLE_ROW + rowsH;
+      return TAB_H + 12 + rowsH;
     });
 
     var bodyH = cardHeights.reduce(function(s, h){ return s + h; }, 0) + CARD_GAP * (blocks.length - 1);
-    var H = H_HEADER + bodyH + H_FOOTER + PAD;
+    var H = H_HEADER + PERF_SPACE + bodyH + PERF_SPACE + H_FOOTER;
 
     var cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
     var ctx = cv.getContext("2d");
 
-    /* ألوان مميزة لكل دوري بحسب هويته الحقيقية */
-    var LEAGUE_COLORS = { saudi: "#F5B325", epl: "#37D67A", laliga: "#FF7A45" };
-    var LEAGUE_LETTER  = { saudi: "SA", epl: "EN", laliga: "ES" };
-
-    /* حواف الصورة كاملة مستديرة — إحساس "تطبيق" لا مستند */
+    /* حواف الصورة كاملة مستديرة — إحساس "تذكرة" لا مستند */
     ctx.save();
-    roundRect(ctx, 0, 0, W, H, 28);
+    roundRect(ctx, 0, 0, W, H, 26);
     ctx.clip();
 
-    /* ===== الخلفية: تدرّج عميق + شبكة ملعب خفيفة ===== */
-    var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, "#0A3F37");
-    g.addColorStop(0.4, C.pitch);
-    g.addColorStop(1, "#021814");
-    ctx.fillStyle = g;
+    /* ===== الخلفية: أخضر ملعب عميق موحّد اللون — بلا تدرّجات متعددة متنافسة ===== */
+    ctx.fillStyle = C.pitch;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.save();
-    ctx.globalAlpha = 0.05;
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(W/2, 230, 220, 0, Math.PI*2); ctx.stroke();
-    ctx.beginPath(); ctx.arc(W/2, 230, 40, 0, Math.PI*2); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, 300); ctx.stroke();
-    ctx.restore();
-
-    /* توهّج ذهبي خلف الشعار */
-    var glow = ctx.createRadialGradient(W/2, 150, 10, W/2, 150, 220);
-    glow.addColorStop(0, "rgba(245,179,37,0.18)");
-    glow.addColorStop(1, "rgba(245,179,37,0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, 380);
-
-    /* شريط علوي متدرّج */
-    var topBar = ctx.createLinearGradient(0, 0, W, 0);
-    topBar.addColorStop(0, C.gold);
-    topBar.addColorStop(0.5, "#6FCF97");
-    topBar.addColorStop(1, C.gold);
-    ctx.fillStyle = topBar;
-    ctx.fillRect(0, 0, W, 7);
+    /* شريط علوي ذهبي ثابت — هوية الأكاديمية أولًا */
+    ctx.fillStyle = C.gold;
+    ctx.fillRect(0, 0, W, 10);
 
     ctx.textAlign = "center";
     ctx.direction = "rtl";
 
-    /* ===== رأس البطاقة: الشعار + العنوان + شارة التاريخ ===== */
+    /* ===== رأس البطاقة: الشعار + الاسم + وسم القسم ===== */
     try{
       var logo = await loadImg(SHIELD);
-      var lh = 112, lw = logo.width * lh / logo.height;
-      ctx.drawImage(logo, W/2 - lw/2, 44, lw, lh);
+      var lh = 108, lw = logo.width * lh / logo.height;
+      ctx.drawImage(logo, W/2 - lw/2, 40, lw, lh);
     }catch(e){}
 
     ctx.fillStyle = C.white;
     ctx.font = '800 44px "Changa","Tahoma",sans-serif';
-    ctx.fillText("أكاديمية ليبرو الرياضية", W/2, 200);
+    ctx.fillText("أكاديمية ليبرو الرياضية", W/2, 190);
 
-    /* شارة "مباريات اليوم" بيضوية بحدود متوهجة */
-    var badgeText = "⚽  مباريات اليوم";
-    ctx.font = '700 22px "IBM Plex Sans Arabic",sans-serif';
-    var badgeW = ctx.measureText(badgeText).width + 56;
-    var badgeX = W/2 - badgeW/2, badgeY = 222, badgeH = 42;
-    ctx.fillStyle = "rgba(245,179,37,0.15)";
-    roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 999);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(245,179,37,0.5)";
-    ctx.lineWidth = 1.5;
-    roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 999);
-    ctx.stroke();
     ctx.fillStyle = C.gold;
-    ctx.fillText(badgeText, W/2, badgeY + 28);
+    ctx.font = '700 25px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText("⚽  مباريات اليوم", W/2, 228);
 
     ctx.fillStyle = C.mut;
     ctx.font = '400 20px "IBM Plex Sans Arabic",sans-serif';
-    ctx.fillText(todayLabel, W/2, 298);
+    ctx.fillText(todayLabel, W/2, 260);
 
-    /* ===== بطاقة لكل دوري — منفصلة بظل وحدود ولون مميّز ===== */
-    var y = H_HEADER;
+    /* خط تذكرة منقّط يفصل الرأس عن جدول المباريات */
     var bx = PAD, bw = W - PAD*2;
+    perforation(ctx, bx, bx + bw, H_HEADER, "rgba(245,179,37,0.55)");
+
+    /* ===== قسم لكل دوري: شريط علوي صلب اللون + صفوف صلبة اللون ===== */
+    var y = H_HEADER + PERF_SPACE;
 
     blocks.forEach(function(b, idx){
       var cardH = cardHeights[idx];
-      var leagueId = LEAGUES[idx] ? LEAGUES[idx].id : "";
-      var accentColor = LEAGUE_COLORS[leagueId] || [C.gold, "#6FCF97", "#5AC8FA"][idx % 3];
-      var letter = LEAGUE_LETTER[leagueId] || "";
+      var tabColor = LEAGUE_TAB[b.id] || C.goldDeep;
 
-      /* ظل عمق حقيقي خلف البطاقة — يعطيها إحساس "طافية" لا مسطّحة */
-      ctx.save();
-      ctx.shadowColor = "rgba(0,0,0,0.35)";
-      ctx.shadowBlur = 22;
-      ctx.shadowOffsetY = 10;
-      ctx.fillStyle = "rgba(255,255,255,0.045)";
-      roundRect(ctx, bx, y, bw, cardH, 20);
-      ctx.fill();
-      ctx.restore();
-
-      ctx.strokeStyle = "rgba(255,255,255,0.09)";
-      ctx.lineWidth = 1;
-      roundRect(ctx, bx, y, bw, cardH, 20);
-      ctx.stroke();
-
-      /* خط تمييز رأسي بلون الدوري على يمين البطاقة */
-      ctx.fillStyle = accentColor;
-      roundRect(ctx, bx + bw - 6, y + 18, 4, cardH - 36, 4);
+      /* شريط عنوان الدوري — لون صلب مطابق لهوية الدوري الحقيقية، تباين مضمون */
+      roundRect(ctx, bx, y, bw, TAB_H, 10);
+      ctx.fillStyle = tabColor;
       ctx.fill();
 
-      /* شارة دائرية صغيرة بحرفَي الدوري — تكسر رتابة النص وتميّز كل قسم بصريًا */
-      var titleY = y + CARD_PAD + 8;
-      if(letter){
-        var circR = 17;
-        var circX = bx + bw - 30 - (function(){
-          ctx.font = '800 27px "Changa","Tahoma",sans-serif';
-          return ctx.measureText(b.name).width;
-        })() - circR - 12;
-        var circY = titleY - 9;
-        ctx.beginPath();
-        ctx.arc(circX, circY, circR, 0, Math.PI*2);
-        ctx.fillStyle = "rgba(255,255,255,0.08)";
-        ctx.fill();
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 1.4;
-        ctx.stroke();
-        ctx.textAlign = "center";
-        ctx.direction = "ltr";
-        ctx.font = '800 12px "Changa","Tahoma",sans-serif';
-        ctx.fillStyle = accentColor;
-        ctx.fillText(letter, circX, circY + 4);
-        ctx.direction = "rtl";
-      }
-
-      /* عنوان الدوري */
       ctx.textAlign = "right";
-      ctx.fillStyle = accentColor;
-      ctx.font = '800 27px "Changa","Tahoma",sans-serif';
-      ctx.fillText(b.name, bx + bw - 30, titleY);
+      ctx.fillStyle = C.white;
+      ctx.font = '800 24px "Changa","Tahoma",sans-serif';
+      ctx.fillText(b.name, bx + bw - 22, y + TAB_H/2 + 8);
 
-      /* عدّاد صغير لعدد المباريات */
       if(b.matches.length){
         ctx.textAlign = "left";
-        ctx.font = '600 16px "IBM Plex Sans Arabic",sans-serif';
-        ctx.fillStyle = C.mut;
+        ctx.font = '700 16px "IBM Plex Sans Arabic",sans-serif';
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
         var cnt = b.matches.length === 1 ? "مباراة واحدة" : arNum(b.matches.length) + " مباريات";
-        ctx.fillText(cnt, bx + 30, titleY - 2);
+        ctx.fillText(cnt, bx + 22, y + TAB_H/2 + 6);
       }
 
-      var rowY = y + CARD_PAD + H_TITLE_ROW;
+      var rowY = y + TAB_H + 12;
 
       if(!b.matches.length){
         ctx.textAlign = "center";
@@ -2679,58 +2636,48 @@ var TOP_NEWS = [
         ctx.fillText("لا توجد مباريات اليوم", W/2, rowY + H_EMPTY/2 + 6);
       } else {
         b.matches.forEach(function(m){
-          var live = !!m.live;
-          var rx = bx + CARD_PAD - 4, rw = bw - (CARD_PAD - 4) * 2;
+          var live = isLiveNow(m);
+          var rx = bx, rw = bw;
 
-          /* صف المباراة */
-          ctx.fillStyle = live ? "rgba(214,69,69,0.13)" : "rgba(255,255,255,0.045)";
+          /* صف المباراة — تعبئة صلبة اللون (لا شفافية) لضمان تباين مضمون
+             بصرف النظر عمّا خلفها؛ الأحمر الصلب للمباراة الجارية فقط. */
+          ctx.fillStyle = live ? C.live : "#0D453D";
           roundRect(ctx, rx, rowY, rw, H_ROW, 14);
           ctx.fill();
-          if(live){
-            ctx.strokeStyle = "rgba(255,107,107,0.45)";
-            ctx.lineWidth = 1.5;
-            roundRect(ctx, rx, rowY, rw, H_ROW, 14);
-            ctx.stroke();
-          }
 
-          var midY = rowY + H_ROW/2 + 8;
+          var midY = rowY + H_ROW/2 + 9;
 
           /* الفريق المضيف */
           ctx.textAlign = "right";
           ctx.fillStyle = C.white;
-          ctx.font = '700 23px "Changa","Tahoma",sans-serif';
-          ctx.fillText(m.home, rx + rw - 26, midY);
+          ctx.font = '800 25px "Changa","Tahoma",sans-serif';
+          ctx.fillText(m.home, rx + rw - 28, midY);
 
           /* الفريق الضيف */
           ctx.textAlign = "left";
-          ctx.fillText(m.away, rx + 26, midY);
+          ctx.fillText(m.away, rx + 28, midY);
 
-          /* شارة الوقت/النتيجة بيضوية بخلفية داكنة */
+          /* شارة الوقت/النتيجة — رقعة "لوحة نتائج" صلبة اللون بأرقام كبيرة واضحة */
           ctx.textAlign = "center";
           ctx.direction = "ltr";
-          var midText = m.result ? arScore(m.result) : ar12(m.time);
-          ctx.font = '800 24px "Changa","Tahoma",sans-serif';
-          var chipW = Math.max(96, ctx.measureText(midText).width + 46);
-          var chipX = W/2 - chipW/2, chipY = midY - 27, chipH = 40;
+          var midText = m.result ? arScore(m.result) : (live ? "جارية الآن" : ar12(m.time));
+          ctx.font = live ? '800 21px "Changa","Tahoma",sans-serif' : '800 25px "Changa","Tahoma",sans-serif';
+          var chipW = Math.max(104, ctx.measureText(midText).width + 50);
+          var chipH = 42;
+          var chipX = W/2 - chipW/2, chipY = midY - 28;
 
-          ctx.fillStyle = live ? "rgba(255,107,107,0.16)" : "rgba(0,0,0,0.22)";
+          ctx.fillStyle = live ? C.pitch : C.gold;
           roundRect(ctx, chipX, chipY, chipW, chipH, 999);
           ctx.fill();
-          if(live){
-            ctx.strokeStyle = "rgba(255,107,107,0.5)";
-            ctx.lineWidth = 1.3;
-            roundRect(ctx, chipX, chipY, chipW, chipH, 999);
-            ctx.stroke();
-          }
 
-          ctx.fillStyle = live ? "#FF9B8A" : C.gold;
-          ctx.fillText(midText, live ? W/2 + 8 : W/2, midY);
+          ctx.fillStyle = live ? "#FFFFFF" : C.pitch;
+          ctx.fillText(midText, W/2, midY);
           ctx.direction = "rtl";
 
           if(live){
             ctx.beginPath();
-            ctx.arc(chipX + 20, midY - 7, 5, 0, Math.PI*2);
-            ctx.fillStyle = "#FF6B6B";
+            ctx.arc(chipX + 18, chipY + chipH/2, 5, 0, Math.PI*2);
+            ctx.fillStyle = "#FFFFFF";
             ctx.fill();
           }
 
@@ -2741,36 +2688,29 @@ var TOP_NEWS = [
       y += cardH + CARD_GAP;
     });
 
-    /* ===== التذييل: خط فاصل متوهج + رابط + دعوة تسجيل ===== */
-    var footY = H - H_FOOTER;
-    var fadeLine = ctx.createLinearGradient(bx, 0, bx + bw, 0);
-    fadeLine.addColorStop(0, "rgba(245,179,37,0)");
-    fadeLine.addColorStop(0.5, "rgba(245,179,37,0.4)");
-    fadeLine.addColorStop(1, "rgba(245,179,37,0)");
-    ctx.strokeStyle = fadeLine;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(bx, footY); ctx.lineTo(bx + bw, footY);
-    ctx.stroke();
+    /* خط تذكرة منقّط قبل التذييل */
+    var footTop = H - H_FOOTER;
+    perforation(ctx, bx, bx + bw, footTop, "rgba(245,179,37,0.55)");
 
+    /* ===== التذييل: رابط الموقع + دعوة تسجيل + ختم وقت التوليد ===== */
     ctx.textAlign = "center";
     ctx.fillStyle = C.gold;
-    ctx.font = '800 32px "Changa","Tahoma",sans-serif';
+    ctx.font = '800 30px "Changa","Tahoma",sans-serif';
     ctx.direction = "ltr";
-    ctx.fillText("liproacademy.com", W/2, footY + 56);
+    ctx.fillText("liproacademy.com", W/2, footTop + 52);
     ctx.direction = "rtl";
 
     ctx.fillStyle = C.mut;
-    ctx.font = '500 21px "IBM Plex Sans Arabic",sans-serif';
-    ctx.fillText("سجّل ابنك الآن — تسجيل إلكتروني ودفع مباشر", W/2, footY + 94);
+    ctx.font = '500 19px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText("سجّل ابنك الآن — تسجيل إلكتروني ودفع مباشر", W/2, footTop + 84);
+
+    /* ختم وقت التوليد — شفافية صادقة عن أن الصورة لقطة لحظية لا بثًا حيًا دائمًا */
+    ctx.fillStyle = "rgba(159,192,184,0.55)";
+    ctx.font = '400 14px "IBM Plex Sans Arabic",sans-serif';
+    var stamp = "حُدّثت " + ar12(p2(now.getHours()) + ":" + p2(now.getMinutes()));
+    ctx.fillText(stamp, W/2, H - 16);
 
     ctx.restore();   // إغلاق قصّ الحواف المستديرة
-
-    /* حدّ خارجي خفيف يبرز استدارة الحواف بوضوح على خلفيات فاتحة (واتساب/سناب) */
-    ctx.strokeStyle = "rgba(255,255,255,0.06)";
-    ctx.lineWidth = 2;
-    roundRect(ctx, 1, 1, W - 2, H - 2, 27);
-    ctx.stroke();
 
     return new Promise(function(res){
       cv.toBlob(function(b){ res(b); }, "image/png", 0.95);
