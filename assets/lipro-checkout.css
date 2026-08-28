@@ -664,6 +664,9 @@ html,body{max-width:100%;overflow-x:hidden}
   aspect-ratio:4/3;position:relative;overflow:hidden;
 }
 .pcard__media svg{width:100%;height:100%;display:block}
+.pcard__media--photo{background:#F4F4F2}
+.pcard__media--photo img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+[data-mode="dark"] .pcard__media--photo{background:#E8E9E6}
 .pcard__body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1;gap:8px}
 .pcard__name{font-family:var(--display);font-weight:800;font-size:18px}
 .pcard__desc{font-size:13.5px;color:var(--muted);line-height:1.7;flex:1}
