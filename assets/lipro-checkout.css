@@ -656,6 +656,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .store-hero{background:var(--pitch);color:#fff;padding:56px 0 44px;text-align:center}
 .store-hero h1{font-size:clamp(28px,4.4vw,44px)}
 .store-hero p{color:#C6DED7;margin-top:12px;font-size:16.5px}
+.order-track-link{
+  display:inline-flex;align-items:center;gap:7px;margin-top:22px;padding:9px 18px;
+  border:1.5px solid rgba(245,179,37,.5);border-radius:999px;
+  color:var(--gold);font-size:14px;font-weight:600;text-decoration:none;
+  transition:.2s;
+}
+.order-track-link:hover{background:rgba(245,179,37,.1);border-color:var(--gold)}
 
 .store-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:38px;
