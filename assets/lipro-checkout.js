@@ -11,7 +11,7 @@
  * الرابط الحقيقي يظهر أعلى صفحة الـ Worker في لوحة Cloudflare،
  * بصيغة: https://lipro-backend.YOUR-SUBDOMAIN.workers.dev
  */
-window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.workers.dev';
+window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.YOUR-SUBDOMAIN.workers.dev';
 
 (function () {
   'use strict';
@@ -120,7 +120,11 @@ window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.work
     createRegistration(b)  { return this.req('/api/registrations', { method: 'POST', body: JSON.stringify(b) }); },
     verify(b)              { return this.req('/api/payments/verify', { method: 'POST', body: JSON.stringify(b) }); },
     registration(n)        { return this.req('/api/registrations/' + encodeURIComponent(n)); },
-    lookup(mobile)          { return this.req('/api/lookup/' + encodeURIComponent(mobile)); }
+    lookup(mobile)          { return this.req('/api/lookup/' + encodeURIComponent(mobile)); },
+    createOrder(b)          { return this.req('/api/orders', { method: 'POST', body: JSON.stringify(b) }); },
+    order(n)                { return this.req('/api/orders/' + encodeURIComponent(n)); },
+    createTapCharge(orderNumber) { return this.req('/api/payments/tap/charge', { method: 'POST', body: JSON.stringify({ order_number: orderNumber }) }); },
+    verifyTapCharge(tapId, orderNumber) { return this.req('/api/payments/tap/verify?tap_id=' + encodeURIComponent(tapId) + '&order=' + encodeURIComponent(orderNumber)); }
   };
 
   /* ---------------- حفظ المسودة مؤقتًا ---------------- */

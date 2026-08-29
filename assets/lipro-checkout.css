@@ -756,3 +756,17 @@ html,body{max-width:100%;overflow-x:hidden}
 .variant-btn:hover{border-color:var(--teal)}
 .variant-btn.is-selected{background:var(--gold);border-color:var(--gold);color:var(--pitch)}
 .variant-btn.is-out{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+
+/* ===== اختيار طريقة الدفع ===== */
+.pay-method{margin:22px 0 8px}
+.pay-method__label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px}
+.pay-method__opt{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border:1.5px solid var(--line);border-radius:12px;cursor:pointer;
+  margin-bottom:10px;transition:.2s;
+}
+.pay-method__opt:has(input:checked){border-color:var(--gold);background:rgba(245,179,37,.06)}
+.pay-method__opt input{width:18px;height:18px;accent-color:var(--gold);flex-shrink:0}
+.pay-method__body{display:flex;flex-direction:column;gap:2px}
+.pay-method__body b{font-family:var(--display);font-size:15px;color:var(--ink)}
+.pay-method__body small{font-size:12.5px;color:var(--muted)}
