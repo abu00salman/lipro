@@ -118,6 +118,8 @@ window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.work
 
     config()               { return this.req('/api/config'); },
     createRegistration(b)  { return this.req('/api/registrations', { method: 'POST', body: JSON.stringify(b) }); },
+    createRegTapCharge(regNumber) { return this.req('/api/registrations/tap/charge', { method: 'POST', body: JSON.stringify({ registration_number: regNumber }) }); },
+    verifyRegTapCharge(tapId, regNumber) { return this.req('/api/registrations/tap/verify?tap_id=' + encodeURIComponent(tapId) + '&ref=' + encodeURIComponent(regNumber)); },
     verify(b)              { return this.req('/api/payments/verify', { method: 'POST', body: JSON.stringify(b) }); },
     registration(n)        { return this.req('/api/registrations/' + encodeURIComponent(n)); },
     lookup(mobile)          { return this.req('/api/lookup/' + encodeURIComponent(mobile)); },

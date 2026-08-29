@@ -1276,10 +1276,6 @@ html{scroll-behavior:smooth}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
         <span>ليلي</span>
       </button>
-      <button class="theme__btn design-toggle" id="designToggle" type="button" aria-pressed="false" title="التصميم الحديث لبطاقة الإنجاز">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="4.5"/></svg>
-        <span>حديث</span>
-      </button>
     </div>
   </div>
 </header>
@@ -1680,7 +1676,7 @@ html{scroll-behavior:smooth}
         <div class="fee__tag">لاعب جديد</div>
         <h3>اشتراك أول شهر</h3>
         <ul>
-          <li>تسجيل لاعب جديد <b>٢٥٠</b></li>
+          <li>تسجيل لاعب جديد <b>٣٠٠</b></li>
           <li>الطقم الرياضي <b>٩٥</b></li>
           <li>الباص (شهريًا) <b>١٥٠</b></li>
         </ul>
@@ -1832,6 +1828,64 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- التذييل -->
 <footer class="footer">
@@ -2186,33 +2240,6 @@ if("IntersectionObserver" in window){
   }
 
   apply(pref, false);
-})();
-
-/* ===== تبديل تصميم بطاقة الإنجاز ===== */
-(function(){
-  var btn = document.getElementById("designToggle");
-  var modern = document.getElementById("designModern");
-  var classic = document.getElementById("designClassic");
-  if(!btn || !modern || !classic) return;
-
-  var saved = "modern";
-  try{ saved = localStorage.getItem("lipro_design") || "modern"; }catch(e){}
-
-  function apply(design, save){
-    var isClassic = design === "classic";
-    modern.hidden = isClassic;
-    classic.hidden = !isClassic;
-    btn.setAttribute("aria-pressed", isClassic ? "true" : "false");
-    btn.title = isClassic ? "جرّب التصميم الحديث" : "جرّب التصميم الكلاسيكي";
-    if(save){ try{ localStorage.setItem("lipro_design", design); }catch(e){} }
-  }
-
-  btn.addEventListener("click", function(){
-    var next = classic.hidden ? "classic" : "modern";
-    apply(next, true);
-  });
-
-  apply(saved, false);
 })();
 
 /* ===== نسخ بيانات الحساب البنكي ===== */

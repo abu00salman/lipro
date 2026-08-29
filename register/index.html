@@ -15,7 +15,7 @@
 
 <!-- أنماط نموذج ميسر الرسمي -->
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.7.3/moyasar.css">
-<link rel="stylesheet" href="../assets/lipro-checkout.css?v=5">
+<link rel="stylesheet" href="../assets/lipro-checkout.css?v=6">
 
 <script>
 /* يُطبَّق قبل الرسم لمنع وميض المظهر الخاطئ */
@@ -362,6 +362,25 @@
             <p class="order__note">
               المبلغ يشمل رسوم البرنامج فقط. الطقم والمواصلات تُنسّق مع إدارة الفرع بعد التسجيل.
             </p>
+
+            <div class="pay-method" style="margin-top:20px">
+              <div class="pay-method__label">طريقة الدفع</div>
+              <label class="pay-method__opt">
+                <input type="radio" name="regpaymethod" value="tap" id="regPayTap" checked>
+                <span class="pay-method__body">
+                  <b>بطاقة / مدى / <bdi>Apple Pay</bdi></b>
+                  <small>دفع إلكتروني فوري وآمن، والتسجيل يُعتمد تلقائيًا</small>
+                </span>
+              </label>
+              <label class="pay-method__opt">
+                <input type="radio" name="regpaymethod" value="bank_transfer" id="regPayBank">
+                <span class="pay-method__body">
+                  <b>تحويل بنكي</b>
+                  <small>تحويل يدوي + تأكيد من الإدارة خلال ساعات العمل</small>
+                </span>
+              </label>
+            </div>
+
             <button class="rev-edit" type="button" data-edit="1" style="margin-top:12px;color:var(--gold)">تغيير البرنامج</button>
           </aside>
         </div>
@@ -534,7 +553,7 @@
   </div>
 </footer>
 <script src="https://cdn.moyasar.com/mpf/1.7.3/moyasar.js"></script>
-<script src="../assets/lipro-checkout.js?v=5"></script>
+<script src="../assets/lipro-checkout.js?v=6"></script>
 <script>
 (function () {
   'use strict';
@@ -555,7 +574,7 @@
     vat_included: true,
     programs: [
       { id:'monthly', name:'اشتراك شهري', desc:'لتسجيل لاعب جديد — تدريب ٣ أيام في الأسبوع لمدة شهر كامل، مع متابعة فنية وبدنية.',
-        price_sar:350, duration:'شهر واحد', vat_included:true, badge:'لاعب جديد',
+        price_sar:300, duration:'شهر واحد', vat_included:true, badge:'لاعب جديد',
         includes:['تدريب ٣ أيام أسبوعيًا','متابعة فنية وبدنية','مباريات داخلية'] },
       { id:'renewal', name:'تجديد الاشتراك الشهري', desc:'لتجديد اشتراك لاعب مسجَّل سلفًا في الأكاديمية بعد انتهاء شهره الحالي.',
         price_sar:200, duration:'شهر واحد', vat_included:true, badge:'لأعضاء الأكاديمية',
@@ -893,12 +912,17 @@
     btn.innerHTML = '<span class="spin"></span> جاري المعالجة…';
     $('#err4').classList.remove('is-shown');
 
+    const payMethodEl = document.querySelector('input[name="regpaymethod"]:checked');
+    const payMethod = payMethodEl ? payMethodEl.value : 'bank_transfer';
+
     try {
       track('checkout_started', { program_id: selectedProgram.id });
 
       if (CONFIG.hasBackend) {
         // خادم حقيقي متاح — نحفظ التسجيل فعليًا في قاعدة البيانات
-        registration = await Api.createRegistration(collect());
+        const payload = collect();
+        payload.payment_method = payMethod;
+        registration = await Api.createRegistration(payload);
       } else {
         // لا خادم بعد: مرجع محلي مؤقت فقط، بلا أي حفظ دائم
         registration = {
@@ -906,6 +930,17 @@
           amount_sar: selectedProgram.price_sar,
           currency: 'SAR'
         };
+      }
+
+      // الدفع الإلكتروني عبر Tap: ننشئ الشحنة فورًا ونحوّل المتصفح لصفحة
+      // الدفع الآمنة عندهم مباشرة — لا نعرض أي "تأكيد" هنا، التأكيد
+      // الحقيقي يحصل بعد رجوعنا من Tap والتحقق من الخادم.
+      if (payMethod === 'tap' && CONFIG.hasBackend) {
+        btn.innerHTML = '<span class="spin"></span> جاري تحويلك لصفحة الدفع الآمنة…';
+        const charge = await Api.createRegTapCharge(registration.registration_number);
+        try { sessionStorage.setItem('lipro_pending_reg', registration.registration_number); } catch (e) {}
+        window.location.href = charge.transaction_url;
+        return;
       }
 
       goto(5, true);
