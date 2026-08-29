@@ -119,7 +119,25 @@
             </div>
           </div>
 
-          <div class="consent">
+          <div class="pay-method">
+            <div class="pay-method__label">طريقة الدفع</div>
+            <label class="pay-method__opt">
+              <input type="radio" name="paymethod" value="tap" id="payTap" checked>
+              <span class="pay-method__body">
+                <b>بطاقة / مدى / Apple Pay</b>
+                <small>دفع إلكتروني فوري وآمن عبر Tap</small>
+              </span>
+            </label>
+            <label class="pay-method__opt">
+              <input type="radio" name="paymethod" value="bank_transfer" id="payBank">
+              <span class="pay-method__body">
+                <b>تحويل بنكي</b>
+                <small>تحويل يدوي + تأكيد من الإدارة خلال ساعات العمل</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="consent" id="transferConsent" hidden>
             <input id="custTransfer" type="checkbox">
             <label for="custTransfer">
               أؤكد أنني قمت بتحويل قيمة الطلب على حساب الأكاديمية البنكي.
@@ -143,7 +161,7 @@
           <div class="actions">
             <button class="btn btn--ghost" type="button" id="backToShop">رجوع للمتجر</button>
             <button class="btn btn--gold btn--grow" type="button" id="submitOrder">
-              تأكيد الطلب
+              <span id="submitOrderLabel">الدفع الآن</span>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
           </div>
@@ -654,6 +672,20 @@
     if (f) f.classList.toggle('has-error', !!on);
   }
 
+  function selectedPaymentMethod() {
+    return document.querySelector('input[name="paymethod"]:checked').value;
+  }
+
+  function togglePaymentUI() {
+    var isTap = selectedPaymentMethod() === 'tap';
+    $('#transferConsent').hidden = isTap;
+    if (isTap) $('#transferErr').style.display = 'none';
+    $('#submitOrderLabel').textContent = isTap ? 'الدفع الآن' : 'تأكيد الطلب';
+  }
+  document.querySelectorAll('input[name="paymethod"]').forEach(function (r) {
+    r.addEventListener('change', togglePaymentUI);
+  });
+
   function validateCheckout() {
     var ok = true;
     if ($('#custName').value.trim().length < 3) { markErr('#custName', true); ok = false; } else markErr('#custName', false);
@@ -661,9 +693,11 @@
     if ($('#custCity').value.trim().length < 2) { markErr('#custCity', true); ok = false; } else markErr('#custCity', false);
     if ($('#custAddress').value.trim().length < 8) { markErr('#custAddress', true); ok = false; } else markErr('#custAddress', false);
 
-    var transfer = $('#custTransfer').checked;
-    $('#transferErr').style.display = transfer ? 'none' : 'block';
-    if (!transfer) ok = false;
+    if (selectedPaymentMethod() === 'bank_transfer') {
+      var transfer = $('#custTransfer').checked;
+      $('#transferErr').style.display = transfer ? 'none' : 'block';
+      if (!transfer) ok = false;
+    }
 
     var terms = $('#custTerms').checked;
     $('#termsErr').style.display = terms ? 'none' : 'block';
@@ -676,6 +710,7 @@
     if (!validateCheckout()) return;
     $('#checkoutErr').classList.remove('is-shown');
 
+    var method = selectedPaymentMethod();
     var btn = this;
     var original = btn.innerHTML;
     btn.disabled = true;
@@ -689,17 +724,30 @@
       district: $('#custDistrict').value.trim(),
       address: $('#custAddress').value.trim(),
       notes: $('#custNotes').value.trim(),
-      transfer_confirmed: $('#custTransfer').checked,
+      payment_method: method,
+      transfer_confirmed: method === 'bank_transfer' ? $('#custTransfer').checked : false,
       terms_accepted: $('#custTerms').checked
     };
 
     try {
+      var out = await LC.Api.createOrder(payload);
+      lastOrder = out;
+
+      /* الدفع الإلكتروني: ننشئ شحنة Tap فورًا ونحوّل المتصفح لصفحة
+         الدفع الآمنة عندهم مباشرة — لا نعرض أي "تأكيد" هنا، التأكيد
+         الحقيقي يحصل بعد رجوعنا من Tap والتحقق من الخادم. */
+      if (method === 'tap') {
+        btn.innerHTML = '<span class="spin"></span> جاري تحويلك لصفحة الدفع الآمنة…';
+        var charge = await LC.Api.createTapCharge(out.order_number);
+        try { sessionStorage.setItem('lipro_pending_order', out.order_number); } catch (e) {}
+        window.location.href = charge.transaction_url;
+        return;
+      }
+
+      /* تحويل بنكي: نفس التدفق السابق بلا تغيير */
       show('resultView');
       $('#submitLoading').classList.add('is-shown');
       $('#resultBody').hidden = true;
-
-      var out = await LC.Api.createOrder(payload);
-      lastOrder = out;
 
       $('#orderRefText').textContent = out.order_number;
 
