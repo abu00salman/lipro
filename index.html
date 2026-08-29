@@ -416,11 +416,9 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 .league-empty{font-size:14px;color:var(--muted);margin-top:14px;line-height:1.7}
 .live-dot{
   display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:#D64545;margin-inline-end:6px;vertical-align:middle;
+  background:#D64545;vertical-align:middle;
   animation:pulse 1.6s ease-in-out infinite;
 }
-.match-row.is-live{background:rgba(214,69,69,.1);border-color:rgba(214,69,69,.3)}
-[data-mode="dark"] .match-row.is-live{background:rgba(214,69,69,.14)}
 .news__side{display:flex;flex-direction:column;gap:14px}
 
 .nitem{
@@ -482,34 +480,50 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.05em;
 }
 
-/* قائمة مباريات اليوم — بطاقات دوريات مستقلة، تعمل بالوضعين */
-.match-list{
-  margin-top:16px;display:flex;flex-direction:column;gap:8px;position:relative;
+/* قائمة مباريات اليوم — أسلوب كثيف متصل (صف رفيع/فاصل، لا صناديق منفصلة) */
+.match-list--dense{
+  margin-top:14px;display:flex;flex-direction:column;position:relative;
 }
 .match-row{
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:11px;padding:11px 10px;min-height:52px;
+  padding:13px 2px;border-bottom:1px solid var(--line);
+}
+.match-list--dense .match-row:last-child{border-bottom:none}
+.match-row__side{
+  display:flex;align-items:center;gap:9px;min-width:0;
+}
+.match-row__side--away{flex-direction:row-reverse;justify-content:flex-end}
+.team-avatar{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;font-family:var(--display);font-weight:800;
+  font-size:12.5px;line-height:1;
 }
 .match-row__team{
-  font-family:var(--display);font-weight:700;font-size:13.5px;color:var(--ink);
-  text-align:center;line-height:1.35;
-  overflow-wrap:break-word;word-break:break-word;hyphens:auto;
+  font-family:var(--display);font-weight:700;font-size:14px;color:var(--ink);
+  line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .match-row__mid{
-  font-family:var(--display);font-weight:800;font-size:14px;color:var(--gold-deep);
-  font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 4px;
-  min-width:56px;text-align:center;
+  display:flex;justify-content:center;min-width:64px;
 }
-[data-mode="dark"] .match-row__mid{color:var(--gold)}
-.match-row.is-live .match-row__mid{color:#D64545}
+.match-row__time{
+  font-family:var(--display);font-weight:800;font-size:14px;color:var(--gold-deep);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+[data-mode="dark"] .match-row__time{color:var(--gold)}
+.live-inline{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--display);font-weight:800;font-size:12px;color:#D64545;
+  white-space:nowrap;
+}
 .match-list__note{
   margin-top:12px;font-size:12px;color:var(--muted);text-align:center;
 }
 @media(max-width:640px){
-  .match-row{padding:9px 8px;gap:5px}
-  .match-row__team{font-size:12.5px}
-  .match-row__mid{font-size:13px;min-width:48px}
+  .match-row{padding:11px 2px;gap:6px}
+  .team-avatar{width:23px;height:23px;font-size:11.5px}
+  .match-row__team{font-size:13px}
+  .match-row__time,.live-inline{font-size:12.5px}
+  .match-row__mid{min-width:56px}
 }
 
 @media(max-width:1300px){
@@ -2345,7 +2359,11 @@ var TOP_NEWS = [
     var pr = t.split(":"), h = Number(pr[0]), m = pr[1];
     var suf = h >= 12 ? "م" : "ص";
     var h12 = h % 12 || 12;
-    return AR(h12) + ":" + AR(m) + " " + suf;
+    /* الدقائق سلسلة ثابتة العرض (٠٠، ٠٥...) لا رقمًا يُنسَّق —
+       تمريرها عبر Intl.NumberFormat يُسقط الصفر البادئ (Number("00")=0)
+       فنحوّل كل رقم على حدة بدل ذلك. */
+    var mAr = String(m).split("").map(function(d){ return AR(Number(d)); }).join("");
+    return AR(h12) + ":" + mAr + " " + suf;
   }
 
   function arScore(r){
@@ -2375,6 +2393,19 @@ var TOP_NEWS = [
   }
 
   /* ===== بطاقة دوري واحد: عنوان + قائمة مباريات اليوم ===== */
+  /* أفاتار دائري بحرف الفريق الأول — بديل آمن عن شعارات الأندية الحقيقية
+     (لا نملك حق استخدامها)، بتدوير ٤ ألوان هوية ثابتة لا عشوائية. */
+  var AVATAR_COLORS = ["#F5B325", "#17A88F", "#8FB2AA", "#C88908"];
+  function avatarColor(name){
+    var sum = 0;
+    for(var i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+    return AVATAR_COLORS[sum % AVATAR_COLORS.length];
+  }
+  function avatarHtml(name){
+    var letter = (name || "؟").trim().charAt(0);
+    return '<span class="team-avatar" style="background:' + avatarColor(name) + '22;color:' + avatarColor(name) + '">' + esc(letter) + '</span>';
+  }
+
   function buildLeagueCard(league, todayMatches){
     var el = document.createElement("article");
     el.className = "nitem league-card";
@@ -2383,12 +2414,16 @@ var TOP_NEWS = [
 
     var rows = todayMatches.map(function(m){
       var live = isLiveNow(m);
-      var right = m.result ? arScore(m.result) : (live ? "جارية الآن" : ar12(m.time));
-      var liveTag = live ? '<i class="live-dot"></i>' : '';
-      return '<div class="match-row' + (live ? ' is-live' : '') + '">' +
-          '<span class="match-row__team">' + esc(m.home) + '</span>' +
-          '<span class="match-row__mid">' + liveTag + esc(right) + '</span>' +
-          '<span class="match-row__team">' + esc(m.away) + '</span>' +
+      var mid = m.result ? arScore(m.result) : ar12(m.time);
+      var liveTag = live ? '<span class="live-inline"><i class="live-dot"></i>جارية الآن</span>' : "";
+      return '<div class="match-row">' +
+          '<span class="match-row__side">' +
+            '<span class="match-row__team">' + esc(m.home) + '</span>' + avatarHtml(m.home) +
+          '</span>' +
+          '<span class="match-row__mid">' + (live ? liveTag : '<span class="match-row__time">' + esc(mid) + '</span>') + '</span>' +
+          '<span class="match-row__side match-row__side--away">' +
+            avatarHtml(m.away) + '<span class="match-row__team">' + esc(m.away) + '</span>' +
+          '</span>' +
         '</div>';
     }).join("");
 
@@ -2396,7 +2431,7 @@ var TOP_NEWS = [
       '<span class="ntag' + (hasLive ? ' ntag--live' : '') + '">' +
         (hasLive ? '<i></i>' : '') + esc(league.name) + '</span>' +
       (rows
-        ? '<div class="match-list">' + rows + '</div>'
+        ? '<div class="match-list match-list--dense">' + rows + '</div>'
         : '<p class="league-empty">لا توجد مباريات اليوم في ' + esc(league.name) + '.</p>');
 
     return el;
@@ -2444,7 +2479,7 @@ var TOP_NEWS = [
   var C = {
     pitch:"#04322C", pitch2:"#0A3F37", gold:"#F5B325", goldDeep:"#C88908",
     white:"#FFFFFF", ink:"#EFF4F1", mut:"#9FC0B8", line:"rgba(255,255,255,0.14)",
-    teal:"#17A88F", purple:"#3D195B", orange:"#E8491D", live:"#E8453F"
+    teal:"#17A88F", purple:"#3D195B", purpleText:"#B98FE0", orange:"#E8491D", live:"#E8453F"
   };
 
   function loadImg(src){
@@ -2480,7 +2515,8 @@ var TOP_NEWS = [
     var pr = t.split(":"), h = Number(pr[0]), m = pr[1];
     var suf = h >= 12 ? "م" : "ص";
     var h12 = h % 12 || 12;
-    return arNum(h12) + ":" + arNum(m) + " " + suf;
+    var mAr = String(m).split("").map(function(d){ return arNum(Number(d)); }).join("");
+    return arNum(h12) + ":" + mAr + " " + suf;
   }
 
   function arScore(r){
@@ -2520,8 +2556,6 @@ var TOP_NEWS = [
     var W = 1080;
     var todayLabel = document.querySelector("#newsDate span").textContent || "";
 
-    /* نجمع مباريات اليوم فقط من نفس بيانات الموقع — مصدر واحد للحقيقة،
-       ونحسب حالة "جارية الآن" بنفس دالة الموقع بلا ازدواجية منطق. */
     var p2 = function(n){ return n < 10 ? "0" + n : String(n); };
     var todayStr = now.getFullYear() + "-" + p2(now.getMonth()+1) + "-" + p2(now.getDate());
 
@@ -2529,188 +2563,199 @@ var TOP_NEWS = [
       return { id: lg.id, name: lg.name, matches: lg.matches.filter(function(m){ return m.date === todayStr; }) };
     });
 
-    /* هوية لونية مأخوذة من الشارة الحقيقية لكل دوري — لا ألوان عشوائية:
-       الذهبي هوية ليبرو نفسها للسعودي، وبنفسجي البريميرليغ الرسمي،
-       وبرتقالي الليغا الإسباني الرسمي. */
-    var LEAGUE_TAB = {
-      saudi:  C.goldDeep,
-      epl:    C.purple,
-      laliga: C.orange
-    };
+    /* هوية لونية مأخوذة من الشارة الحقيقية لكل دوري */
+    var LEAGUE_DOT = { saudi: C.gold, epl: C.purpleText, laliga: C.orange };
 
-    /* ===== قياسات "بطاقة التذكرة": شريط ملوّن لكل دوري + صفوف صلبة اللون ===== */
-    var PAD = 40;
-    var CARD_GAP = 26;
-    var TAB_H = 46;
-    var H_ROW = 76;
-    var H_ROW_GAP = 10;
-    var H_EMPTY = 64;
-    var H_HEADER = 300;
-    var H_FOOTER = 128;
-    var PERF_SPACE = 30;   // مساحة خط التمزيق أعلى وأسفل المحتوى
+    /* أفاتار دائري بحرف الفريق — نفس منطق القسم داخل الموقع بالضبط،
+       بديل آمن عن شعارات الأندية الحقيقية (لا نملك حق استخدامها). */
+    var AVATAR_COLORS = ["#F5B325", "#17A88F", "#8FB2AA", "#C88908"];
+    function avatarColor(name){
+      var sum = 0;
+      for(var k = 0; k < name.length; k++) sum += name.charCodeAt(k);
+      return AVATAR_COLORS[sum % AVATAR_COLORS.length];
+    }
 
-    var cardHeights = blocks.map(function(b){
-      var rowsH = b.matches.length
-        ? b.matches.length * H_ROW + (b.matches.length - 1) * H_ROW_GAP
-        : H_EMPTY;
-      return TAB_H + 12 + rowsH;
+    /* ===== قياسات: قائمة كثيفة متصلة — صف رفيع لكل مباراة، لا بطاقة منفصلة ===== */
+    var PAD = 44;
+    var bx = PAD, bw = W - PAD*2;
+    var ROW_H = 68;
+    var SECTION_HEAD_H = 54;
+    var SECTION_GAP = 22;
+    var H_HEADER = 250;
+    var H_EMPTY = 56;
+    var H_FOOTER = 150;
+    var RULE_SPACE = 24;
+
+    var sectionHeights = blocks.map(function(b){
+      return SECTION_HEAD_H + (b.matches.length ? b.matches.length * ROW_H : H_EMPTY);
     });
-
-    var bodyH = cardHeights.reduce(function(s, h){ return s + h; }, 0) + CARD_GAP * (blocks.length - 1);
-    var H = H_HEADER + PERF_SPACE + bodyH + PERF_SPACE + H_FOOTER;
+    var bodyH = sectionHeights.reduce(function(s, h){ return s + h; }, 0) + SECTION_GAP * (blocks.length - 1);
+    var H = H_HEADER + RULE_SPACE + bodyH + RULE_SPACE + H_FOOTER;
 
     var cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
     var ctx = cv.getContext("2d");
 
-    /* حواف الصورة كاملة مستديرة — إحساس "تذكرة" لا مستند */
     ctx.save();
     roundRect(ctx, 0, 0, W, H, 26);
     ctx.clip();
 
-    /* ===== الخلفية: أخضر ملعب عميق موحّد اللون — بلا تدرّجات متعددة متنافسة ===== */
     ctx.fillStyle = C.pitch;
     ctx.fillRect(0, 0, W, H);
-
-    /* شريط علوي ذهبي ثابت — هوية الأكاديمية أولًا */
     ctx.fillStyle = C.gold;
-    ctx.fillRect(0, 0, W, 10);
+    ctx.fillRect(0, 0, W, 8);
 
     ctx.textAlign = "center";
     ctx.direction = "rtl";
 
-    /* ===== رأس البطاقة: الشعار + الاسم + وسم القسم ===== */
+    /* ===== رأس مدمج: الشعار + الاسم + التاريخ في سطر واحد كثيف ===== */
     try{
       var logo = await loadImg(SHIELD);
-      var lh = 108, lw = logo.width * lh / logo.height;
-      ctx.drawImage(logo, W/2 - lw/2, 40, lw, lh);
+      var lh = 66, lw = logo.width * lh / logo.height;
+      ctx.drawImage(logo, W/2 - lw/2, 30, lw, lh);
     }catch(e){}
 
     ctx.fillStyle = C.white;
-    ctx.font = '800 44px "Changa","Tahoma",sans-serif';
-    ctx.fillText("أكاديمية ليبرو الرياضية", W/2, 190);
-
-    ctx.fillStyle = C.gold;
-    ctx.font = '700 25px "IBM Plex Sans Arabic",sans-serif';
-    ctx.fillText("⚽  مباريات اليوم", W/2, 228);
+    ctx.font = '800 30px "Changa","Tahoma",sans-serif';
+    ctx.fillText("مباريات اليوم", W/2, 132);
 
     ctx.fillStyle = C.mut;
-    ctx.font = '400 20px "IBM Plex Sans Arabic",sans-serif';
-    ctx.fillText(todayLabel, W/2, 260);
+    ctx.font = '500 18px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillText(todayLabel + "  ·  أكاديمية ليبرو الرياضية", W/2, 160);
 
-    /* خط تذكرة منقّط يفصل الرأس عن جدول المباريات */
-    var bx = PAD, bw = W - PAD*2;
-    perforation(ctx, bx, bx + bw, H_HEADER, "rgba(245,179,37,0.55)");
+    /* خط فاصل رفيع بسيط — لا زخرفة تذكرة، هوية "قائمة بيانات هادئة" */
+    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(bx, H_HEADER); ctx.lineTo(bx + bw, H_HEADER);
+    ctx.stroke();
 
-    /* ===== قسم لكل دوري: شريط علوي صلب اللون + صفوف صلبة اللون ===== */
-    var y = H_HEADER + PERF_SPACE;
+    /* ===== قسم لكل دوري: عنوان صغير + قائمة صفوف متصلة ===== */
+    var y = H_HEADER + RULE_SPACE;
 
     blocks.forEach(function(b, idx){
-      var cardH = cardHeights[idx];
-      var tabColor = LEAGUE_TAB[b.id] || C.goldDeep;
+      var dot = LEAGUE_DOT[b.id] || C.gold;
 
-      /* شريط عنوان الدوري — لون صلب مطابق لهوية الدوري الحقيقية، تباين مضمون */
-      roundRect(ctx, bx, y, bw, TAB_H, 10);
-      ctx.fillStyle = tabColor;
+      /* عنوان الدوري: نقطة ملوّنة + اسم، هادئ لا صريح صاخب */
+      ctx.textAlign = "right";
+      ctx.font = '700 21px "Changa","Tahoma",sans-serif';
+      ctx.fillStyle = C.ink;
+      ctx.fillText(b.name, bx + bw - 18, y + 22);
+
+      var nameW = ctx.measureText(b.name).width;
+      ctx.beginPath();
+      ctx.arc(bx + bw - nameW - 34, y + 16, 5, 0, Math.PI*2);
+      ctx.fillStyle = dot;
       ctx.fill();
 
-      ctx.textAlign = "right";
-      ctx.fillStyle = C.white;
-      ctx.font = '800 24px "Changa","Tahoma",sans-serif';
-      ctx.fillText(b.name, bx + bw - 22, y + TAB_H/2 + 8);
-
-      if(b.matches.length){
-        ctx.textAlign = "left";
-        ctx.font = '700 16px "IBM Plex Sans Arabic",sans-serif';
-        ctx.fillStyle = "rgba(255,255,255,0.85)";
-        var cnt = b.matches.length === 1 ? "مباراة واحدة" : arNum(b.matches.length) + " مباريات";
-        ctx.fillText(cnt, bx + 22, y + TAB_H/2 + 6);
-      }
-
-      var rowY = y + TAB_H + 12;
+      var rowTop = y + SECTION_HEAD_H;
 
       if(!b.matches.length){
         ctx.textAlign = "center";
         ctx.fillStyle = C.mut;
-        ctx.font = '400 21px "IBM Plex Sans Arabic",sans-serif';
-        ctx.fillText("لا توجد مباريات اليوم", W/2, rowY + H_EMPTY/2 + 6);
+        ctx.font = '400 18px "IBM Plex Sans Arabic",sans-serif';
+        ctx.fillText("لا توجد مباريات اليوم", W/2, rowTop + H_EMPTY/2 + 6);
+        rowTop += H_EMPTY;
       } else {
-        b.matches.forEach(function(m){
+        b.matches.forEach(function(m, mi){
           var live = isLiveNow(m);
-          var rx = bx, rw = bw;
+          var midY = rowTop + ROW_H/2 + 8;
 
-          /* صف المباراة — تعبئة صلبة اللون (لا شفافية) لضمان تباين مضمون
-             بصرف النظر عمّا خلفها؛ الأحمر الصلب للمباراة الجارية فقط. */
-          ctx.fillStyle = live ? C.live : "#0D453D";
-          roundRect(ctx, rx, rowY, rw, H_ROW, 14);
-          ctx.fill();
-
-          var midY = rowY + H_ROW/2 + 9;
-
-          /* الفريق المضيف */
-          ctx.textAlign = "right";
-          ctx.fillStyle = C.white;
-          ctx.font = '800 25px "Changa","Tahoma",sans-serif';
-          ctx.fillText(m.home, rx + rw - 28, midY);
-
-          /* الفريق الضيف */
-          ctx.textAlign = "left";
-          ctx.fillText(m.away, rx + 28, midY);
-
-          /* شارة الوقت/النتيجة — رقعة "لوحة نتائج" صلبة اللون بأرقام كبيرة واضحة */
-          ctx.textAlign = "center";
-          ctx.direction = "ltr";
-          var midText = m.result ? arScore(m.result) : (live ? "جارية الآن" : ar12(m.time));
-          ctx.font = live ? '800 21px "Changa","Tahoma",sans-serif' : '800 25px "Changa","Tahoma",sans-serif';
-          var chipW = Math.max(104, ctx.measureText(midText).width + 50);
-          var chipH = 42;
-          var chipX = W/2 - chipW/2, chipY = midY - 28;
-
-          ctx.fillStyle = live ? C.pitch : C.gold;
-          roundRect(ctx, chipX, chipY, chipW, chipH, 999);
-          ctx.fill();
-
-          ctx.fillStyle = live ? "#FFFFFF" : C.pitch;
-          ctx.fillText(midText, W/2, midY);
-          ctx.direction = "rtl";
-
-          if(live){
+          /* فاصل رفيع أعلى كل صف عدا الأول في القسم */
+          if(mi > 0){
+            ctx.strokeStyle = "rgba(255,255,255,0.08)";
+            ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.arc(chipX + 18, chipY + chipH/2, 5, 0, Math.PI*2);
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fill();
+            ctx.moveTo(bx, rowTop); ctx.lineTo(bx + bw, rowTop);
+            ctx.stroke();
           }
 
-          rowY += H_ROW + H_ROW_GAP;
+          var avR = 15;
+          var homeAvX = bx + bw - 22 - avR;
+          var awayAvX = bx + 22 + avR;
+
+          /* أفاتار حرف الفريق المضيف (يمين) */
+          ctx.beginPath();
+          ctx.arc(homeAvX, midY - 8, avR, 0, Math.PI*2);
+          ctx.fillStyle = avatarColor(m.home) + "26";
+          ctx.fill();
+          ctx.fillStyle = avatarColor(m.home);
+          ctx.textAlign = "center";
+          ctx.font = '800 14px "Changa","Tahoma",sans-serif';
+          ctx.fillText(m.home.trim().charAt(0), homeAvX, midY - 3);
+
+          /* أفاتار حرف الفريق الضيف (يسار) */
+          ctx.beginPath();
+          ctx.arc(awayAvX, midY - 8, avR, 0, Math.PI*2);
+          ctx.fillStyle = avatarColor(m.away) + "26";
+          ctx.fill();
+          ctx.fillStyle = avatarColor(m.away);
+          ctx.fillText(m.away.trim().charAt(0), awayAvX, midY - 3);
+
+          /* اسما الفريقين */
+          ctx.font = '700 22px "Changa","Tahoma",sans-serif';
+          ctx.fillStyle = C.ink;
+          ctx.textAlign = "right";
+          ctx.fillText(m.home, homeAvX - avR - 10, midY);
+          ctx.textAlign = "left";
+          ctx.fillText(m.away, awayAvX + avR + 10, midY);
+
+          /* الوقت/النتيجة في المنتصف — رقم لوحي واضح، أو مؤشر حي مضغوط */
+          ctx.textAlign = "center";
+          if(live){
+            ctx.direction = "ltr";
+            ctx.font = '800 17px "Changa","Tahoma",sans-serif';
+            ctx.fillStyle = C.live;
+            ctx.fillText("جارية الآن", W/2, midY);
+            ctx.direction = "rtl";
+            ctx.beginPath();
+            ctx.arc(W/2 - 58, midY - 5, 4.5, 0, Math.PI*2);
+            ctx.fillStyle = C.live;
+            ctx.fill();
+          } else {
+            ctx.direction = "ltr";
+            ctx.font = '800 20px "Changa","Tahoma",sans-serif';
+            ctx.fillStyle = C.gold;
+            var midText = m.result ? arScore(m.result) : ar12(m.time);
+            ctx.fillText(midText, W/2, midY);
+            ctx.direction = "rtl";
+          }
+
+          rowTop += ROW_H;
         });
       }
 
-      y += cardH + CARD_GAP;
+      y += sectionHeights[idx] + SECTION_GAP;
     });
 
-    /* خط تذكرة منقّط قبل التذييل */
-    var footTop = H - H_FOOTER;
-    perforation(ctx, bx, bx + bw, footTop, "rgba(245,179,37,0.55)");
+    /* خط فاصل رفيع قبل التذييل */
+    var footTop = y - SECTION_GAP + RULE_SPACE;
+    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(bx, footTop - RULE_SPACE + 8); ctx.lineTo(bx + bw, footTop - RULE_SPACE + 8);
+    ctx.stroke();
 
-    /* ===== التذييل: رابط الموقع + دعوة تسجيل + ختم وقت التوليد ===== */
+    /* ===== التذييل ===== */
     ctx.textAlign = "center";
     ctx.fillStyle = C.gold;
-    ctx.font = '800 30px "Changa","Tahoma",sans-serif';
+    ctx.font = '800 26px "Changa","Tahoma",sans-serif';
     ctx.direction = "ltr";
-    ctx.fillText("liproacademy.com", W/2, footTop + 52);
+    ctx.fillText("liproacademy.com", W/2, footTop + 44);
     ctx.direction = "rtl";
 
     ctx.fillStyle = C.mut;
-    ctx.font = '500 19px "IBM Plex Sans Arabic",sans-serif';
-    ctx.fillText("سجّل ابنك الآن — تسجيل إلكتروني ودفع مباشر", W/2, footTop + 84);
+    ctx.font = '500 16px "IBM Plex Sans Arabic",sans-serif';
+    ctx.direction = "ltr";
+    ctx.fillText("@liproacademy", W/2, footTop + 70);
+    ctx.direction = "rtl";
 
-    /* ختم وقت التوليد — شفافية صادقة عن أن الصورة لقطة لحظية لا بثًا حيًا دائمًا */
-    ctx.fillStyle = "rgba(159,192,184,0.55)";
-    ctx.font = '400 14px "IBM Plex Sans Arabic",sans-serif';
+    ctx.fillStyle = "rgba(159,192,184,0.5)";
+    ctx.font = '400 13px "IBM Plex Sans Arabic",sans-serif';
     var stamp = "حُدّثت " + ar12(p2(now.getHours()) + ":" + p2(now.getMinutes()));
     ctx.fillText(stamp, W/2, H - 16);
 
-    ctx.restore();   // إغلاق قصّ الحواف المستديرة
+    ctx.restore();
 
     return new Promise(function(res){
       cv.toBlob(function(b){ res(b); }, "image/png", 0.95);
