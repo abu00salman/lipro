@@ -96,8 +96,8 @@
     </g>
   </svg>
   <div class="wrap page-hero__in">
-    <h1>تحقق من حالة تسجيلك</h1>
-    <p>أدخل رقم التسجيل الذي وصلك بعد إرسال إيصال التحويل.</p>
+    <h1>تحقق من حالة تسجيلك أو طلبك</h1>
+    <p>أدخل رقم التسجيل (LPA) أو رقم طلب المتجر (LPS) الذي وصلك.</p>
   </div>
 </section>
 
@@ -105,10 +105,10 @@
   <div class="wrap status-box">
 
     <div class="status-form">
-      <label for="refInput">رقم التسجيل</label>
-      <input id="refInput" placeholder="LPA-2026-XXXXX" maxlength="20" autocomplete="off">
+      <label for="refInput">رقم التسجيل أو الطلب</label>
+      <input id="refInput" placeholder="LPA-2026-XXXXX أو LPS-2026-XXXXX" maxlength="20" autocomplete="off">
       <button class="btn btn--gold" type="button" id="checkBtn">تحقق من الحالة</button>
-      <p class="status-hint">الرقم يبدأ بـ LPA — وصلك في رسالة واتساب بعد التسجيل مباشرة.</p>
+      <p class="status-hint">تسجيل الأكاديمية يبدأ بـ LPA، وطلب المتجر يبدأ بـ LPS — كلاهما وصلك في رسالة واتساب مباشرة.</p>
     </div>
 
     <div class="result-card" id="resultCard">
@@ -118,9 +118,9 @@
         <p class="result-card__sub" id="resultSub"></p>
       </div>
       <dl id="resultDetails" hidden>
-        <dt>اللاعب</dt><dd id="rPlayer"></dd>
-        <dt>البرنامج</dt><dd id="rProgram"></dd>
-        <dt>الفرع</dt><dd id="rBranch"></dd>
+        <dt id="rLabel1"></dt><dd id="rField1"></dd>
+        <dt id="rLabel2"></dt><dd id="rField2"></dd>
+        <dt id="rLabel3"></dt><dd id="rField3"></dd>
       </dl>
     </div>
 
@@ -154,7 +154,7 @@
     bad: '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M19 19 5 5M19 5 5 19"/></svg>'
   };
 
-  var STATUS = {
+  var STATUS_REG = {
     pending_payment: { icon:'pending', cls:'pending', title:'قيد المراجعة',
       sub:'استلمنا بياناتك وننتظر مراجعة إيصال التحويل. عادةً تأخذ ساعات خلال أوقات العمل.' },
     draft: { icon:'pending', cls:'pending', title:'قيد المراجعة',
@@ -171,8 +171,49 @@
       sub:'هذا التسجيل ملغى. للتسجيل من جديد تواصل معنا.' }
   };
 
+  var STATUS_ORDER = {
+    new: { icon:'pending', cls:'pending', title:'قيد المراجعة',
+      sub:'استلمنا طلبك وننتظر مراجعة إيصال التحويل. عادةً تأخذ ساعات خلال أوقات العمل.' },
+    payment_pending: { icon:'pending', cls:'pending', title:'بانتظار الدفع الإلكتروني',
+      sub:'لم يكتمل الدفع بعد. لو خُصم مبلغ من حسابك وما ظهر التأكيد، تواصل معنا.' },
+    confirmed: { icon:'ok', cls:'ok', title:'تم تأكيد الطلب ✓',
+      sub:'تم تأكيد الدفع وسنبدأ بتجهيز طلبك قريبًا.' },
+    payment_failed: { icon:'bad', cls:'bad', title:'لم يكتمل الدفع',
+      sub:'لم يُخصم أي مبلغ من حسابك. تقدر تحاول الدفع مرة أخرى من المتجر.' },
+    rejected: { icon:'bad', cls:'bad', title:'لم يُقبل الطلب',
+      sub:'لم نتمكن من تأكيد إيصال التحويل. تواصل معنا على واتساب لمعرفة السبب.' },
+    preparing: { icon:'pending', cls:'pending', title:'قيد التجهيز',
+      sub:'طلبك قيد التجهيز حاليًا.' },
+    shipped: { icon:'ok', cls:'ok', title:'تم الشحن',
+      sub:'طلبك في الطريق إليك.' },
+    completed: { icon:'ok', cls:'ok', title:'تم التسليم ✓',
+      sub:'اكتمل طلبك بنجاح، شكرًا لتسوّقك معنا.' },
+    cancelled: { icon:'bad', cls:'bad', title:'طلب ملغى',
+      sub:'هذا الطلب ملغى. للطلب من جديد تفضّل بزيارة المتجر.' }
+  };
+
   function normalizeRef(v){
     return String(v || '').trim().toUpperCase().replace(/\s+/g, '');
+  }
+
+  function showError(title, sub){
+    var card = $('#resultCard');
+    card.className = 'result-card is-shown';
+    $('#resultIcon').className = 'result-card__icon result-card__icon--bad';
+    $('#resultIcon').innerHTML = ICONS.bad;
+    $('#resultTitle').textContent = title;
+    $('#resultSub').textContent = sub;
+    $('#resultDetails').hidden = true;
+  }
+
+  function showDetails(fields){
+    // fields: [[label, value], ...] — حتى ٣ عناصر
+    for (var i = 0; i < 3; i++) {
+      var lbl = $('#rLabel' + (i+1)), val = $('#rField' + (i+1));
+      if (fields[i]) { lbl.textContent = fields[i][0]; val.textContent = fields[i][1]; lbl.hidden = false; val.hidden = false; }
+      else { lbl.hidden = true; val.hidden = true; }
+    }
+    $('#resultDetails').hidden = false;
   }
 
   async function check(){
@@ -180,13 +221,11 @@
     var btn = $('#checkBtn');
     var card = $('#resultCard');
 
-    if (!/^LPA-\d{4}-[A-Z0-9]{5,10}$/.test(ref)) {
-      card.className = 'result-card is-shown';
-      $('#resultIcon').className = 'result-card__icon result-card__icon--bad';
-      $('#resultIcon').innerHTML = ICONS.bad;
-      $('#resultTitle').textContent = 'رقم غير صحيح';
-      $('#resultSub').textContent = 'تأكد من كتابة الرقم كاملًا، مثال: LPA-2026-AB12C';
-      $('#resultDetails').hidden = true;
+    var isReg = /^LPA-\d{4}-[A-Z0-9]{5,10}$/.test(ref);
+    var isOrder = /^LPS-\d{4}-[A-Z0-9]{5,10}$/.test(ref);
+
+    if (!isReg && !isOrder) {
+      showError('رقم غير صحيح', 'تأكد من كتابة الرقم كاملًا — تسجيل الأكاديمية مثل LPA-2026-AB12C، أو طلب المتجر مثل LPS-2026-AB12C.');
       return;
     }
 
@@ -194,27 +233,35 @@
     btn.disabled = true; btn.textContent = 'جاري التحقق…';
 
     try {
-      var out = await LC.Api.registration(ref);
-      var r = out.registration;
-      var s = STATUS[r.registration_status] || STATUS.pending_payment;
+      if (isReg) {
+        var out = await LC.Api.registration(ref);
+        var r = out.registration;
+        var s = STATUS_REG[r.registration_status] || STATUS_REG.pending_payment;
 
-      card.className = 'result-card is-shown';
-      $('#resultIcon').className = 'result-card__icon result-card__icon--' + s.cls;
-      $('#resultIcon').innerHTML = ICONS[s.icon];
-      $('#resultTitle').textContent = s.title;
-      $('#resultSub').textContent = s.sub;
+        card.className = 'result-card is-shown';
+        $('#resultIcon').className = 'result-card__icon result-card__icon--' + s.cls;
+        $('#resultIcon').innerHTML = ICONS[s.icon];
+        $('#resultTitle').textContent = s.title;
+        $('#resultSub').textContent = s.sub;
+        showDetails([['اللاعب', r.player_name || '—'], ['البرنامج', r.program_name || '—'], ['الفرع', r.branch_name || '—']]);
+      } else {
+        var outO = await LC.Api.order(ref);
+        var o = outO.order;
+        var sO = STATUS_ORDER[o.order_status] || STATUS_ORDER.new;
 
-      $('#rPlayer').textContent = r.player_name || '—';
-      $('#rProgram').textContent = r.program_name || '—';
-      $('#rBranch').textContent = r.branch_name || '—';
-      $('#resultDetails').hidden = false;
+        card.className = 'result-card is-shown';
+        $('#resultIcon').className = 'result-card__icon result-card__icon--' + sO.cls;
+        $('#resultIcon').innerHTML = ICONS[sO.icon];
+        $('#resultTitle').textContent = sO.title;
+        $('#resultSub').textContent = sO.sub;
+
+        var itemsText = (o.items || []).map(function(it){
+          return it.name + (it.variant_label ? ' (' + it.variant_label + ')' : '') + ' ×' + it.qty;
+        }).join('، ') || '—';
+        showDetails([['المنتجات', itemsText], ['المدينة', o.city || '—'], ['الإجمالي', o.amount_sar + ' ريال']]);
+      }
     } catch (e) {
-      card.className = 'result-card is-shown';
-      $('#resultIcon').className = 'result-card__icon result-card__icon--bad';
-      $('#resultIcon').innerHTML = ICONS.bad;
-      $('#resultTitle').textContent = 'لم نجد هذا الرقم';
-      $('#resultSub').textContent = 'تأكد من الرقم، أو تواصل معنا على واتساب للمساعدة.';
-      $('#resultDetails').hidden = true;
+      showError('لم نجد هذا الرقم', 'تأكد من الرقم، أو تواصل معنا على واتساب للمساعدة.');
     } finally {
       btn.disabled = false; btn.textContent = original;
     }
@@ -223,7 +270,7 @@
   $('#checkBtn').addEventListener('click', check);
   $('#refInput').addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); check(); } });
 
-  // دعم فتح الصفحة مباشرة برابط يحمل الرقم: status/?ref=LPA-2026-XXXXX
+  // دعم فتح الصفحة مباشرة برابط يحمل الرقم: status/?ref=LPA-... أو LPS-...
   var q = new URLSearchParams(location.search);
   if (q.get('ref')) { $('#refInput').value = q.get('ref'); check(); }
 })();
