@@ -236,6 +236,11 @@ img{max-width:100%}
 .order__total span{font-size:15px;color:#CFE3DD}
 .order__total b{font-family:var(--display);font-size:32px;color:var(--gold);font-variant-numeric:tabular-nums}
 .order__note{margin-top:14px;font-size:12.5px;color:#8FB2AA;line-height:1.65}
+.order__note--delivery{
+  display:flex;align-items:flex-start;gap:7px;margin-top:12px;padding-top:12px;
+  border-top:1px dashed rgba(255,255,255,.15);color:var(--gold);
+}
+.order__note--delivery svg{flex-shrink:0;margin-top:2px}
 
 /* ===== الدفع ===== */
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}

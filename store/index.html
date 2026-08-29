@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/lipro-checkout.css?v=3">
+<link rel="stylesheet" href="../assets/lipro-checkout.css?v=4">
 <script>
 (function(){
   var saved="auto";
@@ -170,13 +170,15 @@
         <aside class="order">
           <div class="order__label">ملخّص الطلب</div>
           <div id="summaryLines"></div>
-          <div class="order__row"><span>الفرعي</span><b id="summarySubtotal">—</b></div>
-          <div class="order__row"><span>التوصيل</span><b id="summaryDelivery">—</b></div>
           <div class="order__total">
             <span>الإجمالي</span>
             <b><span id="summaryTotal">—</span> <small style="font-size:16px">ريال</small></b>
           </div>
           <p class="order__note">جميع الأسعار شاملة ضريبة القيمة المضافة.</p>
+          <p class="order__note order__note--delivery">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+            هذا المبلغ لقيمة المنتجات فقط — سنتواصل معك لتحديد تفاصيل التوصيل ورسومه بعد مراجعة طلبك.
+          </p>
         </aside>
       </div>
     </section>
@@ -267,7 +269,7 @@
     </div>
   </div>
 </footer>
-<script src="../assets/lipro-checkout.js?v=3"></script>
+<script src="../assets/lipro-checkout.js?v=4"></script>
 <script>
 (function(){
   'use strict';
@@ -661,8 +663,6 @@
                        '<b>' + LC.arNum(Math.round(unit * line.qty * 100) / 100) + '</b>';
       wrap.appendChild(row);
     });
-    $('#summarySubtotal').textContent = LC.arNum(cartSubtotalSar()) + ' ريال';
-    $('#summaryDelivery').textContent = LC.arNum(deliveryFeeSar()) + ' ريال';
     $('#summaryTotal').textContent = LC.arNum(cartTotalSar());
   }
 
@@ -764,9 +764,7 @@
         '\n\nالعنوان:\n' + payload.address +
         (payload.notes ? '\n\nملاحظات:\n' + payload.notes : '') +
         '\n\nالطلب:\n\n' + itemsText +
-        '\n\nالمجموع:\n' + out.subtotal_sar + ' ر.س' +
-        '\n\nالتوصيل:\n' + out.delivery_fee_sar + ' ر.س' +
-        '\n\nالإجمالي:\n' + out.amount_sar + ' ر.س' +
+        '\n\nإجمالي المنتجات:\n' + out.amount_sar + ' ر.س (بلا رسوم توصيل بعد)' +
         '\n\nطريقة الدفع:\nتحويل بنكي' +
         '\n\nحالة الدفع:\nبانتظار التحقق من التحويل' +
         '\n\nسأرسل صورة الإيصال في الرسالة التالية.';
