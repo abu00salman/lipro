@@ -177,6 +177,8 @@
     padding:5px 0;
     clip-path:polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);
   }
+  .time.ft{background:var(--green-700)}
+  .vs.score{font-size:15px;letter-spacing:1px}
 
   .empty{
     text-align:center;
@@ -234,63 +236,9 @@
   </footer>
 </div>
 
+<script src="/matches-data.js"></script>
 <script>
-/* ============================================================
-   ✏️ التعديل اليومي هنا فقط — لا تلمس أي شيء تحت هذا القسم
-   لكل دوري: name (اسم الدوري والجولة) و matches
-   لكل مباراة: time ثم home (يمين) ثم away (يسار)
-   احذف أو أضف دوريات ومباريات بحرية، والتصميم يتكيف تلقائياً
-   ============================================================ */
-const LEAGUES = [
-  {
-    name: "الدوري الإنجليزي الممتاز - الجولة 3",
-    badge: "PL",
-    matches: [
-      { time: "10:00 PM", home: "إيبسويتش تاون", away: "ليفربول" },
-    ],
-  },
-  {
-    name: "الدوري الإسباني - الجولة 4",
-    badge: "LL",
-    matches: [
-      { time: "10:00 PM", home: "ريال بيتيس", away: "ريال مدريد" },
-    ],
-  },
-  {
-    name: "الدوري الإيطالي - الجولة 3",
-    badge: "SA",
-    matches: [
-      { time: "09:45 PM", home: "جنوى", away: "كومو" },
-    ],
-  },
-  {
-    name: "الدوري الفرنسي - الجولة 3",
-    badge: "L1",
-    matches: [
-      { time: "08:00 PM", home: "ليون", away: "أوكسير" },
-      { time: "10:05 PM", home: "باريس سان جيرمان", away: "موناكو" },
-    ],
-  },
-  {
-    name: "الدوري الألماني - الجولة 2",
-    badge: "BL",
-    matches: [
-      { time: "09:30 PM", home: "شتوتغارت", away: "كولن" },
-    ],
-  },
-  {
-    name: "دوري روشن السعودي - الجولة 5",
-    badge: "RSL",
-    matches: [
-      { time: "07:00 PM", home: "أبها", away: "الإتفاق" },
-      { time: "09:00 PM", home: "الأهلي", away: "الرياض" },
-      { time: "09:00 PM", home: "الشباب", away: "الهلال" },
-    ],
-  },
-];
-/* ============================================================
-   نهاية قسم التعديل اليومي
-   ============================================================ */
+// البيانات تُقرأ من ملف matches-data.js المشترك — عدّل المباريات هناك فقط
 
 // التاريخ يكتب نفسه تلقائياً حسب يوم العرض
 document.getElementById("today-date").textContent =
@@ -310,14 +258,19 @@ if (!LEAGUES.length || LEAGUES.every(l => !l.matches.length)) {
     sec.innerHTML =
       '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
       "<span>" + league.name + "</span></div>" +
-      league.matches.map(m =>
-        '<div class="match">' +
-        '<div class="time">' + m.time + "</div>" +
+      league.matches.map(m => {
+        const done = Array.isArray(m.score);
+        return '<div class="match">' +
+        (done
+          ? '<div class="time ft">انتهت</div>'
+          : '<div class="time">' + m.time + "</div>") +
         '<div class="team">' + m.home + "</div>" +
-        '<div class="vs">VS</div>' +
+        (done
+          ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
+          : '<div class="vs">VS</div>') +
         '<div class="team">' + m.away + "</div>" +
-        "</div>"
-      ).join("");
+        "</div>";
+      }).join("");
     root.appendChild(sec);
   }
 }
