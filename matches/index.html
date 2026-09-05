@@ -43,7 +43,7 @@
     background:linear-gradient(90deg, var(--gold-500), var(--gold-400) 40%, var(--green-700) 40%, var(--green-900));
   }
 
-  .topbar{padding:14px 16px 0}
+  .topbar{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
   .back-btn{
     display:inline-flex;
     align-items:center;
@@ -58,6 +58,24 @@
     padding:6px 16px;
     box-shadow:0 2px 6px rgba(18,63,53,.08);
   }
+  .share-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(90deg,var(--gold-500),var(--gold-400));
+    color:#fff;
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:14px;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:7px 16px;
+    box-shadow:0 2px 6px rgba(18,63,53,.15);
+  }
+  .share-btn:disabled{opacity:.65;cursor:wait}
+  .time.live{background:#e8453f;animation:lp-pulse 1.4s ease-in-out infinite}
+  @keyframes lp-pulse{0%,100%{opacity:1}50%{opacity:.55}}
   header{
     text-align:center;
     padding:28px 24px 8px;
@@ -238,11 +256,12 @@
 
   <div class="topbar">
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
+    <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
   </div>
 
   <header>
     <!-- ضع شعار الأكاديمية هنا: بدّل src برابط الشعار في موقعك، أو احذف سطر img ليظهر الشعار النصي -->
-    <img class="logo" src="/logo.png" alt="ليبرو" onerror="this.remove()">
+    <img class="logo" src="/logo-lipro.png" alt="ليبرو" onerror="this.remove()">
     <div class="academy-name">أكاديمية ليبرو الرياضية <span>LIPRO ACADEMY</span></div>
     <h1>مباريات اليوم</h1>
     <div class="date-pill" id="today-date"></div>
@@ -256,53 +275,132 @@
 </div>
 
 <script>
-// التاريخ يكتب نفسه تلقائياً حسب يوم العرض
 document.getElementById("today-date").textContent =
   new Date().toLocaleDateString("ar-SA-u-ca-gregory", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-// تحميل بيانات المباريات من matches-data.js مع كسر التخزين المؤقت
-// (يطلب نسخة جديدة من الملف كل يوم تلقائياً)
-(function () {
-  var s = document.createElement("script");
-  s.src = "/matches-data.js?v=" + new Date().toISOString().slice(0, 10);
-  s.onload = render;
-  s.onerror = render;
-  document.head.appendChild(s);
-})();
+/* الوقت الحالي بتوقيت الرياض — لكشف المباريات الجارية الآن */
+function riyadhNow(){
+  try { return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" })); }
+  catch (e) { return new Date(); }
+}
 
-function render() {
+/* "09:00 PM" → دقائق من بداية اليوم */
+function toMinutes(t){
+  var m = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(String(t || ""));
+  if (!m) return null;
+  var h = Number(m[1]) % 12;
+  if (/pm/i.test(m[3])) h += 12;
+  return h * 60 + Number(m[2]);
+}
+
+/* مباراة بلا نتيجة وبين انطلاقها ونهايتها التقريبية = جارية الآن.
+   ومباراة معها score و live:true = نتيجة مباشرة أثناء اللعب. */
+var LIVE_WINDOW_MIN = 115;
+function isLiveNow(m){
+  if (Array.isArray(m.score)) return m.live === true;
+  var start = toMinutes(m.time);
+  if (start == null) return false;
+  var now = riyadhNow();
+  var diff = (now.getHours() * 60 + now.getMinutes()) - start;
+  return diff >= 0 && diff <= LIVE_WINDOW_MIN;
+}
+
+/* تحميل البيانات بلا أي تخزين مؤقت — أحدث نسخة في كل زيارة */
+var LEAGUES = [];
+function loadData(then){
+  fetch("/matches-data.js", { cache: "no-store" })
+    .then(function(r){ return r.text(); })
+    .then(function(code){
+      var shared = new Function(code + "\n;return (typeof LEAGUES !== 'undefined') ? LEAGUES : null;")();
+      if (shared) LEAGUES = shared;
+    })
+    .catch(function(){ /* تعذّر الجلب — نبقي آخر بيانات معروضة */ })
+    .then(then);
+}
+loadData(render);
+
+function render(){
   var root = document.getElementById("leagues");
-  var ok = typeof LEAGUES !== "undefined" && LEAGUES.length &&
-           LEAGUES.some(function (l) { return l.matches.length; });
+  root.innerHTML = "";
+  var ok = LEAGUES.length && LEAGUES.some(function(l){ return l.matches.length; });
   if (!ok) {
     root.innerHTML = '<div class="empty">لا توجد مباريات اليوم — نلقاكم غداً ⚽</div>';
     return;
   }
-  LEAGUES.forEach(function (league) {
+  LEAGUES.forEach(function(league){
     if (!league.matches.length) return;
     var sec = document.createElement("section");
     sec.className = "league";
     sec.innerHTML =
       '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
       "<span>" + league.name + "</span></div>" +
-      league.matches.map(function (m) {
+      league.matches.map(function(m){
         var done = Array.isArray(m.score);
-        return '<div class="match">' +
-          (done
+        var live = isLiveNow(m);
+        var timeCell = live
+          ? '<div class="time live">● مباشر</div>'
+          : done
             ? '<div class="time ft">انتهت</div>'
-            : '<div class="time">' + m.time + "</div>") +
-          '<div class="team">' + m.home + "</div>" +
-          (done
-            ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
-            : '<div class="vs">VS</div>') +
-          '<div class="team">' + m.away + "</div>" +
-          "</div>";
+            : '<div class="time">' + m.time + "</div>";
+        var midCell = done
+          ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
+          : '<div class="vs">VS</div>';
+        return '<div class="match">' + timeCell +
+          '<div class="team">' + m.home + "</div>" + midCell +
+          '<div class="team">' + m.away + "</div></div>";
       }).join("");
     root.appendChild(sec);
   });
 }
+
+/* تحديث تلقائي كل ٣ دقائق: نتائج وحالة "مباشر" بلا إعادة تحميل */
+setInterval(function(){ loadData(render); }, 180000);
+
+/* ===== حفظ / مشاركة الجدول كصورة ===== */
+document.getElementById("shareBtn").addEventListener("click", function(){
+  var btn = this;
+  var old = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري التجهيز…";
+  function restore(){ btn.disabled = false; btn.textContent = old; }
+
+  function capture(){
+    html2canvas(document.querySelector(".frame"), {
+      backgroundColor: "#f7f4ec",
+      scale: 2,
+      useCORS: true,
+      ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
+    }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if (!blob) { restore(); return; }
+        var file = new File([blob], "lipro-matches.png", { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: "مباريات اليوم — أكاديمية ليبرو الرياضية" })
+            .catch(function(){})
+            .then(restore);
+        } else {
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "lipro-matches.png";
+          a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+          restore();
+        }
+      }, "image/png");
+    }).catch(restore);
+  }
+
+  if (window.html2canvas) { capture(); }
+  else {
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = capture;
+    s.onerror = restore;
+    document.head.appendChild(s);
+  }
+});
 </script>
 
 </body>
