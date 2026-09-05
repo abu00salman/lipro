@@ -2870,6 +2870,47 @@ var TOP_NEWS = [
     return el;
   }
 
+  /* ===== مصدر المباريات الموحّد: ملف matches-data.js في جذر الموقع =====
+     نفس الملف الذي تقرأ منه صفحة /matches — تعديل واحد يومي يحدّث
+     الصفحتين معًا. يُطلب برابط يتغيّر كل يوم لكسر التخزين المؤقت،
+     ويُقيَّم داخل نطاق معزول لتفادي تعارض الأسماء مع LEAGUES هنا.
+     صيغة الملف: time بصيغة 12 ساعة ("09:00 PM")، و score:[له، عليه]
+     للمباراة المنتهية — وتُحوَّل هنا لصيغة هذا القسم تلقائيًا.
+     إن وُجدت فيه مباريات فهو المصدر المعتمد ويتقدّم على ما سواه. */
+  try {
+    var mdRes = await fetch("/matches-data.js?v=" + todayStr, { cache: "no-store" });
+    if (mdRes.ok) {
+      var mdCode = await mdRes.text();
+      var shared = new Function(mdCode + "\n;return (typeof LEAGUES !== 'undefined') ? LEAGUES : null;")();
+      var sharedHas = shared && shared.some(function(l){ return l.matches && l.matches.length; });
+      if (sharedHas) {
+        var to24 = function(t){
+          var m = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(String(t || ""));
+          if (!m) return String(t || "");
+          var hh = Number(m[1]) % 12;
+          if (/pm/i.test(m[3])) hh += 12;
+          return p2(hh) + ":" + m[2];
+        };
+        LEAGUES = shared.map(function(l){
+          return {
+            id: String(l.badge || "").toLowerCase(),
+            name: l.name,
+            matches: (l.matches || []).map(function(m){
+              return {
+                date: todayStr,
+                time: to24(m.time),
+                home: m.home,
+                away: m.away,
+                result: Array.isArray(m.score) ? m.score[0] + "-" + m.score[1] : "",
+                live: false
+              };
+            })
+          };
+        });
+      }
+    }
+  } catch (e) { /* تعذّر جلب الملف — نكمل بالمصادر الأخرى كما هي */ }
+
   /* ===== البناء: بطاقة الدوريات الثلاث + بطاقتا الأخبار ===== */
   LEAGUES.forEach(function(league, i){
     var todayMatches = league.matches.filter(function(m){ return m.date === todayStr; });

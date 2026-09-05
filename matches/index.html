@@ -43,6 +43,21 @@
     background:linear-gradient(90deg, var(--gold-500), var(--gold-400) 40%, var(--green-700) 40%, var(--green-900));
   }
 
+  .topbar{padding:14px 16px 0}
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    color:var(--green-700);
+    font-weight:800;
+    font-size:14px;
+    text-decoration:none;
+    border:1px solid rgba(27,94,75,.25);
+    border-radius:999px;
+    padding:6px 16px;
+    box-shadow:0 2px 6px rgba(18,63,53,.08);
+  }
   header{
     text-align:center;
     padding:28px 24px 8px;
@@ -221,6 +236,10 @@
 <div class="frame">
   <div class="ribbon"></div>
 
+  <div class="topbar">
+    <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
+  </div>
+
   <header>
     <!-- ضع شعار الأكاديمية هنا: بدّل src برابط الشعار في موقعك، أو احذف سطر img ليظهر الشعار النصي -->
     <img class="logo" src="/logo.png" alt="ليبرو" onerror="this.remove()">
@@ -236,43 +255,53 @@
   </footer>
 </div>
 
-<script src="/matches-data.js"></script>
 <script>
-// البيانات تُقرأ من ملف matches-data.js المشترك — عدّل المباريات هناك فقط
-
 // التاريخ يكتب نفسه تلقائياً حسب يوم العرض
 document.getElementById("today-date").textContent =
   new Date().toLocaleDateString("ar-SA-u-ca-gregory", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-// بناء البطاقات من البيانات
-const root = document.getElementById("leagues");
-if (!LEAGUES.length || LEAGUES.every(l => !l.matches.length)) {
-  root.innerHTML = '<div class="empty">لا توجد مباريات اليوم — نلقاكم غداً ⚽</div>';
-} else {
-  for (const league of LEAGUES) {
-    if (!league.matches.length) continue;
-    const sec = document.createElement("section");
+// تحميل بيانات المباريات من matches-data.js مع كسر التخزين المؤقت
+// (يطلب نسخة جديدة من الملف كل يوم تلقائياً)
+(function () {
+  var s = document.createElement("script");
+  s.src = "/matches-data.js?v=" + new Date().toISOString().slice(0, 10);
+  s.onload = render;
+  s.onerror = render;
+  document.head.appendChild(s);
+})();
+
+function render() {
+  var root = document.getElementById("leagues");
+  var ok = typeof LEAGUES !== "undefined" && LEAGUES.length &&
+           LEAGUES.some(function (l) { return l.matches.length; });
+  if (!ok) {
+    root.innerHTML = '<div class="empty">لا توجد مباريات اليوم — نلقاكم غداً ⚽</div>';
+    return;
+  }
+  LEAGUES.forEach(function (league) {
+    if (!league.matches.length) return;
+    var sec = document.createElement("section");
     sec.className = "league";
     sec.innerHTML =
       '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
       "<span>" + league.name + "</span></div>" +
-      league.matches.map(m => {
-        const done = Array.isArray(m.score);
+      league.matches.map(function (m) {
+        var done = Array.isArray(m.score);
         return '<div class="match">' +
-        (done
-          ? '<div class="time ft">انتهت</div>'
-          : '<div class="time">' + m.time + "</div>") +
-        '<div class="team">' + m.home + "</div>" +
-        (done
-          ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
-          : '<div class="vs">VS</div>') +
-        '<div class="team">' + m.away + "</div>" +
-        "</div>";
+          (done
+            ? '<div class="time ft">انتهت</div>'
+            : '<div class="time">' + m.time + "</div>") +
+          '<div class="team">' + m.home + "</div>" +
+          (done
+            ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
+            : '<div class="vs">VS</div>') +
+          '<div class="team">' + m.away + "</div>" +
+          "</div>";
       }).join("");
     root.appendChild(sec);
-  }
+  });
 }
 </script>
 
