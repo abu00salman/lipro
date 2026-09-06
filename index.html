@@ -325,6 +325,91 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   color:#2E4A41;font-size:12.5px;font-weight:700;text-decoration:none;
 }
 .hero2__scroll svg{animation:scrollNudge 1.8s ease-in-out infinite}
+
+/* ===== قسم الفيديو الدعائي ===== */
+.promo{padding:8px 0 54px}
+.promo__card{
+  position:relative;
+  max-width:380px;
+  margin:0 auto;
+  border-radius:calc(var(--r) + 8px);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  aspect-ratio:var(--promo-ratio, 9/16);
+  background:var(--pitch) center/cover no-repeat;
+  cursor:pointer;
+  border:none;
+  display:block;
+  width:100%;
+  padding:0;
+}
+.promo__card img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .6s ease;
+}
+.promo__card:hover img{transform:scale(1.04)}
+.promo__card::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(4,50,44,0) 40%,rgba(4,50,44,.78) 100%);
+}
+.promo__badge{
+  position:absolute;top:16px;inset-inline-start:16px;z-index:2;
+  background:rgba(255,255,255,.14);backdrop-filter:blur(6px);
+  color:#fff;font-family:var(--body);font-weight:700;font-size:12.5px;
+  padding:6px 14px;border-radius:999px;display:flex;align-items:center;gap:6px;
+}
+.promo__badge i{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block}
+.promo__text{
+  position:absolute;inset-inline:0;bottom:0;z-index:2;padding:26px 24px;
+  color:#fff;text-align:start;
+}
+.promo__text h2{
+  font-family:var(--display);font-size:clamp(20px,3vw,30px);margin:0 0 6px;
+}
+.promo__text p{
+  font-family:var(--body);font-size:14px;color:rgba(255,255,255,.82);margin:0;
+  max-width:480px;
+}
+.promo__play{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
+  width:74px;height:74px;border-radius:50%;
+  background:linear-gradient(145deg,var(--gold),var(--gold-deep));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+  transition:transform .25s ease;
+}
+.promo__card:hover .promo__play{transform:translate(-50%,-50%) scale(1.08)}
+.promo__play svg{margin-inline-start:3px}
+@media (max-width:640px){
+  .promo__play{width:60px;height:60px}
+  .promo__text{padding:18px 16px}
+}
+
+/* لايت بوكس تشغيل الفيديو */
+.promo-modal{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(2,20,17,.92);
+  display:none;align-items:center;justify-content:center;
+  padding:24px;
+}
+.promo-modal.open{display:flex}
+.promo-modal__box{
+  position:relative;width:100%;max-width:420px;
+  aspect-ratio:var(--promo-ratio, 9/16);
+  border-radius:var(--r);overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);
+  background:#000;
+}
+.promo-modal__box video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.promo-modal__close{
+  position:absolute;top:-46px;left:0;z-index:2;
+  width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.12);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.promo-modal__close:hover{background:rgba(255,255,255,.22)}
+[dir="rtl"] .promo-modal__close{left:auto;right:0}
+
 @keyframes scrollNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 
 .hfeats{background:var(--bg);padding:70px 0 24px}
@@ -1498,7 +1583,7 @@ html{scroll-behavior:smooth}
             ابدأ رحلتك الآن
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
           </a>
-          <a class="hero2__play" href="#banner" aria-label="شاهد الفيديو">
+          <a class="hero2__play" href="#promo-video" id="heroPlayBtn" aria-label="شاهد الفيديو">
             <span class="hero2__playbtn">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             </span>
@@ -1558,6 +1643,38 @@ html{scroll-behavior:smooth}
     </a>
   </div>
 </section>
+
+<!-- الفيديو الدعائي — ضع ملفاتك بجذر المستودع بنفس هذه الأسماء -->
+<section class="promo" id="promo-video">
+  <div class="wrap">
+    <button class="promo__card" id="promoCard" type="button" aria-label="تشغيل الفيديو التعريفي لأكاديمية ليبرو">
+      <img src="promo-video-poster.jpg" alt="" loading="lazy"
+           onerror="this.parentElement.style.background='linear-gradient(135deg,var(--pitch),var(--teal))'; this.remove();">
+      <span class="promo__badge"><i></i> فيديو تعريفي</span>
+      <span class="promo__play" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#0B2A22"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <span class="promo__text">
+        <h2>تعرّف على أكاديمية ليبرو</h2>
+        <p>جولة سريعة داخل ملاعبنا وبين لاعبينا — شاهد كيف نصنع الأبطال من اليوم.</p>
+      </span>
+    </button>
+  </div>
+</section>
+
+<div class="promo-modal" id="promoModal" role="dialog" aria-modal="true" aria-label="مشغّل الفيديو التعريفي">
+  <div class="promo-modal__box">
+    <button class="promo-modal__close" id="promoClose" type="button" aria-label="إغلاق">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <video id="promoVideo" controls playsinline preload="none"
+           poster="promo-video-poster.jpg">
+      <source src="promo-video.webm" type="video/webm">
+      <source src="promo-video.mp4" type="video/mp4">
+      متصفحك لا يدعم تشغيل الفيديو مباشرة.
+    </video>
+  </div>
+</div>
 
 <!-- شريط الهوية المتحرك — بأسلوب الأندية العالمية -->
 <div class="ticker" aria-hidden="true">
@@ -3559,6 +3676,42 @@ var TOP_NEWS = [
     if(timer) clearTimeout(timer);
   });
 })();
+
+/* ===== الفيديو الدعائي: فتح/إغلاق اللايت بوكس ===== */
+(function(){
+  var card   = document.getElementById("promoCard");
+  var modal  = document.getElementById("promoModal");
+  var video  = document.getElementById("promoVideo");
+  var closeBtn = document.getElementById("promoClose");
+  var heroBtn  = document.getElementById("heroPlayBtn");
+  if(!card || !modal || !video) return;
+
+  function openModal(){
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+    video.currentTime = 0;
+    video.play().catch(function(){});
+  }
+  function closeModal(){
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+    video.pause();
+  }
+
+  card.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", function(e){ if(e.target === modal) closeModal(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeModal(); });
+
+  if(heroBtn){
+    heroBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      document.getElementById("promo-video").scrollIntoView({behavior:"smooth", block:"center"});
+      setTimeout(openModal, 380);
+    });
+  }
+})();
 </script>
+
 </body>
 </html>
