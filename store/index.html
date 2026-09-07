@@ -134,14 +134,6 @@
             </label>
           </div>
 
-          <div class="consent" id="transferConsent">
-            <input id="custTransfer" type="checkbox">
-            <label for="custTransfer">
-              أؤكد أنني قمت بتحويل قيمة الطلب على حساب الأكاديمية البنكي.
-            </label>
-          </div>
-          <p class="f__err" id="transferErr" style="margin-top:10px">يجب تأكيد إتمام التحويل البنكي للمتابعة.</p>
-
           <div class="consent">
             <input id="custTerms" type="checkbox">
             <label for="custTerms">
@@ -216,7 +208,15 @@
             <span class="iban-row__v" style="direction:rtl;font-family:var(--body)">البنك الأهلي السعودي — SNB</span>
           </div>
 
-          <a class="btn btn--gold" id="orderWaBtn" href="https://wa.me/966530634750" target="_blank" rel="noopener" style="width:100%;margin-top:20px">
+          <div class="consent" id="transferConsent" style="margin-top:20px">
+            <input id="custTransfer" type="checkbox">
+            <label for="custTransfer">
+              أؤكد أنني حوّلت المبلغ فعليًا على حساب الأكاديمية أعلاه.
+            </label>
+          </div>
+          <p class="f__err" id="transferErr" style="margin-top:8px">أكّد إتمام التحويل قبل إرسال طلبك على واتساب.</p>
+
+          <a class="btn btn--gold" id="orderWaBtn" href="https://wa.me/966530634750" target="_blank" rel="noopener" style="width:100%;margin-top:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>
             أرسل الطلب والإيصال على واتساب
           </a>
@@ -680,10 +680,6 @@
     if ($('#custCity').value.trim().length < 2) { markErr('#custCity', true); ok = false; } else markErr('#custCity', false);
     if ($('#custAddress').value.trim().length < 8) { markErr('#custAddress', true); ok = false; } else markErr('#custAddress', false);
 
-    var transfer = $('#custTransfer').checked;
-    $('#transferErr').style.display = transfer ? 'none' : 'block';
-    if (!transfer) ok = false;
-
     var terms = $('#custTerms').checked;
     $('#termsErr').style.display = terms ? 'none' : 'block';
     if (!terms) ok = false;
@@ -710,7 +706,7 @@
       address: $('#custAddress').value.trim(),
       notes: $('#custNotes').value.trim(),
       payment_method: method,
-      transfer_confirmed: method === 'bank_transfer' ? $('#custTransfer').checked : false,
+      transfer_confirmed: false, // يُؤكَّد لاحقًا في صفحة النتيجة بعد أن يرى العميل الآيبان فعليًا
       terms_accepted: $('#custTerms').checked
     };
 
@@ -743,8 +739,21 @@
         '\n\nحالة الدفع:\nبانتظار التحقق من التحويل' +
         '\n\nسأرسل صورة الإيصال في الرسالة التالية.';
 
-      $('#orderWaBtn').href = 'https://wa.me/966530634750?text=' + encodeURIComponent(waMsg);
+      var waLink = 'https://wa.me/966530634750?text=' + encodeURIComponent(waMsg);
+      $('#orderWaBtn').href = waLink;
       $('#orderStatusLink').href = '../status/?ref=' + encodeURIComponent(out.order_number);
+
+      /* لازم يأكّد إتمام التحويل هنا فعليًا — بعد ما شاف الآيبان — قبل فتح واتساب */
+      $('#custTransfer').checked = false;
+      $('#transferErr').style.display = 'none';
+      /* onclick بدل addEventListener لتفادي تكرار المستمع لو أرسل العميل أكثر من طلب بنفس الجلسة */
+      $('#orderWaBtn').onclick = function (ev) {
+        if (!$('#custTransfer').checked) {
+          ev.preventDefault();
+          $('#transferErr').style.display = 'block';
+          $('#transferConsent').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
 
       CART = [];
       saveCart();
