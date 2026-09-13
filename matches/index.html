@@ -307,19 +307,162 @@ function isLiveNow(m){
   return diff >= 0 && diff <= LIVE_WINDOW_MIN;
 }
 
-/* تحميل البيانات بلا أي تخزين مؤقت — أحدث نسخة في كل زيارة */
+/* =====================================================================
+   مصدر البيانات — تلقائي من المتصفح مباشرة (بلا خادم وبلا مفتاح):
+   واجهة ESPN العامة لكل دوري، تُقرأ وتُترجم أسماء الأندية للعربي هنا.
+   لو تعذّر الجلب لأي سبب: نرجع لملف matches-data.js اليدوي القديم.
+   ===================================================================== */
+var MATCH_LEAGUES = [
+  { code: 'ksa.1',          name: 'دوري روشن السعودي',        badge: 'RSL' },
+  { code: 'uefa.champions', name: 'دوري أبطال أوروبا',        badge: 'UCL' },
+  { code: 'eng.1',          name: 'الدوري الإنجليزي الممتاز',  badge: 'PL'  },
+  { code: 'esp.1',          name: 'الدوري الإسباني',           badge: 'LL'  },
+  { code: 'ita.1',          name: 'الدوري الإيطالي',           badge: 'SA'  },
+  { code: 'ger.1',          name: 'الدوري الألماني',           badge: 'BL'  },
+  { code: 'fra.1',          name: 'الدوري الفرنسي',            badge: 'L1'  }
+];
+const TEAM_AR = {
+  // دوري روشن
+  'hilal':'الهلال','nassr':'النصر','ittihad':'الاتحاد','ahli':'الأهلي','shabab':'الشباب',
+  'ettifaq':'الاتفاق','taawoun':'التعاون','taawon':'التعاون','fateh':'الفتح','khaleej':'الخليج',
+  'riyadh':'الرياض','fayha':'الفيحاء','feiha':'الفيحاء','okhdood':'الأخدود','akhdoud':'الأخدود',
+  'damac':'ضمك','dhamk':'ضمك','qadsiah':'القادسية','qadisiyah':'القادسية','kholood':'الخلود',
+  'hazem':'الحزم','hazm':'الحزم','neom':'نيوم','najma':'النجمة','abha':'أبها','raed':'الرائد',
+  'wehda':'الوحدة','tai':'الطائي','faisaly':'الفيصلي','orobah':'العروبة','jabalain':'الجبلين',
+  // إنجلترا
+  'arsenal':'آرسنال','aston villa':'أستون فيلا','bournemouth':'بورنموث','brentford':'برينتفورد',
+  'brighton hove albion':'برايتون','brighton':'برايتون','chelsea':'تشيلسي','crystal palace':'كريستال بالاس',
+  'everton':'إيفرتون','fulham':'فولهام','liverpool':'ليفربول','manchester city':'مانشستر سيتي',
+  'manchester united':'مانشستر يونايتد','newcastle united':'نيوكاسل يونايتد','nottingham forest':'نوتنغهام فورست',
+  'tottenham hotspur':'توتنهام','west ham united':'وست هام','wolverhampton wanderers':'ولفرهامبتون',
+  'leeds united':'ليدز يونايتد','burnley':'بيرنلي','sunderland':'سندرلاند','ipswich town':'إيبسويتش تاون',
+  'leicester city':'ليستر سيتي','southampton':'ساوثهامبتون','hull city':'هال سيتي','coventry city':'كوفنتري سيتي',
+  'sheffield united':'شيفيلد يونايتد','middlesbrough':'ميدلسبره','norwich city':'نوريتش سيتي',
+  // إسبانيا
+  'real madrid':'ريال مدريد','barcelona':'برشلونة','atletico madrid':'أتلتيكو مدريد','athletic':'أتلتيك بلباو',
+  'athletic bilbao':'أتلتيك بلباو','sevilla':'إشبيلية','real betis':'ريال بيتيس','real sociedad':'ريال سوسييداد',
+  'villarreal':'فياريال','valencia':'فالنسيا','girona':'جيرونا','celta vigo':'سيلتا فيغو','celta':'سيلتا فيغو',
+  'getafe':'خيتافي','osasuna':'أوساسونا','rayo vallecano':'رايو فاييكانو','mallorca':'ريال مايوركا',
+  'alaves':'ديبورتيفو ألافيس','deportivo alaves':'ديبورتيفو ألافيس','espanyol':'إسبانيول','elche':'إلتشي',
+  'levante':'ليفانتي','real oviedo':'ريال أوفييدو','oviedo':'ريال أوفييدو','malaga':'مالقة',
+  'deportivo la coruna':'ديبورتيفو لاكورونيا','racing santander':'راسينغ سانتاندير','las palmas':'لاس بالماس',
+  'valladolid':'بلد الوليد','leganes':'ليغانيس','cadiz':'قادش','granada':'غرناطة','almeria':'ألميريا',
+  // إيطاليا
+  'inter milan':'إنتر ميلان','internazionale':'إنتر ميلان','inter':'إنتر ميلان','milan':'ميلان','juventus':'يوفنتوس',
+  'napoli':'نابولي','roma':'روما','lazio':'لاتسيو','atalanta':'أتالانتا','fiorentina':'فيورنتينا',
+  'bologna':'بولونيا','torino':'تورينو','udinese':'أودينيزي','genoa':'جنوى','como':'كومو','cagliari':'كالياري',
+  'parma':'بارما','verona':'هيلاس فيرونا','hellas verona':'هيلاس فيرونا','lecce':'ليتشي','sassuolo':'ساسولو',
+  'cremonese':'كريمونيزي','pisa':'بيزا','monza':'مونزا','venezia':'فينيسيا','empoli':'إمبولي','frosinone':'فروسينوني',
+  'salernitana':'ساليرنيتانا','sampdoria':'سامبدوريا','palermo':'باليرمو',
+  // ألمانيا
+  'bayern munich':'بايرن ميونخ','bayern munchen':'بايرن ميونخ','borussia dortmund':'دورتموند',
+  'bayer leverkusen':'باير ليفركوزن','leipzig':'لايبزيغ','rb leipzig':'لايبزيغ','eintracht frankfurt':'آينتراخت فرانكفورت',
+  'stuttgart':'شتوتغارت','freiburg':'فرايبورغ','borussia monchengladbach':'مونشنغلادباخ','wolfsburg':'فولفسبورغ',
+  'mainz':'ماينتس','augsburg':'أوغسبورغ','werder bremen':'فيردر بريمن','hoffenheim':'هوفنهايم','union berlin':'يونيون برلين',
+  'heidenheim':'هايدنهايم','st pauli':'سانت باولي','koln':'كولن','cologne':'كولن','hamburg':'هامبورغ','hamburger':'هامبورغ',
+  'schalke 04':'شالكه','schalke':'شالكه','elversberg':'إلفرسبيرغ','paderborn':'بادربورن','hertha berlin':'هيرتا برلين',
+  'hannover 96':'هانوفر','bochum':'بوخوم','holstein kiel':'هولشتاين كيل','fortuna dusseldorf':'فورتونا دوسلدورف',
+  // فرنسا
+  'paris saint germain':'باريس سان جيرمان','marseille':'مارسيليا','lyon':'ليون','olympique lyonnais':'ليون','monaco':'موناكو',
+  'lille':'ليل','nice':'نيس','rennes':'رين','lens':'لانس','strasbourg':'ستراسبورغ','nantes':'نانت','toulouse':'تولوز',
+  'brest':'بريست','auxerre':'أوكسير','le havre':'لوهافر','angers':'أنجيه','lorient':'لوريان','metz':'ميتز',
+  'paris':'باريس إف سي','reims':'ريمس','montpellier':'مونبلييه','saint etienne':'سانت إتيان','troyes':'تروا','le mans':'لومان',
+  // أندية أوروبية شهيرة (أبطال أوروبا)
+  'benfica':'بنفيكا','porto':'بورتو','sporting':'سبورتينغ لشبونة','sporting cp':'سبورتينغ لشبونة','ajax':'أياكس',
+  'psv eindhoven':'آيندهوفن','psv':'آيندهوفن','feyenoord':'فينورد','celtic':'سيلتيك','rangers':'رينجرز',
+  'galatasaray':'غلطة سراي','fenerbahce':'فنربخشة','besiktas':'بشكتاش','club brugge':'كلوب بروج','anderlecht':'أندرلخت',
+  'shakhtar donetsk':'شاختار','dinamo zagreb':'دينامو زغرب','red bull salzburg':'سالزبورغ','salzburg':'سالزبورغ',
+  'young boys':'يونغ بويز','copenhagen':'كوبنهاغن','olympiacos':'أولمبياكوس','panathinaikos':'باناثينايكوس',
+  'slavia prague':'سلافيا براغ','sparta prague':'سبارتا براغ','red star belgrade':'النجم الأحمر','crvena zvezda':'النجم الأحمر',
+  'bodo glimt':'بودو غليمت','qarabag':'قره باغ','pafos':'بافوس','kairat':'كايرات'
+};
+const TEAM_STOP = new Set(['al','fc','sc','cf','ac','as','ss','us','ssc','afc','rc','rcd','ud','sd','club','saudi','de','the',
+  'fk','sk','bk','if','ol','og','sv','vfl','vfb','tsg','fsv','bsc','sco','stade','calcio','1899','1904','1909','1910','1913','1846','1893','1900']);
+function teamKey(name) {
+  return String(name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w && !TEAM_STOP.has(w)).join(' ').trim();
+}
+function arTeam(name, short) {
+  const k = teamKey(name);
+  if (TEAM_AR[k]) return TEAM_AR[k];
+  const words = k.split(' ');
+  for (let n = words.length; n >= 1; n--) { const sub = words.slice(0, n).join(' '); if (TEAM_AR[sub]) return TEAM_AR[sub]; }
+  return short || name;
+}
+function riyadhDate(d){
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
+function riyadhTime12(d){
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', hour: '2-digit', minute: '2-digit', hour12: true }).format(d).toUpperCase();
+}
+function fetchLeagueDay(code, ymd){
+  var url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/' + code + '/scoreboard?dates=' + ymd.replace(/-/g, '') + '&limit=100';
+  return fetch(url, { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error('espn_' + r.status); return r.json(); });
+}
+function buildFromEspn(results, todayStr){
+  var leagues = [];
+  MATCH_LEAGUES.forEach(function(lg, i){
+    var res = results[i];
+    if (!res || res.status !== 'fulfilled' || !res.value || !Array.isArray(res.value.events)) return;
+    var matches = [];
+    res.value.events.forEach(function(ev){
+      var when = new Date(ev.date);
+      if (isNaN(when.getTime()) || riyadhDate(when) !== todayStr) return;
+      var comp = (ev.competitions && ev.competitions[0]) || {};
+      var comps = comp.competitors || [];
+      var home = comps.filter(function(c){ return c.homeAway === 'home'; })[0] || comps[0];
+      var away = comps.filter(function(c){ return c.homeAway === 'away'; })[0] || comps[1];
+      if (!home || !away) return;
+      var st = (ev.status && ev.status.type) || {};
+      var m = {
+        time: riyadhTime12(when),
+        home: arTeam(home.team && home.team.displayName, home.team && home.team.shortDisplayName),
+        away: arTeam(away.team && away.team.displayName, away.team && away.team.shortDisplayName),
+        _ts: when.getTime()
+      };
+      if (st.state === 'in') {
+        m.score = [Number(home.score) || 0, Number(away.score) || 0];
+        m.live = true;
+        m.minute = (ev.status && ev.status.displayClock) || st.shortDetail || '';
+        if (/HALFTIME/i.test(st.name || '')) m.minute = 'استراحة';
+      } else if (st.state === 'post') {
+        m.score = [Number(home.score) || 0, Number(away.score) || 0];
+        if (/POSTPONED|CANCEL/i.test(st.name || '')) { delete m.score; m.note = 'مؤجلة'; }
+      } else if (/POSTPONED|CANCEL/i.test(st.name || '')) {
+        m.note = 'مؤجلة';
+      }
+      matches.push(m);
+    });
+    matches.sort(function(a, b){ return a._ts - b._ts; });
+    matches.forEach(function(m){ delete m._ts; });
+    if (matches.length) leagues.push({ name: lg.name, badge: lg.badge, matches: matches });
+  });
+  return leagues;
+}
+
 var LEAGUES = [];
-function loadData(then){
-  fetch("/matches-data.js", { cache: "no-store" })
+var DATA_SOURCE = "";
+function loadManual(){
+  return fetch("/matches-data.js", { cache: "no-store" })
     .then(function(r){ return r.text(); })
     .then(function(code){
       var shared = new Function(code + "\n;return (typeof LEAGUES !== 'undefined') ? LEAGUES : null;")();
-      if (shared) LEAGUES = shared;
+      if (shared) { LEAGUES = shared; DATA_SOURCE = "manual"; }
+    });
+}
+function loadData(then){
+  var todayStr = riyadhDate(new Date());
+  Promise.allSettled(MATCH_LEAGUES.map(function(lg){ return fetchLeagueDay(lg.code, todayStr); }))
+    .then(function(results){
+      var okCount = results.filter(function(r){ return r.status === 'fulfilled'; }).length;
+      if (!okCount) throw new Error('all_failed');
+      LEAGUES = buildFromEspn(results, todayStr);
+      DATA_SOURCE = "auto";
     })
-    .catch(function(){ /* تعذّر الجلب — نبقي آخر بيانات معروضة */ })
+    .catch(function(){ return loadManual().catch(function(){}); })
     .then(then);
 }
-loadData(render);
+loadData(function(){ render(); tick(); });
 
 function render(){
   var root = document.getElementById("leagues");
@@ -340,10 +483,12 @@ function render(){
         var done = Array.isArray(m.score);
         var live = isLiveNow(m);
         var timeCell = live
-          ? '<div class="time live">● مباشر</div>'
+          ? '<div class="time live" dir="ltr">● ' + (m.minute || 'مباشر') + '</div>'
           : done
             ? '<div class="time ft">انتهت</div>'
-            : '<div class="time">' + m.time + "</div>";
+            : m.note
+              ? '<div class="time ft">' + m.note + '</div>'
+              : '<div class="time">' + m.time + "</div>";
         var midCell = done
           ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
           : '<div class="vs">VS</div>';
@@ -355,8 +500,11 @@ function render(){
   });
 }
 
-/* تحديث تلقائي كل ٣ دقائق: نتائج وحالة "مباشر" بلا إعادة تحميل */
-setInterval(function(){ loadData(render); }, 180000);
+/* تحديث تلقائي: كل دقيقة أثناء مباراة جارية، وكل ٥ دقائق خلاف ذلك */
+function tick(){
+  var anyLive = LEAGUES.some(function(l){ return l.matches.some(function(m){ return m.live || isLiveNow(m); }); });
+  setTimeout(function(){ loadData(function(){ render(); tick(); }); }, anyLive ? 60000 : 300000);
+}
 
 /* ===== حفظ / مشاركة الجدول كصورة ===== */
 document.getElementById("shareBtn").addEventListener("click", function(){
