@@ -314,6 +314,8 @@ function isLiveNow(m){
    ===================================================================== */
 var MATCH_LEAGUES = [
   { code: 'ksa.1',          name: 'دوري روشن السعودي',        badge: 'RSL' },
+  { code: 'afc.champions',  name: 'دوري أبطال آسيا للنخبة',   badge: 'ACL' },
+  { code: 'afc.cup',        name: 'دوري أبطال آسيا 2',        badge: 'ACL2' },
   { code: 'uefa.champions', name: 'دوري أبطال أوروبا',        badge: 'UCL' },
   { code: 'eng.1',          name: 'الدوري الإنجليزي الممتاز',  badge: 'PL'  },
   { code: 'esp.1',          name: 'الدوري الإسباني',           badge: 'LL'  },
@@ -331,6 +333,24 @@ const TEAM_AR = {
   'wehda':'الوحدة','tai':'الطائي','faisaly':'الفيصلي','orobah':'العروبة','jabalain':'الجبلين',
   'diriyah':'الدرعية','jeddah':'جدة','ohod':'أحد','batin':'الباطن','adalah':'العدالة','shoulla':'الشعلة',
   'arabi':'العربي','ain':'العين','jubail':'الجبيل','bukiryah':'البكيرية','sahel':'الساحل','zulfi':'الزلفي',
+  // آسيا (أبطال آسيا)
+  'gharafa':'الغرافة','sadd':'السد','duhail':'الدحيل','rayyan':'الريان','arabi':'العربي','wakrah':'الوكرة',
+  'ain':'العين','wahda':'الوحدة','shabab ahli':'شباب الأهلي','shabab ahli dubai':'شباب الأهلي','sharjah':'الشارقة',
+  'wasl':'الوصل','jazira':'الجزيرة','nasr':'النصر الإماراتي','kuwait':'الكويت','qadsia':'القادسية الكويتي',
+  'sepahan':'سباهان','persepolis':'بيرسبوليس','esteghlal':'استقلال','tractor':'تراكتور','foolad':'فولاد',
+  'shorta':'الشرطة','quwa jawiya':'القوة الجوية','zawraa':'الزوراء','pakhtakor':'باختاكور','nasaf':'نسف',
+  'navbahor':'نافباهور','istiklol':'استقلال دوشنبه','muharraq':'المحرق','riffa':'الرفاع','seeb':'السيب',
+  'ulsan hd':'أولسان','ulsan hyundai':'أولسان','jeonbuk hyundai motors':'جيونبوك','jeonbuk':'جيونبوك',
+  'gwangju':'غوانغجو','pohang steelers':'بوهانغ','pohang':'بوهانغ','fc seoul':'سيول','seoul':'سيول',
+  'vissel kobe':'فيسل كوبي','yokohama f marinos':'يوكوهاما مارينوس','yokohama marinos':'يوكوهاما مارينوس',
+  'kawasaki frontale':'كاواساكي فرونتال','sanfrecce hiroshima':'سانفريتشي هيروشيما','gamba osaka':'غامبا أوساكا',
+  'machida zelvia':'ماتشيدا زيلفيا','fc machida zelvia':'ماتشيدا زيلفيا','kashima antlers':'كاشيما أنتلرز',
+  'urawa red diamonds':'أوراوا ريدز','urawa reds':'أوراوا ريدز','shanghai port':'شنغهاي بورت','shanghai shenhua':'شنغهاي شينهوا',
+  'shandong taishan':'شاندونغ تايشان','chengdu rongcheng':'تشنغدو رونغتشنغ','beijing guoan':'بكين غوان',
+  'buriram united':'بوريرام يونايتد','bangkok united':'بانكوك يونايتد','johor darul tazim':'جوهور دار التعظيم','johor darul ta zim':'جوهور دار التعظيم',
+  'melbourne city':'ملبورن سيتي','melbourne victory':'ملبورن فيكتوري','sydney':'سيدني','central coast mariners':'سنترال كوست مارينرز',
+  'western sydney wanderers':'وسترن سيدني','auckland':'أوكلاند','macarthur':'ماكارثر','lion city sailors':'ليون سيتي سيلورز',
+  'hanoi':'هانوي','nam dinh':'نام دينه','cong an ha noi':'شرطة هانوي','tampines rovers':'تامبينيس روفرز',
   // إنجلترا
   'arsenal':'آرسنال','aston villa':'أستون فيلا','bournemouth':'بورنموث','brentford':'برينتفورد',
   'brighton hove albion':'برايتون','brighton':'برايتون','chelsea':'تشيلسي','crystal palace':'كريستال بالاس',
