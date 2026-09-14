@@ -1741,39 +1741,6 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
-<!-- الفيديو الدعائي — ضع ملفاتك بجذر المستودع بنفس هذه الأسماء -->
-<section class="promo" id="promo-video">
-  <div class="wrap promo__inner">
-    <div class="promo__copy">
-      <h2>تعرّف على أكاديمية ليبرو</h2>
-      <p>جولة سريعة داخل ملاعبنا وبين لاعبينا — شاهد كيف نصنع الأبطال من اليوم، وكيف يتدرّب أبناؤكم في بيئة احترافية آمنة.</p>
-      <div class="promo__actions">
-        <button class="promo__cta" type="button" id="promoCtaBtn">
-          <i><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></i>
-          شاهد الفيديو
-        </button>
-        <a class="promo__alt" href="/register/">سجل ابنك الآن</a>
-      </div>
-    </div>
-    <button class="promo__card" id="promoCard" type="button" aria-label="تشغيل الفيديو التعريفي لأكاديمية ليبرو">
-      <img class="promo__card__bg" src="promo-video-poster.jpg" alt="" loading="lazy" onerror="this.remove()">
-      <svg class="promo__rings" viewBox="0 0 380 676" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <circle cx="190" cy="260" r="150" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="1.5"/>
-        <circle cx="190" cy="260" r="105" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="1.5"/>
-      </svg>
-      <img class="promo__logo" src="logo-lipro.png" alt="" loading="lazy" onerror="this.remove()">
-      <span class="promo__badge"><i></i> فيديو تعريفي</span>
-      <span class="promo__play" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="#0B2A22"><path d="M8 5v14l11-7z"/></svg>
-      </span>
-      <span class="promo__text">
-        <h2>تعرّف على أكاديمية ليبرو</h2>
-        <p>جولة سريعة داخل ملاعبنا وبين لاعبينا — شاهد كيف نصنع الأبطال من اليوم.</p>
-      </span>
-    </button>
-  </div>
-</section>
-
 <div class="promo-modal" id="promoModal" role="dialog" aria-modal="true" aria-label="مشغّل الفيديو التعريفي">
   <div class="promo-modal__box">
     <button class="promo-modal__close" id="promoClose" type="button" aria-label="إغلاق">
@@ -2191,7 +2158,7 @@ html{scroll-behavior:smooth}
         </div>
 
         <div class="event-featured__actions">
-          <a class="btn btn--gold" id="evCalBtn" href="#" download="lipro-friendly-2026-09-18.ics">📅 أضف الموعد للتقويم</a>
+          <a class="btn btn--gold" id="evCalBtn" href="/friendly-2026-09-18.ics">📅 أضف الموعد للتقويم</a>
           <a class="btn--glass" href="https://wa.me/966530634750?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%A8%D8%BA%D9%89%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%B7%D9%88%D9%84%D8%A9%20%D8%A7%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A7%D8%AA%20%D8%A7%D9%84%D9%88%D8%AF%D9%8A%D8%A9" target="_blank" rel="noopener">💬 استفسر عبر واتساب</a>
         </div>
       </div>
@@ -2943,6 +2910,8 @@ function fallback(text, cb){
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
     {src:"banner-tabby.jpg", w:1080, h:1920, title:"عروض الاشتراكات عن طريق تابي وتمارا — قسّط اشتراكك بدون فوائد", noCap:true},
+    {type:"video", src:"promo-video.mp4", poster:"promo-video-poster.jpg", w:576, h:1024,
+     title:"الفيديو التعريفي لأكاديمية ليبرو", meta:"جولة سريعة داخل ملاعبنا وبين لاعبينا", dur:25000},
     {src:"banner-9.jpg", w:1024, h:1536, title:"تهانينا ليبرو جيزان — الأول لشهر أغسطس بين فروع ليبرو", noCap:true},
     {src:"banner-5.jpg", w:562,  h:1000, title:"بطل بطولة البراعم — جازان تحت ١١ سنة", noCap:true},
     {src:"banner-1.jpg", w:1280, h:720,  title:"تتويج فريق ليبرو بلقب المنطقة", meta:"بطولة الاتحاد السعودي لكرة القدم"},
@@ -2973,7 +2942,7 @@ function fallback(text, cb){
       ? '<video class="slide__media" poster="' + s.poster + '" muted playsinline loop ' +
         'preload="none" aria-label="' + s.title + '">' +
           '<source src="' + s.src + '" type="video/mp4">' +
-          '<source src="' + s.webm + '" type="video/webm">' +
+          (s.webm ? '<source src="' + s.webm + '" type="video/webm">' : '') +
         '</video>'
       : '<img class="slide__media" src="' + s.src + '" alt="' + s.title +
         '" ' + (i === 0 ? 'fetchpriority="high"' : 'loading="lazy"') + '>';
@@ -3187,7 +3156,7 @@ function fallback(text, cb){
   var video  = document.getElementById("promoVideo");
   var closeBtn = document.getElementById("promoClose");
   var heroBtn  = document.getElementById("heroPlayBtn");
-  if(!card || !modal || !video) return;
+  if(!modal || !video) return;
 
   function openModal(){
     modal.classList.add("open");
@@ -3201,7 +3170,7 @@ function fallback(text, cb){
     video.pause();
   }
 
-  card.addEventListener("click", openModal);
+  if(card) card.addEventListener("click", openModal);
   var ctaBtn = document.getElementById("promoCtaBtn");
   if(ctaBtn) ctaBtn.addEventListener("click", openModal);
   closeBtn.addEventListener("click", closeModal);
@@ -3211,8 +3180,7 @@ function fallback(text, cb){
   if(heroBtn){
     heroBtn.addEventListener("click", function(e){
       e.preventDefault();
-      document.getElementById("promo-video").scrollIntoView({behavior:"smooth", block:"center"});
-      setTimeout(openModal, 380);
+      openModal();
     });
   }
 })();
@@ -3236,17 +3204,16 @@ function fallback(text, cb){
   }
   tick();
 
-  var ics = [
-    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lipro Academy//AR','BEGIN:VEVENT',
-    'UID:friendly-2026-09-18@liproacademy.com',
-    'DTSTART;TZID=Asia/Riyadh:20260918T184500','DTEND;TZID=Asia/Riyadh:20260918T210000',
-    'SUMMARY:بطولة الأكاديميات الودية — أكاديمية ليبرو',
-    'LOCATION:ملعب العام',
-    'DESCRIPTION:مواليد ٢٠١٢ — ليبرو × المحترف 6:45 م، الصاروخ × السودانية 7:45 م',
-    'END:VEVENT','END:VCALENDAR'
-  ].join('\r\n');
+  /* أندرويد: قوقل كالندر مباشرة — الآيفون والماك: ملف .ics المستضاف يفتح التقويم */
   var btn = document.getElementById('evCalBtn');
-  if (btn) btn.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  if (btn && /android/i.test(navigator.userAgent)) {
+    btn.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text=' + encodeURIComponent('بطولة الأكاديميات الودية — أكاديمية ليبرو')
+      + '&dates=20260918T154500Z/20260918T180000Z'
+      + '&location=' + encodeURIComponent('ملعب العام')
+      + '&details=' + encodeURIComponent('مواليد ٢٠١٢ — ليبرو × المحترف 6:45 م، الصاروخ × السودانية 7:45 م');
+    btn.target = '_blank'; btn.rel = 'noopener';
+  }
 })();
 </script>
 
