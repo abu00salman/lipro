@@ -1635,6 +1635,94 @@ html{scroll-behavior:smooth}
   document.documentElement.setAttribute("data-design2", d2);
 })();
 </script>
+
+<!-- ===================== LIPRO MOTION LAYER (CSS) ===================== -->
+<style id="lipro-motion">
+  html{scroll-behavior:smooth}
+
+  /* 0) شريط تقدّم القراءة — ذهبي رفيع أعلى الصفحة */
+  .m-progress{position:fixed;top:0;inset-inline-start:0;height:3px;width:0;z-index:2000;
+    background:linear-gradient(90deg,#C39A2F,#F5B325);transform-origin:left;pointer-events:none}
+
+  /* 1) الافتتاحية السينمائية — مرة واحدة لكل جلسة */
+  .m-intro{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;pointer-events:none}
+  .m-intro__panel{position:absolute;inset-inline:0;height:50.5%;background:linear-gradient(180deg,#04322C,#062B26)}
+  .m-intro__panel--top{top:0;transform-origin:top}
+  .m-intro__panel--bottom{bottom:0;transform-origin:bottom}
+  .m-intro__logo{position:relative;z-index:2;width:min(46vw,190px);opacity:0;transform:scale(.82) translateY(8px);
+    filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))}
+  .m-intro__line{position:absolute;z-index:2;top:calc(50% + min(28vw,120px));inset-inline-start:50%;height:2px;width:min(52vw,220px);
+    background:linear-gradient(90deg,transparent,#F5B325,transparent);transform:translateX(-50%) scaleX(0)}
+  .m-intro.play .m-intro__logo{animation:mIntroLogo .7s cubic-bezier(.2,.7,.2,1) forwards}
+  .m-intro.play .m-intro__line{animation:mIntroLine .55s .35s cubic-bezier(.2,.7,.2,1) forwards}
+  .m-intro.play .m-intro__panel--top{animation:mPanelTop .7s 1.05s cubic-bezier(.7,0,.3,1) forwards}
+  .m-intro.play .m-intro__panel--bottom{animation:mPanelBottom .7s 1.05s cubic-bezier(.7,0,.3,1) forwards}
+  .m-intro.play .m-intro__logo,.m-intro.play .m-intro__line{animation-fill-mode:forwards}
+  .m-intro.play .m-intro__logo{animation-name:mIntroLogo,mIntroOut;animation-duration:.7s,.35s;animation-delay:0s,1.0s}
+  .m-intro.play .m-intro__line{animation-name:mIntroLine,mIntroOut;animation-duration:.55s,.35s;animation-delay:.35s,1.0s}
+  @keyframes mIntroLogo{to{opacity:1;transform:scale(1) translateY(0)}}
+  @keyframes mIntroLine{to{transform:translateX(-50%) scaleX(1)}}
+  @keyframes mIntroOut{to{opacity:0}}
+  @keyframes mPanelTop{to{transform:translateY(-102%)}}
+  @keyframes mPanelBottom{to{transform:translateY(102%)}}
+  body.m-intro-lock{overflow:hidden}
+
+  /* 2) الهيرو: رسم خطوط الملعب + كرة تتدحرج + ومضة سرعة */
+  .hero2__pitch [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:mDraw 1.4s .2s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes mDraw{to{stroke-dashoffset:0}}
+  .m-ball{position:absolute;top:42%;inset-inline-end:8%;width:34px;height:34px;z-index:2;transform:translate(0,-50%);
+    filter:drop-shadow(0 8px 10px rgba(16,36,31,.35));animation:mRoll 2.4s .4s cubic-bezier(.25,.8,.3,1) forwards}
+  .m-ball svg{width:100%;height:100%;animation:mSpin 2.4s .4s cubic-bezier(.25,.8,.3,1) forwards}
+  @keyframes mRoll{to{transform:translate(calc(-1 * var(--roll,320px)),-50%)}}
+  @keyframes mSpin{to{transform:rotate(-1080deg)}}
+  .m-streak{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .m-streak::before{content:"";position:absolute;top:-20%;bottom:-20%;width:38%;inset-inline-start:-40%;
+    background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.28) 45%,rgba(212,173,69,.25) 55%,transparent 100%);
+    transform:skewX(-18deg);animation:mStreak 1.4s .9s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes mStreak{to{inset-inline-start:140%}}
+
+  /* 3) ظهور متدرّج للبطاقات عند التمرير — transform/opacity فقط */
+  .m-item{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+  .m-item.m-in{opacity:1;transform:none}
+  .m-item--x{transform:translateX(22px)}
+  .m-item--scale{transform:scale(.96)}
+  .reveal.in .eyebrow{animation:mEyebrow .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes mEyebrow{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+
+  /* 4) تفاعلات Hover — على الأجهزة التي تدعم المؤشر فقط */
+  @media (hover:hover) and (pointer:fine){
+    .btn--gold,.hero2__cta,.nav__cta{position:relative;overflow:hidden;transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+    .btn--gold::after,.hero2__cta::after,.nav__cta::after{content:"";position:absolute;top:0;bottom:0;width:40%;inset-inline-start:-60%;
+      background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:inset-inline-start .6s cubic-bezier(.2,.7,.2,1)}
+    .btn--gold:hover::after,.hero2__cta:hover::after,.nav__cta:hover::after{inset-inline-start:130%}
+    .btn--gold:hover,.hero2__cta:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 14px 30px rgba(195,154,47,.35)}
+    .btn:active,.hero2__cta:active{transform:scale(.97)}
+    .hfeat,.prog,.event,.branch,.pcard,.fee,.event-featured{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s}
+    .hfeat:hover,.prog:hover,.branch:hover,.pcard:hover,.fee:hover{transform:translateY(-6px);box-shadow:0 22px 44px -18px rgba(4,50,44,.45);border-color:rgba(195,154,47,.55)}
+    .event-featured:hover{transform:translateY(-4px);box-shadow:0 34px 70px rgba(4,50,44,.45)}
+    .event__media{overflow:hidden}.event__media img,.event-featured__poster img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+    .event:hover .event__media img,.event-featured:hover .event-featured__poster img{transform:scale(1.04)}
+    .nav a{position:relative}
+    .nav a:not(.nav__cta)::after{content:"";position:absolute;left:50%;bottom:-4px;width:0;height:2px;background:#F5B325;transform:translateX(-50%);transition:width .3s cubic-bezier(.2,.7,.2,1)}
+    .nav a:not(.nav__cta):hover::after{width:100%}
+  }
+
+  /* 5) البارالاكس الخفيف — سطح المكتب فقط، بالتحويل فقط */
+  [data-plx]{will-change:transform}
+
+  /* 6) تقليل الحركة: نلغي كل ما سبق */
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .m-intro{display:none}
+    .m-ball,.m-streak{display:none}
+    .hero2__pitch [pathLength]{animation:none;stroke-dasharray:none}
+    .m-item{opacity:1;transform:none;transition:none}
+    .reveal.in .eyebrow{animation:none}
+    [data-plx]{transform:none !important;will-change:auto}
+  }
+  /* الجوال: نحذف الومضة والبارالاكس حفاظًا على 60fps */
+  @media (pointer:coarse){.m-streak{display:none}[data-plx]{transform:none !important;will-change:auto}}
+</style>
 </head>
 <body>
 
@@ -3217,5 +3305,115 @@ function fallback(text, cb){
 })();
 </script>
 
+
+<!-- ===================== LIPRO MOTION LAYER (JS) ===================== -->
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine   = window.matchMedia('(pointer:fine)').matches;
+
+  /* ---------- 1) الافتتاحية السينمائية (مرة لكل جلسة) ---------- */
+  var seen = false;
+  try { seen = sessionStorage.getItem('lipro_intro') === '1'; } catch(e){}
+  if (!reduce && !seen) {
+    try { sessionStorage.setItem('lipro_intro', '1'); } catch(e){}
+    var intro = document.createElement('div');
+    intro.className = 'm-intro';
+    intro.setAttribute('aria-hidden', 'true');
+    intro.innerHTML =
+      '<div class="m-intro__panel m-intro__panel--top"></div>' +
+      '<div class="m-intro__panel m-intro__panel--bottom"></div>' +
+      '<img class="m-intro__logo" src="logo-lipro.png" alt="">' +
+      '<div class="m-intro__line"></div>';
+    document.body.appendChild(intro);
+    document.body.classList.add('m-intro-lock');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ intro.classList.add('play'); }); });
+    setTimeout(function(){ document.body.classList.remove('m-intro-lock'); }, 1500);
+    setTimeout(function(){ if (intro.parentNode) intro.parentNode.removeChild(intro); }, 2000);
+  }
+
+  /* ---------- 2) الهيرو: رسم خطوط الملعب + كرة + ومضة ---------- */
+  var visual = document.querySelector('.hero2__visual');
+  if (visual && !reduce) {
+    document.querySelectorAll('.hero2__pitch circle, .hero2__pitch path').forEach(function(el){ el.setAttribute('pathLength', '1'); });
+    var ball = document.createElement('div');
+    ball.className = 'm-ball'; ball.setAttribute('aria-hidden', 'true');
+    ball.innerHTML =
+      '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#fff" stroke="#173D33" stroke-width="2"/>' +
+      '<polygon points="32,20 42,27 38,39 26,39 22,27" fill="#173D33"/>' +
+      '<path d="M32 20 32 8 M42 27 54 24 M38 39 46 50 M26 39 18 50 M22 27 10 24" stroke="#173D33" stroke-width="2" fill="none"/>' +
+      '<circle cx="32" cy="32" r="30" fill="none" stroke="#173D33" stroke-width="2"/></svg>';
+    ball.style.setProperty('--roll', Math.round(visual.clientWidth * 0.84) + 'px');
+    visual.appendChild(ball);
+    var hero = document.querySelector('.hero2');
+    if (hero && fine) { var st = document.createElement('div'); st.className = 'm-streak'; hero.appendChild(st); }
+  }
+
+  /* ---------- 3) ظهور البطاقات بالتتابع عند التمرير ---------- */
+  var cards = document.querySelectorAll('.hfeat, .prog, .event, .event-featured, .branch, .pcard, .fee, .hero2__trust span, .hero2__proofnums > div');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var perParent = new Map();
+    cards.forEach(function(el){
+      var p = el.parentNode, i = perParent.get(p) || 0; perParent.set(p, i + 1);
+      el.classList.add('m-item');
+      if (el.classList.contains('event-featured')) el.classList.add('m-item--scale');
+      el.style.transitionDelay = Math.min(i * 70, 420) + 'ms';
+    });
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add('m-in'); cio.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+    cards.forEach(function(el){ cio.observe(el); });
+  }
+
+  /* ---------- 4) أرقام تتحرك عند الظهور (تدعم الأرقام العربية) ---------- */
+  var AR = '٠١٢٣٤٥٦٧٨٩';
+  function toAr(n){ return String(n).replace(/\d/g, function(d){ return AR[+d]; }); }
+  function animateNumber(el){
+    var text = el.textContent, parts = text.split(/([٠-٩0-9]+)/), targets = [];
+    parts.forEach(function(p, i){ if (/^[٠-٩0-9]+$/.test(p)) targets.push({ i: i, v: parseInt(p.replace(/[٠-٩]/g, function(d){ return AR.indexOf(d); }), 10), ar: /[٠-٩]/.test(p) }); });
+    if (!targets.length) return;
+    var t0 = null, dur = 1300;
+    function frame(ts){
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur); k = 1 - Math.pow(1 - k, 3);
+      var out = parts.slice();
+      targets.forEach(function(t){ var v = Math.round(t.v * k); out[t.i] = t.ar ? toAr(v) : String(v); });
+      el.textContent = out.join('');
+      if (k < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  var nums = document.querySelectorAll('.hero2__proofnums b, .stat b, .stats b, [data-count]');
+  if (!reduce && nums.length && 'IntersectionObserver' in window) {
+    var nio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) { animateNumber(en.target); nio.unobserve(en.target); } });
+    }, { threshold: 0.6 });
+    nums.forEach(function(el){ nio.observe(el); });
+  }
+
+  /* ---------- 5) شريط التقدّم + بارالاكس خفيف (سطح المكتب فقط) ---------- */
+  var bar = document.createElement('div'); bar.className = 'm-progress'; document.body.appendChild(bar);
+  var plx = [];
+  if (fine && !reduce) {
+    [['.hero2__wordmark', .18], ['.hero2__glow', .10], ['.hero2__pitch', .06], ['.hero2__pedestal', .10]].forEach(function(c){
+      var el = document.querySelector(c[0]); if (el) { el.setAttribute('data-plx', ''); plx.push({ el: el, f: c[1] }); }
+    });
+  }
+  var ticking = false;
+  function onScroll(){
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var y = window.scrollY || 0, docH = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (docH > 0 ? (y / docH * 100) : 0) + '%';
+      if (plx.length && y < window.innerHeight * 1.2) {
+        plx.forEach(function(p){ p.el.style.transform = 'translate(-50%,-50%) translateY(' + (y * p.f) + 'px)'; });
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
 </body>
 </html>
