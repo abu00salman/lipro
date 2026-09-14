@@ -1136,6 +1136,62 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   .event__flag{font-size:11.5px;padding:5px 11px;top:10px;inset-inline-start:10px}
 }
 
+/* ===== الحدث البارز (أقرب بطولة) ===== */
+.event-featured{
+  display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:0;
+  margin-top:40px;border-radius:24px;overflow:hidden;
+  background:linear-gradient(135deg,#04322C 0%,#0E4A3C 60%,#04322C 100%);
+  color:#fff;border:1px solid rgba(212,173,69,.35);
+  box-shadow:0 24px 60px rgba(4,50,44,.35);
+}
+.event-featured__poster{position:relative;background:#0B2E28}
+.event-featured__poster img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:2/3}
+.event-featured__soon{
+  position:absolute;top:14px;inset-inline-start:14px;z-index:2;
+  display:inline-flex;align-items:center;gap:7px;
+  background:#D64545;color:#fff;border-radius:999px;padding:6px 14px;
+  font-family:var(--display);font-weight:800;font-size:12.5px;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+.event-featured__soon i{width:7px;height:7px;border-radius:50%;background:#fff;animation:evPulse 1.4s ease-in-out infinite}
+@keyframes evPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.event-featured__body{padding:30px 30px 28px;display:flex;flex-direction:column;gap:16px}
+.event-featured__kicker{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--gold-2,#D4AD45)}
+.event-featured__title{font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,34px);line-height:1.25;margin:0}
+.event-featured__facts{display:flex;flex-wrap:wrap;gap:8px}
+.event-featured__facts span{
+  display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 13px;
+}
+.event-featured__facts svg{color:#D4AD45}
+.ev-match{
+  display:grid;grid-template-columns:auto 1fr auto 1fr;align-items:center;gap:10px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:11px 14px;
+}
+.ev-match__time{font-family:var(--display);font-weight:800;color:#0B2A22;background:#D4AD45;border-radius:9px;padding:4px 11px;font-size:14px;direction:ltr}
+.ev-match__team{font-family:var(--display);font-weight:700;font-size:16px;text-align:center}
+.ev-match__vs{font-family:var(--display);font-weight:800;font-size:12px;color:#D4AD45;background:rgba(212,173,69,.14);border-radius:8px;padding:5px 9px}
+.ev-count{display:flex;gap:10px}
+.ev-count div{flex:1;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(212,173,69,.35);border-radius:14px;padding:10px 6px}
+.ev-count b{display:block;font-family:var(--display);font-weight:800;font-size:28px;line-height:1;color:#D4AD45;font-variant-numeric:tabular-nums}
+.ev-count small{display:block;margin-top:4px;font-size:12px;color:rgba(255,255,255,.75)}
+.event-featured__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.event-featured__actions .btn--gold{box-shadow:0 10px 24px rgba(212,173,69,.35)}
+.btn--glass{
+  display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:#fff;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:12px 20px;
+  text-decoration:none;transition:.25s;
+}
+.btn--glass:hover{background:rgba(255,255,255,.2)}
+@media(max-width:820px){
+  .event-featured{grid-template-columns:1fr}
+  .event-featured__poster img{aspect-ratio:auto;max-height:520px;object-fit:contain;background:#0B2E28}
+  .event-featured__body{padding:22px 18px 22px}
+  .ev-match{grid-template-columns:auto 1fr auto 1fr;gap:6px;padding:10px}
+  .ev-match__team{font-size:14.5px}
+  .ev-count b{font-size:24px}
+}
+
 /* ===== البرامج ===== */
 .grid-prog{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:44px}
 .prog{
@@ -2098,6 +2154,48 @@ html{scroll-behavior:smooth}
     <p class="section-lead">
       مشاركات الأكاديمية المقبلة في بطولات الفئات السنية — تابعنا لمعرفة مواعيد المباريات والنتائج.
     </p>
+
+    <!-- الحدث البارز — يختفي تلقائيًا بعد انتهاء يوم البطولة (data-ends) -->
+    <article class="event-featured" id="eventFeatured" data-ends="2026-09-19T03:00:00+03:00">
+      <div class="event-featured__poster">
+        <span class="event-featured__soon"><i></i> الجمعة ١٨ سبتمبر</span>
+        <img src="event-friendly-2026-09-18.jpg" alt="بطولة الأكاديميات الودية — مواليد ٢٠١٢ — ملعب العام" loading="lazy" decoding="async">
+      </div>
+      <div class="event-featured__body">
+        <div class="event-featured__kicker">أقرب مشاركة — لا تفوّتكم</div>
+        <h3 class="event-featured__title">بطولة الأكاديميات الودية</h3>
+        <div class="event-featured__facts">
+          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>الجمعة ١٨ سبتمبر ٢٠٢٦</span>
+          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>ملعب العام</span>
+          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>مواليد ٢٠١٢</span>
+        </div>
+
+        <div class="ev-match">
+          <span class="ev-match__time">6:45 PM</span>
+          <span class="ev-match__team">أكاديمية ليبرو</span>
+          <span class="ev-match__vs">VS</span>
+          <span class="ev-match__team">أكاديمية المحترف</span>
+        </div>
+        <div class="ev-match">
+          <span class="ev-match__time">7:45 PM</span>
+          <span class="ev-match__team">أكاديمية الصاروخ</span>
+          <span class="ev-match__vs">VS</span>
+          <span class="ev-match__team">أكاديمية السودانية</span>
+        </div>
+
+        <div class="ev-count" id="evCount" data-start="2026-09-18T18:45:00+03:00" aria-live="polite">
+          <div><b id="evD">0</b><small>يوم</small></div>
+          <div><b id="evH">0</b><small>ساعة</small></div>
+          <div><b id="evM">0</b><small>دقيقة</small></div>
+          <div><b id="evS">0</b><small>ثانية</small></div>
+        </div>
+
+        <div class="event-featured__actions">
+          <a class="btn btn--gold" id="evCalBtn" href="#" download="lipro-friendly-2026-09-18.ics">📅 أضف الموعد للتقويم</a>
+          <a class="btn--glass" href="https://wa.me/966530634750?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%A8%D8%BA%D9%89%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%B7%D9%88%D9%84%D8%A9%20%D8%A7%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A7%D8%AA%20%D8%A7%D9%84%D9%88%D8%AF%D9%8A%D8%A9" target="_blank" rel="noopener">💬 استفسر عبر واتساب</a>
+        </div>
+      </div>
+    </article>
 
     <div class="grid-events">
       <article class="event">
@@ -3117,6 +3215,38 @@ function fallback(text, cb){
       setTimeout(openModal, 380);
     });
   }
+})();
+
+/* ===== الحدث البارز: عدّاد تنازلي + إخفاء تلقائي بعد انتهاء البطولة + ملف تقويم ===== */
+(function(){
+  var card = document.getElementById('eventFeatured');
+  if(!card) return;
+  var ends = new Date(card.dataset.ends).getTime();
+  if (Date.now() > ends) { card.remove(); return; }
+
+  var count = document.getElementById('evCount');
+  var start = new Date(count.dataset.start).getTime();
+  var D=document.getElementById('evD'),H=document.getElementById('evH'),M=document.getElementById('evM'),S=document.getElementById('evS');
+  function tick(){
+    var diff = Math.max(0, start - Date.now());
+    var d = Math.floor(diff/86400000), h = Math.floor(diff%86400000/3600000), m = Math.floor(diff%3600000/60000), s = Math.floor(diff%60000/1000);
+    D.textContent = d; H.textContent = h; M.textContent = m; S.textContent = s;
+    if (diff === 0) { count.innerHTML = '<div style="flex:1"><b style="font-size:20px">انطلقت البطولة ⚽</b></div>'; return; }
+    setTimeout(tick, 1000);
+  }
+  tick();
+
+  var ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lipro Academy//AR','BEGIN:VEVENT',
+    'UID:friendly-2026-09-18@liproacademy.com',
+    'DTSTART;TZID=Asia/Riyadh:20260918T184500','DTEND;TZID=Asia/Riyadh:20260918T210000',
+    'SUMMARY:بطولة الأكاديميات الودية — أكاديمية ليبرو',
+    'LOCATION:ملعب العام',
+    'DESCRIPTION:مواليد ٢٠١٢ — ليبرو × المحترف 6:45 م، الصاروخ × السودانية 7:45 م',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  var btn = document.getElementById('evCalBtn');
+  if (btn) btn.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
 })();
 </script>
 
