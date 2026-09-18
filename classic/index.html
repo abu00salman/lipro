@@ -5,15 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أكاديمية ليبرو الرياضية — نصنع الأبطال من اليوم</title>
 <meta name="description" content="أكاديمية ليبرو الرياضية — أكاديمية كرة قدم معتمدة من الاتحاد السعودي ومرخصة من وزارة الرياضة. ستة فروع في جازان وخميس مشيط للأعمار من ٥ إلى ١٨ سنة.">
-<link rel="icon" href="logo-lipro.png">
+<link rel="icon" href="/logo-lipro.png">
 <meta property="og:title" content="أكاديمية ليبرو الرياضية — نصنع الأبطال من اليوم">
 <meta property="og:description" content="تدريب احترافي، مدربون معتمدون، وبطولات حقيقية — ستة فروع في جازان وخميس مشيط.">
 <meta property="og:image" content="https://liproacademy.com/og-cover.jpg">
-<meta property="og:url" content="https://liproacademy.com/">
+<meta property="og:url" content="https://liproacademy.com/classic/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+@media(max-width:960px){.nav > .wrap .theme{display:none}}
 :root{
   --ink:#0A0C0B; --ink-2:#141816; --ink-3:#1C211E;
   --gold:#F5B325; --gold-2:#C39A2F;
@@ -33,11 +35,13 @@ a{color:inherit;text-decoration:none}
 .h--lg{font-size:clamp(32px,4.6vw,58px)}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;font-weight:600;font-size:14px;background:var(--paper-2);color:var(--ink)}
 .pill i{width:7px;height:7px;background:var(--ink);transform:rotate(45deg);display:inline-block}
-.pill--dark{background:rgba(255,255,255,.08);color:#fff}.pill--dark i{background:var(--gold)}
+.pill--dark{background:rgba(255,255,255,.08);color:#fff}
+.pill--dark i{background:var(--gold)}
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;padding:14px 24px;border-radius:12px;transition:transform .25s var(--ease),box-shadow .25s,background .25s;cursor:pointer;border:none}
 .btn--gold{background:var(--gold);color:var(--ink)}
 .btn--gold:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(245,179,37,.35)}
-.btn--ink{background:var(--ink);color:#fff}.btn--ink:hover{transform:translateY(-2px)}
+.btn--ink{background:var(--ink);color:#fff}
+.btn--ink:hover{transform:translateY(-2px)}
 .btn--outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:12px 22px;font-size:14px}
 .btn--outline:hover{background:#fff;color:var(--ink)}
 .btn svg{width:16px;height:16px}
@@ -48,8 +52,8 @@ section{position:relative}
 .check::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--gold) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0C0B' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat;flex:none}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
-
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}
+}
 /* NAV */
 .nav{position:absolute;inset-inline:0;top:0;z-index:20;padding:22px 0}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px}
@@ -67,8 +71,9 @@ section{position:relative}
 .mobile.open{display:block}
 .mobile a{display:block;padding:12px 14px;color:#fff;font-family:var(--display);font-weight:600;border-radius:10px}
 .mobile a:hover{background:rgba(255,255,255,.06)}
-@media(max-width:960px){.nav__links,.nav .btn--outline{display:none}.burger{display:grid;place-items:center}}
-
+@media(max-width:960px){.nav__links,.nav .btn--outline{display:none}
+.burger{display:grid;place-items:center}
+}
 /* HERO */
 .hero{min-height:100svh;background:var(--ink);color:#fff;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate}
 .hero__bg{position:absolute;inset:0;z-index:-1}
@@ -84,8 +89,9 @@ section{position:relative}
 .hero__social small{display:block;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.06em;color:rgba(255,255,255,.9)}
 .hero h1{max-width:820px;text-shadow:0 4px 30px rgba(0,0,0,.4)}
 .hero p{font-size:clamp(16px,1.5vw,20px);color:rgba(255,255,255,.88);max-width:620px;margin:18px 0 28px}
-@media(max-width:700px){.hero .wrap{padding-top:120px;padding-bottom:56px}.avatars img{width:38px;height:38px}}
-
+@media(max-width:700px){.hero .wrap{padding-top:120px;padding-bottom:56px}
+.avatars img{width:38px;height:38px}
+}
 /* STATEMENT + STATS */
 .state{background:var(--ink);color:#fff;padding:clamp(80px,11vw,150px) 0 0;text-align:center}
 .state img{height:56px;width:auto;margin:0 auto 26px}
@@ -99,8 +105,9 @@ section{position:relative}
 .marquee__track{display:flex;gap:44px;width:max-content;animation:mq 30s linear infinite;font-family:var(--display);font-weight:700;font-size:clamp(18px,2.2vw,26px);white-space:nowrap}
 .marquee__track i{width:10px;height:10px;background:var(--ink);transform:rotate(45deg);display:inline-block;align-self:center}
 @keyframes mq{to{transform:translateX(50%)}}
-@media(max-width:700px){.stats{flex-wrap:wrap;gap:22px}.stats div{flex:1 1 40%;border:none}}
-
+@media(max-width:700px){.stats{flex-wrap:wrap;gap:22px}
+.stats div{flex:1 1 40%;border:none}
+}
 /* SERVICES */
 .services .wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start}
 .services__sticky{position:sticky;top:110px}
@@ -112,8 +119,10 @@ section{position:relative}
 .svc__ico{position:absolute;top:28px;inset-inline-start:30px;width:48px;height:48px;color:#fff}
 .svc h3{font-family:var(--display);font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1.1;margin-bottom:16px}
 .svc .check{color:rgba(255,255,255,.92);margin-top:8px}
-@media(max-width:960px){.services .wrap{grid-template-columns:1fr;gap:34px}.services__sticky{position:static}.svc{min-height:340px;padding:26px}}
-
+@media(max-width:960px){.services .wrap{grid-template-columns:1fr;gap:34px}
+.services__sticky{position:static}
+.svc{min-height:340px;padding:26px}
+}
 /* WHY */
 .why .wrap{padding:0 16px}
 .why__card{background:var(--ink);color:#fff;border-radius:34px;padding:clamp(40px,6vw,72px) clamp(20px,4vw,44px);text-align:center}
@@ -127,8 +136,10 @@ section{position:relative}
 .feat p{color:var(--muted);font-size:15px}
 .why__img{border-radius:20px;overflow:hidden}
 .why__img img{width:100%;height:100%;object-fit:cover;filter:brightness(.9)}
-@media(max-width:960px){.why__grid{grid-template-columns:1fr}.why__img{min-height:360px;order:-1}.why__card{border-radius:24px}}
-
+@media(max-width:960px){.why__grid{grid-template-columns:1fr}
+.why__img{min-height:360px;order:-1}
+.why__card{border-radius:24px}
+}
 /* ABOUT */
 .about .wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:32px;align-items:stretch}
 .about__img{position:relative;border-radius:var(--r);overflow:hidden;background:var(--ink);min-height:520px}
@@ -143,8 +154,9 @@ section{position:relative}
 .certs{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .certs span{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14.5px}
 .certs span::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--gold) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0C0B' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/11px no-repeat}
-@media(max-width:960px){.about .wrap{grid-template-columns:1fr}.about__img{min-height:420px}}
-
+@media(max-width:960px){.about .wrap{grid-template-columns:1fr}
+.about__img{min-height:420px}
+}
 /* TRAINING */
 .train h2{margin-top:22px}
 .vids{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:26px;align-items:center;margin-top:56px;max-width:1080px;margin-inline:auto}
@@ -153,8 +165,9 @@ section{position:relative}
 .vid--main video,.vid--main img{filter:none}
 .vid:hover video,.vid:hover img{filter:none;transform:scale(1.03)}
 .vid::after{content:"";position:absolute;top:50%;left:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230A0C0B'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/26px no-repeat;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-@media(max-width:800px){.vids{grid-template-columns:1fr;max-width:380px}.vid{aspect-ratio:4/5}}
-
+@media(max-width:800px){.vids{grid-template-columns:1fr;max-width:380px}
+.vid{aspect-ratio:4/5}
+}
 /* ACHIEVEMENTS */
 .slider{position:relative}
 .slide{display:none;background:var(--ink);color:#fff;border-radius:30px;padding:26px;grid-template-columns:.9fr 1.3fr;gap:40px;align-items:center;min-height:420px}
@@ -170,8 +183,9 @@ section{position:relative}
 .dots{display:flex;gap:8px;background:var(--ink);padding:10px 14px;border-radius:999px}
 .dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
 .dots i.on{background:#fff}
-@media(max-width:860px){.slide{grid-template-columns:1fr;padding:16px}.slide img{min-height:260px;max-height:320px}}
-
+@media(max-width:860px){.slide{grid-template-columns:1fr;padding:16px}
+.slide img{min-height:260px;max-height:320px}
+}
 /* PRICING */
 .pricing{background:var(--paper-2)}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px;align-items:stretch}
@@ -189,8 +203,8 @@ section{position:relative}
 .plan--pop{background:var(--ink);color:#fff}
 .plan--pop .plan__head{background:radial-gradient(60% 80% at 50% 0%,rgba(245,179,37,.18),transparent),var(--ink-3)}
 .plan--pop .plan__head p,.plan--pop .price small,.plan--pop .plan__body h5{color:var(--muted)}
-@media(max-width:960px){.plans{grid-template-columns:1fr;max-width:520px;margin-inline:auto}}
-
+@media(max-width:960px){.plans{grid-template-columns:1fr;max-width:520px;margin-inline:auto}
+}
 /* FAQ */
 .faq .wrap{max-width:860px}
 .q{border-bottom:1px solid var(--line-d)}
@@ -199,7 +213,6 @@ section{position:relative}
 .q summary::after{content:"+";font-size:26px;color:var(--gold-2);transition:transform .3s var(--ease)}
 .q[open] summary::after{transform:rotate(45deg)}
 .q p{padding:0 0 22px;color:var(--muted-d);font-size:16px;max-width:760px}
-
 /* EVENT */
 .event{background:var(--paper-2)}
 .event__card{display:grid;grid-template-columns:320px 1fr;background:var(--ink);color:#fff;border-radius:30px;overflow:hidden;margin-top:40px;border:1px solid rgba(245,179,37,.3)}
@@ -216,17 +229,20 @@ section{position:relative}
 .count div{flex:1;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(245,179,37,.3);border-radius:14px;padding:10px 6px}
 .count b{display:block;font-family:var(--display);font-size:30px;line-height:1;color:var(--gold)}
 .count small{color:rgba(255,255,255,.7);font-size:12px}
-@media(max-width:860px){.event__card{grid-template-columns:1fr}.event__card img{max-height:420px}.event__body{padding:22px}}
-
+@media(max-width:860px){.event__card{grid-template-columns:1fr}
+.event__card img{max-height:420px}
+.event__body{padding:22px}
+}
 /* CTA + FOOTER */
 .cta{background:var(--ink);color:#fff;min-height:520px;display:flex;align-items:center;isolation:isolate;overflow:hidden}
 .cta img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;filter:brightness(.5)}
 .cta::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,12,11,.85) 0%,rgba(10,12,11,.3) 60%,transparent)}
 .cta p{font-size:clamp(16px,1.5vw,20px);color:rgba(255,255,255,.88);max-width:560px;margin:18px 0 28px}
 .foot{background:var(--gold);color:var(--ink);position:relative;overflow:hidden}
-.foot::before{content:"";position:absolute;inset-inline-end:-140px;top:-80px;width:520px;height:520px;background:url("logo-lipro.png") center/contain no-repeat;opacity:.08;filter:grayscale(1) brightness(0)}
+.foot::before{content:"";position:absolute;inset-inline-end:-140px;top:-80px;width:520px;height:520px;background:url("/logo-lipro.png") center/contain no-repeat;opacity:.08;filter:grayscale(1) brightness(0)}
 .foot .wrap{position:relative;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;padding-top:72px;padding-bottom:40px}
-.foot .brand{color:var(--ink)}.foot .brand small{color:rgba(0,0,0,.6)}
+.foot .brand{color:var(--ink)}
+.foot .brand small{color:rgba(0,0,0,.6)}
 .foot p{max-width:380px;margin:20px 0 26px;font-weight:500}
 .socials{display:flex;gap:10px}
 .socials a{width:42px;height:42px;border-radius:12px;background:var(--ink);color:var(--gold);display:grid;place-items:center}
@@ -234,21 +250,24 @@ section{position:relative}
 .foot__links{display:grid;gap:14px;font-family:var(--display);font-weight:700;font-size:clamp(22px,2.6vw,34px);align-content:start;justify-items:end}
 .foot__links a:hover{text-decoration:underline}
 .foot__bottom{position:relative;display:flex;justify-content:space-between;gap:16px;padding:26px 0 34px;border-top:1px solid rgba(0,0,0,.15);font-size:14px;font-weight:500}
-@media(max-width:800px){.foot .wrap{grid-template-columns:1fr}.foot__links{justify-items:start}.foot__bottom{flex-direction:column}}
-
+@media(max-width:800px){.foot .wrap{grid-template-columns:1fr}
+.foot__links{justify-items:start}
+.foot__bottom{flex-direction:column}
+}
 /* MODAL */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal.open{display:flex}
 .modal__box{width:min(420px,100%);aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#000;position:relative}
 .modal video{width:100%;height:100%;object-fit:contain}
 .modal__x{position:absolute;top:14px;inset-inline-end:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;border:none;cursor:pointer;font-size:22px;z-index:2}
+
 </style>
 </head>
 <body>
 
 <header class="nav" id="top">
   <div class="wrap">
-    <a class="brand" href="/"><img src="logo-lipro.png" alt="ليبرو"><span><b>أكاديمية ليبرو</b><small>LIPRO ACADEMY</small></span></a>
+    <a class="brand" href="/"><img src="/logo-lipro.png" alt="ليبرو"><span><b>أكاديمية ليبرو</b><small>LIPRO ACADEMY</small></span></a>
     <nav class="nav__links" aria-label="القائمة">
       <a href="#top">الرئيسية</a><a href="#about">الأكاديمية</a><a href="#programs">البرامج</a>
       <a href="/matches/">مباريات اليوم</a><a href="/store/">المتجر</a><a href="https://wa.me/966530634750">تواصل</a>
@@ -266,10 +285,10 @@ section{position:relative}
 </header>
 
 <section class="hero">
-  <div class="hero__bg"><img src="banner-1.jpg" alt="" fetchpriority="high"></div>
+  <div class="hero__bg"><img src="/banner-1.jpg" alt="" fetchpriority="high"></div>
   <div class="wrap">
     <div class="hero__social rv">
-      <span class="avatars"><img src="branch-jizan.jpg" alt=""><img src="branch-khamis.jpg" alt=""><img src="branch-bish.jpg" alt=""></span>
+      <span class="avatars"><img src="/branch-jizan.jpg" alt=""><img src="/branch-khamis.jpg" alt=""><img src="/branch-bish.jpg" alt=""></span>
       <div><div class="stars">★★★★★</div><small>+٦٠٠ لاعب يتدربون معنا</small></div>
     </div>
     <h1 class="h h--xl rv">أطلق إمكانياتك<br>الحقيقية</h1>
@@ -280,7 +299,7 @@ section{position:relative}
 
 <section class="state">
   <div class="wrap">
-    <img src="logo-lipro.png" alt="" class="rv">
+    <img src="/logo-lipro.png" alt="" class="rv">
     <h2 class="h h--lg rv">نحوّل الموهوبين<br>إلى لاعبين<br>منافسين حقيقيين</h2>
     <div class="stats rv">
       <div><b data-count="6">٠</b><span>فروع في جازان وعسير</span></div>
@@ -302,17 +321,17 @@ section{position:relative}
       <a class="btn btn--gold rv" href="/register/">ابدأ الآن <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
     </div>
     <div>
-      <article class="svc rv"><img src="banner-3.jpg" alt="" loading="lazy">
+      <article class="svc rv"><img src="/banner-3.jpg" alt="" loading="lazy">
         <svg class="svc__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
         <h3>برامج تدريب أسبوعية</h3>
         <div class="check">ثلاثة أيام تدريب في الأسبوع</div><div class="check">متابعة فنية وبدنية لكل لاعب</div><div class="check">مباريات داخلية دورية</div>
       </article>
-      <article class="svc rv"><img src="banner-2.jpg" alt="" loading="lazy">
+      <article class="svc rv"><img src="/banner-2.jpg" alt="" loading="lazy">
         <svg class="svc__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v7a7 7 0 0 1-14 0Z"/><path d="M12 18v3M8 21h8"/></svg>
         <h3>بطولات وتجارب أندية</h3>
         <div class="check">مشاركات رسمية في بطولات المنطقة</div><div class="check">أولوية الترشيح لتجارب الأندية</div><div class="check">أكثر من ٨ انتقالات لأندية سعودية</div>
       </article>
-      <article class="svc rv"><img src="banner-4.jpg" alt="" loading="lazy">
+      <article class="svc rv"><img src="/banner-4.jpg" alt="" loading="lazy">
         <svg class="svc__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20 12 4l8 16H4Z"/><path d="M12 12v8"/></svg>
         <h3>معسكرات وتطوير</h3>
         <div class="check">معسكرات إعدادية موسمية</div><div class="check">مدربون معتمدون آسيوياً وأفريقياً</div><div class="check">من ٥ إلى ١٨ سنة</div>
@@ -330,7 +349,7 @@ section{position:relative}
         <div class="feat rv"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i><div><h4>تأسيس مبكر صحيح</h4><p>نبدأ من الأساسيات بمنهج مناسب لكل فئة عمرية، بدون حرق مراحل.</p></div></div>
         <div class="feat rv"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-8-5.3-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 5.7-8 11-8 11Z"/><path d="M12 8v6M9 11h6"/></svg></i><div><h4>سلامة اللاعب أولاً</h4><p>أحمال تدريب متوازنة تدعم التعافي والاستمرارية والنمو الطويل.</p></div></div>
       </div>
-      <div class="why__img rv"><img src="banner-5.jpg" alt="" loading="lazy"></div>
+      <div class="why__img rv"><img src="/banner-5.jpg" alt="" loading="lazy"></div>
       <div class="why__col">
         <div class="feat rv"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M4 15l4-4 4 3 8-8"/><path d="M16 6h4v4"/></svg></i><div><h4>تطور يُقاس</h4><p>متابعة فنية وبدنية دورية لكل لاعب، وتقارير واضحة لولي الأمر.</p></div></div>
         <div class="feat rv"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M8 2h8l-2 6h-4z"/></svg></i><div><h4>طريق للأندية</h4><p>بطولات حقيقية وتجارب أندية — أكثر من ٨ لاعبين انتقلوا لأندية سعودية.</p></div></div>
@@ -341,7 +360,7 @@ section{position:relative}
 
 <section class="about sec" id="about" style="padding-top:0">
   <div class="wrap">
-    <div class="about__img rv"><img src="branch-jizan.jpg" alt="" loading="lazy"><div class="about__cap"><b>ليبرو جازان</b><span>الفرع الرئيسي</span></div></div>
+    <div class="about__img rv"><img src="/branch-jizan.jpg" alt="" loading="lazy"><div class="about__cap"><b>ليبرو جازان</b><span>الفرع الرئيسي</span></div></div>
     <div class="about__txt rv">
       <span class="pill"><i></i> عن الأكاديمية</span>
       <h2 class="h h--lg">مبنية على الخبرة.<br>مدفوعة بهدف.</h2>
@@ -356,9 +375,9 @@ section{position:relative}
     <span class="pill rv"><i></i> التدريب</span>
     <h2 class="h h--lg rv">شاهد المنهج على أرض الملعب</h2>
     <div class="vids">
-      <div class="vid rv" data-video="banner-video.mp4"><video src="banner-video.mp4" poster="banner-video-poster.jpg" muted loop playsinline preload="metadata"></video></div>
-      <div class="vid vid--main rv" data-video="promo-video.mp4"><video src="promo-video.mp4" poster="promo-video-poster.jpg" muted loop playsinline preload="metadata"></video></div>
-      <div class="vid rv" data-video="banner-video.mp4"><img src="branch-khamis.jpg" alt="" loading="lazy"></div>
+      <div class="vid rv" data-video="/banner-video.mp4"><video src="/banner-video.mp4" poster="/banner-video-poster.jpg" muted loop playsinline preload="metadata"></video></div>
+      <div class="vid vid--main rv" data-video="/promo-video.mp4"><video src="/promo-video.mp4" poster="/banner-5.jpg" muted loop playsinline preload="metadata"></video></div>
+      <div class="vid rv" data-video="/banner-video.mp4"><img src="/branch-khamis.jpg" alt="" loading="lazy"></div>
     </div>
   </div>
 </section>
@@ -368,9 +387,9 @@ section{position:relative}
     <span class="pill rv"><i></i> الإنجازات</span>
     <h2 class="h h--lg rv" style="margin:22px 0 44px">نتائج على أرض الملعب</h2>
     <div class="slider">
-      <article class="slide on"><img src="banner-1.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«بطل بطولة الاتحاد السعودي لكرة القدم بمنطقة جازان»</h3><div class="who"><b>فئة براعم ١١</b><span>لقب المنطقة — أكاديمية ليبرو</span></div></div></article>
-      <article class="slide"><img src="event-alwasm.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«مشاركة مشرّفة في مونديال عسير وبطولات جدة وجيزان»</h3><div class="who"><b>الفئات السنية</b><span>مشاركات إقليمية متعددة</span></div></div></article>
-      <article class="slide"><img src="banner-9.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«أكثر من ٨ لاعبين انتقلوا إلى أندية سعودية»</h3><div class="who"><b>تجارب الأندية</b><span>ترشيح مباشر من الأكاديمية</span></div></div></article>
+      <article class="slide on"><img src="/banner-1.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«بطل بطولة الاتحاد السعودي لكرة القدم بمنطقة جازان»</h3><div class="who"><b>فئة براعم ١١</b><span>لقب المنطقة — أكاديمية ليبرو</span></div></div></article>
+      <article class="slide"><img src="/event-alwasm.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«مشاركة مشرّفة في مونديال عسير وبطولات جدة وجيزان»</h3><div class="who"><b>الفئات السنية</b><span>مشاركات إقليمية متعددة</span></div></div></article>
+      <article class="slide"><img src="/banner-9.jpg" alt=""><div style="text-align:start"><div class="stars">★★★★★</div><h3>«أكثر من ٨ لاعبين انتقلوا إلى أندية سعودية»</h3><div class="who"><b>تجارب الأندية</b><span>ترشيح مباشر من الأكاديمية</span></div></div></article>
       <div class="slider__ctl">
         <button id="prev" aria-label="السابق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button>
         <div class="dots" id="dots"><i class="on"></i><i></i><i></i></div>
@@ -409,7 +428,7 @@ section{position:relative}
   <div class="wrap">
     <span class="pill rv" style="background:#fff"><i></i> بطولات ومشاركات قادمة</span>
     <article class="event__card rv" id="eventFeatured" data-ends="2026-09-19T03:00:00+03:00">
-      <img src="event-friendly-2026-09-18.jpg" alt="" loading="lazy">
+      <img src="/event-friendly-2026-09-18.jpg" alt="" loading="lazy">
       <div class="event__body">
         <span class="pill pill--dark"><i></i> الجمعة ١٨ سبتمبر</span>
         <h3>بطولة الأكاديميات الودية</h3>
@@ -436,7 +455,7 @@ section{position:relative}
 </section>
 
 <section class="cta">
-  <img src="banner-6.jpg" alt="" loading="lazy">
+  <img src="/banner-6.jpg" alt="" loading="lazy">
   <div class="wrap">
     <h2 class="h h--lg rv">ابدأ رحلة ابنك<br>بهدف واضح</h2>
     <p class="rv">التدريب، والمتابعة، والبطولات اللي يحتاجها ليتطور خطوة بخطوة — في بيئة احترافية آمنة.</p>
@@ -447,7 +466,7 @@ section{position:relative}
 <footer class="foot">
   <div class="wrap">
     <div>
-      <a class="brand" href="/"><img src="logo-lipro.png" alt="ليبرو"><span><b>أكاديمية ليبرو</b><small>LIPRO ACADEMY</small></span></a>
+      <a class="brand" href="/"><img src="/logo-lipro.png" alt="ليبرو"><span><b>أكاديمية ليبرو</b><small>LIPRO ACADEMY</small></span></a>
       <p>أكاديمية كرة قدم معتمدة لتأسيس اللاعبين وتطويرهم — نصنع الأبطال من اليوم.</p>
       <div class="socials">
         <a href="https://wa.me/966530634750" aria-label="واتساب"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg></a>
@@ -463,6 +482,7 @@ section{position:relative}
 <div class="modal" id="modal"><div class="modal__box"><button class="modal__x" id="modalX" aria-label="إغلاق">×</button><video id="modalVid" controls playsinline></video></div></div>
 
 <script>
+
 (function(){
   var b=document.getElementById('burger'),m=document.getElementById('mobile');
   b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',o);});
@@ -497,6 +517,7 @@ section{position:relative}
       var cb=document.getElementById('calBtn');if(cb&&/android/i.test(navigator.userAgent)){cb.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('بطولة الأكاديميات الودية — أكاديمية ليبرو')+'&dates=20260918T154500Z/20260918T180000Z&location='+encodeURIComponent('ملعب العام');cb.target='_blank';}
     }}
 })();
+
 </script>
 </body>
 </html>
