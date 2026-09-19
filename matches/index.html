@@ -230,6 +230,15 @@
     clip-path:polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);
   }
   .time.ft{background:var(--green-700)}
+  .watch{
+    grid-column:1 / -1;display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:10px;padding:10px 16px;border-radius:10px;text-decoration:none;
+    background:linear-gradient(135deg,#D64545,#B93030);color:#fff;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;
+    box-shadow:0 8px 18px -10px rgba(214,69,69,.8);
+  }
+  .watch:hover{filter:brightness(1.08)}
+  .watch i{width:8px;height:8px;border-radius:50%;background:#fff;animation:lp-pulse 1.4s ease-in-out infinite}
   .vs.score{font-size:15px;letter-spacing:1px}
 
   .empty{
@@ -469,6 +478,7 @@ function mergeExtra(leagues, todayStr){
   EXTRA_MATCHES.filter(function(m){ return m.date === todayStr; }).forEach(function(m){
     var same = leagues.filter(function(l){ return l.name === m.league; })[0];
     var entry = { time: m.time, home: m.home, away: m.away };
+    if (m.watch) entry.watch = m.watch;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
     if (m.note) entry.note = m.note;
     if (same) {
@@ -529,7 +539,8 @@ function buildFromEspn(results, todayStr){
    ===================================================================== */
 var EXTRA_MATCHES = [
   { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
-    time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي' }
+    time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي',
+    watch: { label: 'شاهد المباراة على MBC / شاهد', url: 'https://shahid.mbc.net' } }
 ];
 
 var LEAGUES = [];
@@ -584,9 +595,13 @@ function render(){
         var midCell = done
           ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
           : '<div class="vs">VS</div>';
+        var watchBtn = m.watch
+          ? '<a class="watch" href="' + m.watch.url + '" target="_blank" rel="noopener">' +
+            '<i></i>' + (m.watch.label || 'بث مباشر') + '</a>'
+          : '';
         return '<div class="match">' + timeCell +
           '<div class="team">' + m.home + "</div>" + midCell +
-          '<div class="team">' + m.away + "</div></div>";
+          '<div class="team">' + m.away + "</div>" + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
   });
