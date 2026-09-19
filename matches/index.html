@@ -605,21 +605,30 @@ document.getElementById("shareBtn").addEventListener("click", function(){
   btn.disabled = true;
   btn.textContent = "⏳ جاري التجهيز…";
   function restore(){ btn.disabled = false; btn.textContent = old; }
+  function failed(){ btn.disabled = false; btn.textContent = "تعذّر الحفظ — حاول مرة أخرى";
+    setTimeout(function(){ btn.textContent = old; }, 2600); }
 
   function capture(){
     var frame = document.querySelector(".frame");
+    /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
+       نحسب أعلى دقة ممكنة ضمن هذا الحد بدل تثبيت رقم يفشل مع الصفحات الطويلة. */
+    var w = frame.scrollWidth, hgt = frame.scrollHeight;
+    var MAX_PX = 15000000;
+    var maxScale = Math.sqrt(MAX_PX / (w * hgt));
+    var scale = Math.max(1.5, Math.min(4, maxScale, (window.devicePixelRatio || 1) * 2.5));
+
     html2canvas(frame, {
       backgroundColor: "#f7f4ec",
-      scale: Math.max(4, (window.devicePixelRatio || 1) * 2.5),
+      scale: scale,
       useCORS: true,
       allowTaint: false,
       imageTimeout: 15000,
-      windowWidth: frame.scrollWidth,
-      windowHeight: frame.scrollHeight,
+      windowWidth: w,
+      windowHeight: hgt,
       ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
     }).then(function(canvas){
       canvas.toBlob(function(blob){
-        if (!blob) { restore(); return; }
+        if (!blob) { failed(); return; }
         var file = new File([blob], "lipro-matches.png", { type: "image/png" });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({ files: [file], title: "مباريات اليوم — أكاديمية ليبرو الرياضية" })
@@ -634,7 +643,7 @@ document.getElementById("shareBtn").addEventListener("click", function(){
           restore();
         }
       }, "image/png");
-    }).catch(restore);
+    }).catch(failed);
   }
 
   if (window.html2canvas) { capture(); }
@@ -642,7 +651,7 @@ document.getElementById("shareBtn").addEventListener("click", function(){
     var s = document.createElement("script");
     s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
     s.onload = capture;
-    s.onerror = restore;
+    s.onerror = failed;
     document.head.appendChild(s);
   }
 });
