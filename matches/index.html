@@ -334,6 +334,7 @@ function isLiveNow(m){
 var MATCH_LEAGUES = [
   { code: 'ksa.1',          name: 'دوري روشن السعودي',        badge: 'RSL' },
   { code: 'afc.champions',  name: 'دوري أبطال آسيا للنخبة',   badge: 'ACL' },
+  { code: 'fifa.intercontinental', name: 'كأس القارات للأندية', badge: 'FIFA' },
   { code: 'afc.cup',        name: 'دوري أبطال آسيا 2',        badge: 'ACL2' },
   { code: 'uefa.champions', name: 'دوري أبطال أوروبا',        badge: 'UCL' },
   { code: 'eng.1',          name: 'الدوري الإنجليزي الممتاز',  badge: 'PL'  },
@@ -462,6 +463,24 @@ function fetchLeagueDay(code, ymd){
   var url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/' + code + '/scoreboard?dates=' + ymd.replace(/-/g, '') + '&limit=100';
   return fetch(url, { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error('espn_' + r.status); return r.json(); });
 }
+/* يدمج المباريات المضافة يدويًا لليوم الحالي مع مباريات المصدر التلقائي */
+function mergeExtra(leagues, todayStr){
+  leagues = leagues || [];
+  EXTRA_MATCHES.filter(function(m){ return m.date === todayStr; }).forEach(function(m){
+    var same = leagues.filter(function(l){ return l.name === m.league; })[0];
+    var entry = { time: m.time, home: m.home, away: m.away };
+    if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
+    if (m.note) entry.note = m.note;
+    if (same) {
+      var dup = same.matches.some(function(x){ return x.home === entry.home && x.away === entry.away; });
+      if (!dup) same.matches.push(entry);
+    } else {
+      leagues.unshift({ name: m.league, badge: m.badge || '⚽', matches: [entry] });
+    }
+  });
+  return leagues;
+}
+
 function buildFromEspn(results, todayStr){
   var leagues = [];
   MATCH_LEAGUES.forEach(function(lg, i){
@@ -503,6 +522,16 @@ function buildFromEspn(results, todayStr){
   return leagues;
 }
 
+/* =====================================================================
+   ✍️ مباريات تُضاف يدويًا — لبطولات قد لا يغطيها المصدر التلقائي
+   date: تاريخ اليوم بصيغة YYYY-MM-DD (بتوقيت السعودية)
+   تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
+   ===================================================================== */
+var EXTRA_MATCHES = [
+  { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
+    time: '06:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي' }
+];
+
 var LEAGUES = [];
 var DATA_SOURCE = "";
 function loadManual(){
@@ -510,7 +539,7 @@ function loadManual(){
     .then(function(r){ return r.text(); })
     .then(function(code){
       var shared = new Function(code + "\n;return (typeof LEAGUES !== 'undefined') ? LEAGUES : null;")();
-      if (shared) { LEAGUES = shared; DATA_SOURCE = "manual"; }
+      if (shared) { LEAGUES = mergeExtra(shared, riyadhDate(new Date())); DATA_SOURCE = "manual"; }
     });
 }
 function loadData(then){
@@ -519,7 +548,7 @@ function loadData(then){
     .then(function(results){
       var okCount = results.filter(function(r){ return r.status === 'fulfilled'; }).length;
       if (!okCount) throw new Error('all_failed');
-      LEAGUES = buildFromEspn(results, todayStr);
+      LEAGUES = mergeExtra(buildFromEspn(results, todayStr), todayStr);
       DATA_SOURCE = "auto";
     })
     .catch(function(){ return loadManual().catch(function(){}); })
