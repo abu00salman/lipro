@@ -201,6 +201,62 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   .banner__bar{display:none}
 }
 
+/* ===== طابع اليوم الوطني السعودي — يظهر تلقائيًا ١٧–٢٦ سبتمبر =====
+   الأخضر الوطني (#046A38) يُستخدم كلمسة ضيف فوق هوية ليبرو، بلا صراخ:
+   خيط علوي رفيع، شريط تهنئة واحد، وشارة صغيرة في الترويسة. */
+.nd-ribbon{
+  height:3px;width:100%;
+  background:linear-gradient(90deg,#046A38 0 42%,#F7FAF8 42% 58%,#046A38 58% 100%);
+}
+.nd-strip{
+  position:relative;overflow:hidden;
+  background:linear-gradient(100deg,#04452A 0%,#046A38 52%,#03532F 100%);
+  color:#EAF6EE;padding:11px 20px;
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  font-size:14px;font-weight:500;letter-spacing:-.005em;
+}
+/* نخلة/سيف مائية خفيفة جدًا على اليسار — عمق بصري بلا ضجيج */
+.nd-strip::after{
+  content:"";position:absolute;inset-block:0;inset-inline-end:-30px;width:190px;
+  background:radial-gradient(circle at 70% 50%, rgba(255,255,255,.14), transparent 62%);
+  pointer-events:none;
+}
+.nd-strip__main{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--display);font-weight:800;font-size:15.5px;color:#fff;
+}
+.nd-strip__main svg{flex-shrink:0;opacity:.95}
+.nd-strip__num{
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;padding:2px 11px;font-variant-numeric:tabular-nums;
+}
+.nd-strip__sub{opacity:.8;font-size:13.5px}
+.nd-strip__sep{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.45)}
+@media(max-width:760px){
+  .nd-strip{padding:9px 16px;gap:8px;font-size:12.5px}
+  .nd-strip__main{font-size:14px}
+  .nd-strip__sub,.nd-strip__sep{display:none}
+}
+
+.nd-badge{
+  display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(4,106,56,.35),rgba(4,106,56,.16));
+  border:1px solid rgba(255,255,255,.22);
+  color:#fff;border-radius:999px;padding:6px 13px;
+  font-family:var(--body);font-size:12.5px;font-weight:700;white-space:nowrap;
+}
+.nd-badge svg{flex-shrink:0;opacity:.9}
+.nd-badge b{font-weight:800;font-variant-numeric:tabular-nums}
+@media(max-width:1180px){.nd-badge span{display:none}}
+@media(max-width:960px){.nd-badge{display:none}}
+
+/* لمسة موسمية على الفوتر: خيط علم رفيع أعلى التذييل */
+[data-nd] .footer{border-top:3px solid #046A38;position:relative}
+[data-nd] .footer::before{
+  content:"";position:absolute;top:-3px;inset-inline:0;height:3px;
+  background:linear-gradient(90deg,#046A38 0 42%,#F7FAF8 42% 58%,#046A38 58% 100%);
+}
+
 /* ===== الترويسة ===== */
 .topbar{
   position:sticky;top:0;z-index:60;
@@ -1726,6 +1782,18 @@ html{scroll-behavior:smooth}
 </head>
 <body>
 
+<!-- طابع اليوم الوطني السعودي — يظهر تلقائيًا في موسمه فقط -->
+<div class="nd-ribbon" id="ndRibbon" hidden aria-hidden="true"></div>
+<div class="nd-strip" id="ndStrip" hidden>
+  <span class="nd-strip__main">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V3"/><path d="M4 4h13l-1.6 3.5L17 11H4"/></svg>
+    كل عام والوطن بخير
+    <span class="nd-strip__num">اليوم الوطني <span id="ndNum">٩٦</span></span>
+  </span>
+  <i class="nd-strip__sep" aria-hidden="true"></i>
+  <span class="nd-strip__sub">أكاديمية ليبرو الرياضية تهنّئ القيادة والشعب السعودي</span>
+</div>
+
 <!-- الترويسة -->
 <header class="topbar">
   <div class="wrap topbar__in">
@@ -1748,6 +1816,11 @@ html{scroll-behavior:smooth}
       <a href="#fees">الرسوم</a>
       <a class="nav__cta" href="/register/">سجّل الآن</a>
     </nav>
+
+    <span class="nd-badge" id="ndBadge" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4h9l-1 3h8v8h-8l1-3H4"/></svg>
+      <b>اليوم الوطني <span id="ndNumBadge">٩٦</span></b><span>كل عام والوطن بخير</span>
+    </span>
 
     <div class="theme" id="themeSwitch" role="group" aria-label="مظهر الموقع">
       <button class="theme__btn" type="button" data-mode="light" aria-pressed="false" aria-label="الوضع النهاري" title="نهاري">
@@ -2562,6 +2635,28 @@ html{scroll-behavior:smooth}
 </footer>
 
 <script>
+/* ===== طابع اليوم الوطني السعودي =====
+   يظهر تلقائيًا من ١٧ إلى ٢٦ سبتمبر كل عام، ويختفي وحده بعدها.
+   رقم اليوم الوطني يُحسب تلقائيًا (١٩٣٢ = التأسيس الرسمي للمملكة). */
+(function(){
+  var d = new Date();
+  try{ d = new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"})); }catch(e){}
+  var inSeason = d.getMonth() === 8 && d.getDate() >= 17 && d.getDate() <= 26;
+  if(!inSeason) return;
+
+  var num = d.getFullYear() - 1930;                       /* ٢٠٢٦ → ٩٦ */
+  var AR = "٠١٢٣٤٥٦٧٨٩";
+  var arNum = String(num).replace(/[0-9]/g, function(x){ return AR[+x]; });
+
+  document.documentElement.setAttribute("data-nd", "on");
+  ["ndRibbon","ndStrip","ndBadge"].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.hidden = false;
+  });
+  ["ndNum","ndNumBadge"].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.textContent = arNum;
+  });
+})();
+
 /* ===== بيانات الفروع ===== */
 /* days: 0=الأحد 1=الاثنين 2=الثلاثاء 3=الأربعاء 4=الخميس 5=الجمعة 6=السبت */
 var BRANCHES = [
@@ -2997,6 +3092,8 @@ function fallback(text, cb){
   /* w/h = الأبعاد الأصلية — يضبط بها البنر ارتفاعه لكل شريحة */
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
+    {type:"video", src:"offer-video.mp4", poster:"offer-video-poster.jpg", w:720, h:1118, dur:18500,
+     title:"عرض اليوم الوطني — اشترك الآن في ليبرو", noCap:true},
     {src:"banner-tabby.jpg", w:1080, h:1920, title:"عروض الاشتراكات عن طريق تابي وتمارا — قسّط اشتراكك بدون فوائد", noCap:true},
     {type:"video", src:"promo-video.mp4", poster:"promo-video-poster.jpg", w:576, h:1024,
      title:"الفيديو التعريفي لأكاديمية ليبرو", meta:"جولة سريعة داخل ملاعبنا وبين لاعبينا", dur:25000},
