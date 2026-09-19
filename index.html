@@ -1685,10 +1685,7 @@ html{scroll-behavior:smooth}
   document.documentElement.setAttribute("data-mode", dark ? "dark" : "light");
   document.documentElement.setAttribute("data-pref", saved || (dark ? "dark" : "light"));
 
-  /* اختيار التصميم (جديد/كلاسيكي) — مبكرًا أيضًا لمنع وميض التبديل */
-  var d2 = "classic";
-  try{ d2 = localStorage.getItem("lipro_design2") || "classic"; }catch(e){}
-  document.documentElement.setAttribute("data-design2", d2);
+  document.documentElement.setAttribute("data-design2", "classic");
 })();
 </script>
 
@@ -1831,76 +1828,9 @@ html{scroll-behavior:smooth}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
         <span>ليلي</span>
       </button>
-      <button class="theme__btn design2-toggle" id="design2Toggle" type="button" aria-pressed="true" title="التبديل بين التصميم الجديد والكلاسيكي">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h13M3 12h9M3 17h13"/><path d="m18 9 3 3-3 3"/></svg>
-        <span id="design2Label">جديد</span>
-      </button>
     </div>
   </div>
 </header>
-
-<!-- الواجهة — تصميم زجاجي فاتح مطابق للمرجع المرفق -->
-<section class="hero2" id="top">
-  <div class="hero2__field" aria-hidden="true"></div>
-
-  <div class="wrap hero2__panel">
-    <div class="hero2__grid">
-
-      <div class="hero2__copy">
-        <span class="hero2__pill"><i></i> أكاديمية ليبرو الرياضية</span>
-        <h1 class="hero2__title">نصنع الأبطال<br><span>من اليوم</span></h1>
-        <p class="hero2__sub">
-          تدريب احترافي — برامج متكاملة — بيئة ملهمة تساعد كل لاعب على
-          اكتشاف إمكانياته والوصول لأعلى مستوى.
-        </p>
-        <div class="hero2__actions">
-          <a class="hero2__cta" href="/register/">
-            ابدأ رحلتك الآن
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </a>
-          <a class="hero2__play" href="#promo-video" id="heroPlayBtn" aria-label="شاهد الفيديو">
-            <span class="hero2__playbtn">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-            شاهد الفيديو
-          </a>
-        </div>
-        <div class="hero2__trust">
-          <span>مرخصة من وزارة الرياضة</span>
-          <span>عضوية الاتحاد السعودي</span>
-          <span>مدربون معتمدون آسيويًا وأفريقيًا</span>
-        </div>
-      </div>
-
-      <div class="hero2__visual" aria-hidden="true">
-        <span class="hero2__wordmark">LIPRO</span>
-        <svg class="hero2__pitch" viewBox="0 0 240 240">
-          <circle cx="120" cy="120" r="108" fill="none" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="120" cy="120" r="3" fill="currentColor"/>
-          <path d="M12 120 H228" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        <div class="hero2__pedestal"></div>
-        <div class="hero2__glow"></div>
-        <img class="hero2__shield" src="logo-lipro.png" alt="" loading="lazy" onerror="this.remove()">
-
-        <div class="hero2__proof">
-          <div class="hero2__proofnums">
-            <div><b>٦</b><span>فروع</span></div>
-            <div><b>٥–١٨</b><span>سنة</span></div>
-            <div><b>٨+</b><span>أندية انتقالات</span></div>
-          </div>
-          <p>لاعبون يتقدمون في ليبرو</p>
-        </div>
-      </div>
-
-    </div>
-
-    <a class="hero2__scroll" href="#heroFeatures">
-      اسحب للأسفل
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-    </a>
-  </div>
-</section>
 
 <div class="promo-modal" id="promoModal" role="dialog" aria-modal="true" aria-label="مشغّل الفيديو التعريفي">
   <div class="promo-modal__box">
@@ -1915,70 +1845,6 @@ html{scroll-behavior:smooth}
     </video>
   </div>
 </div>
-
-<!-- شريط الهوية المتحرك — بأسلوب الأندية العالمية -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker__track">
-    <span>أكاديمية ليبرو الرياضية</span><i>★</i>
-    <span class="ticker__en">LIPRO ACADEMY</span><i>★</i>
-    <span>نصنع الأبطال من اليوم</span><i>★</i>
-    <span>جازان · عسير</span><i>★</i>
-    <span>أكاديمية ليبرو الرياضية</span><i>★</i>
-    <span class="ticker__en">LIPRO ACADEMY</span><i>★</i>
-    <span>نصنع الأبطال من اليوم</span><i>★</i>
-    <span>جازان · عسير</span><i>★</i>
-  </div>
-</div>
-
-<!-- مزايا الأكاديمية الأربع -->
-<section class="hfeats" id="heroFeatures">
-  <div class="wrap hfeats__grid">
-    <div class="hfeat">
-      <span class="hfeat__icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg>
-      </span>
-      <h3>مدربون محترفون</h3>
-      <p>فريق من المدربين المعتمدين آسيويًا وأفريقيًا ذوي خبرة عالية.</p>
-    </div>
-    <div class="hfeat">
-      <span class="hfeat__icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18M12 4v16"/></svg>
-      </span>
-      <h3>برامج متكاملة</h3>
-      <p>برامج تدريبية تناسب جميع المستويات والأعمار من ٥ إلى ١٨ سنة.</p>
-    </div>
-    <div class="hfeat">
-      <span class="hfeat__icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v7a7 7 0 0 1-14 0Z"/><path d="M12 18v3M8 21h8"/></svg>
-      </span>
-      <h3>بطولات ومنافسات</h3>
-      <p>فرص للمشاركة في بطولات محلية ودولية وتجارب أندية حقيقية.</p>
-    </div>
-    <div class="hfeat">
-      <span class="hfeat__icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V10l9-6 9 6v11"/><path d="M9 21v-6h6v6"/></svg>
-      </span>
-      <h3>مرافق حديثة</h3>
-      <p>ملاعب وتجهيزات بأعلى المعايير في ستة فروع بجازان وعسير.</p>
-    </div>
-  </div>
-</section>
-
-<!-- لوحة تدريب اليوم — القسم المميز -->
-<section class="board-sec">
-  <div class="wrap" id="boardSlotNew">
-    <div class="board" id="today">
-      <div class="board__head">
-        <h2 class="board__title">التدريب اليوم في</h2>
-        <span class="board__date" id="boardDate"></span>
-      </div>
-      <p style="font-size:13.5px;color:#8FB2AA">اختر يومًا لتشوف الفروع المتدربة فيه.</p>
-      <div class="days" id="days" role="group" aria-label="أيام الأسبوع"></div>
-      <div class="rows" id="rows"></div>
-      <p class="board__foot">اضغط على أي فرع للوصول إلى موقع الملعب على الخريطة.</p>
-    </div>
-  </div>
-</section>
 
 <!-- بنر الإنجازات -->
 <section class="banner" id="banner" aria-roledescription="عرض متحرك" aria-label="إنجازات الأكاديمية وأحدث أخبارها">
@@ -2000,8 +1866,8 @@ html{scroll-behavior:smooth}
   <div class="banner__bar" id="bBar"></div>
 </section>
 
-<!-- الواجهة الكلاسيكية — التصميم السابق، يظهر عند اختيار «كلاسيكي» -->
-<section class="hero" id="heroClassic" hidden>
+<!-- الواجهة الرئيسية -->
+<section class="hero" id="heroClassic">
   <div class="hero__glow"></div>
   <svg class="hero__lines" viewBox="0 0 1400 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <g stroke="#ffffff" stroke-opacity=".07" stroke-width="2" fill="none">
@@ -2032,7 +1898,18 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <div id="boardSlotClassic"></div>
+    <div id="boardSlotClassic">
+<div class="board" id="today">
+      <div class="board__head">
+        <h2 class="board__title">التدريب اليوم في</h2>
+        <span class="board__date" id="boardDate"></span>
+      </div>
+      <p style="font-size:13.5px;color:#8FB2AA">اختر يومًا لتشوف الفروع المتدربة فيه.</p>
+      <div class="days" id="days" role="group" aria-label="أيام الأسبوع"></div>
+      <div class="rows" id="rows"></div>
+      <p class="board__foot">اضغط على أي فرع للوصول إلى موقع الملعب على الخريطة.</p>
+    </div>
+    </div>
   </div>
 </section>
 
@@ -2962,36 +2839,6 @@ if("IntersectionObserver" in window){
   }
 
   apply(pref, false);
-})();
-
-/* ===== التبديل بين التصميمين (جديد/كلاسيكي) ===== */
-(function(){
-  var btn = document.getElementById("design2Toggle");
-  var label = document.getElementById("design2Label");
-  var boardNew = document.getElementById("boardSlotNew");
-  var boardClassic = document.getElementById("boardSlotClassic");
-  var board = document.getElementById("today");
-  var classicHero = document.getElementById("heroClassic");
-  if(!btn || !board || !boardNew || !boardClassic) return;
-
-  function apply(design, save){
-    var isClassic = design === "classic";
-    document.documentElement.setAttribute("data-design2", design);
-    if (classicHero) classicHero.hidden = !isClassic;
-    (isClassic ? boardClassic : boardNew).appendChild(board);
-    label.textContent = isClassic ? "كلاسيكي" : "جديد";
-    btn.setAttribute("aria-pressed", isClassic ? "false" : "true");
-    btn.title = isClassic ? "جرّب التصميم الجديد" : "ارجع للتصميم الكلاسيكي";
-    if(save){ try{ localStorage.setItem("lipro_design2", design); }catch(e){} }
-  }
-
-  btn.addEventListener("click", function(){
-    var next = document.documentElement.getAttribute("data-design2") === "classic" ? "new" : "classic";
-    apply(next, true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  apply(document.documentElement.getAttribute("data-design2") || "classic", false);
 })();
 
 /* ===== ظهور متدرج لبطاقات المزايا ===== */
