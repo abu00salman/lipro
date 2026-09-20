@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -555,31 +555,37 @@ function buildFromEspn(results, todayStr){
    عدّلها هنا مرة واحدة إذا تغيّرت حقوق البث.
    ===================================================================== */
 /* =====================================================================
-   🎙 المعلّقون — تُملأ يدويًا لكل مباراة (لا يوجد مصدر تلقائي موثوق).
-   المفتاح: "الفريق الأول|الفريق الثاني" بنفس الأسماء الظاهرة في الجدول.
-   اكتب الاسم وقت ما تعرفه، ويختفي السطر تلقائيًا إن تُرك فارغًا.
+   📋 تفاصيل المباراة — القناة المحددة والمعلّق (تُملأ يدويًا)
+   لا يوجد مصدر تلقائي يعطي رقم القناة ولا اسم المعلّق، فالقنوات توزّعهم
+   قبل المباراة بساعات. اكتبهم هنا وقت ما تعرفهم من حساب القناة الرسمي.
 
-   للتذكير السريع — أبرز معلّقي الشبكات:
-   ثمانية:  فهد العتيبي · عبدالله الحربي · عيسى الحربين · خالد الشنيف ·
+   المفتاح: "الفريق الأول|الفريق الثاني" بنفس الأسماء الظاهرة في الجدول
+   (يعمل بأي ترتيب). أمثلة:
+
+   'خيتافي|مالقة':        { ch: 'beIN SPORTS 1', caster: 'عصام الشوالي' },
+   'أتلتيكو مدريد|ريال مدريد': { ch: 'beIN SPORTS 2', caster: 'حفيظ دراجي' },
+   'الهلال|نيوم':          { ch: 'ثمانية ٢',      caster: 'فهد العتيبي' },
+
+   أبرز المعلّقين للتذكير:
+   ثمانية — فهد العتيبي · عبدالله الحربي · عيسى الحربين · خالد الشنيف ·
             محمد البكيري · عامر عبدالله · عبدالعزيز اليوسف
-   beIN:    حفيظ دراجي · عصام الشوالي · خليل البلوشي · علي محمد علي ·
+   beIN   — حفيظ دراجي · عصام الشوالي · خليل البلوشي · علي محمد علي ·
             يوسف سيف · رؤوف خليف
    ===================================================================== */
-var COMMENTATORS = {
-  // 'الهلال|نيوم': 'فهد العتيبي',
-  // 'الاتحاد|النصر': 'عيسى الحربين'
+var MATCH_INFO = {
+  // 'الهلال|نيوم': { ch: 'ثمانية ٢', caster: 'فهد العتيبي' }
 };
 
 var CHANNELS = {
-  'دوري روشن السعودي':       'ثمانية · تطبيق ثمانية',
-  'دوري أبطال آسيا للنخبة':  'beIN SPORTS 1/2 · الكأس · TOD',
-  'دوري أبطال آسيا 2':       'beIN SPORTS · TOD',
-  'دوري أبطال أوروبا':       'beIN SPORTS · TOD',
-  'الدوري الإنجليزي الممتاز':'beIN SPORTS · TOD',
-  'الدوري الإسباني':         'beIN SPORTS · TOD',
-  'الدوري الإيطالي':         'beIN SPORTS · TOD',
-  'الدوري الألماني':         'beIN SPORTS · TOD',
-  'الدوري الفرنسي':          'beIN SPORTS · TOD'
+  'دوري روشن السعودي':       'ثمانية',
+  'دوري أبطال آسيا للنخبة':  'beIN SPORTS',
+  'دوري أبطال آسيا 2':       'beIN SPORTS',
+  'دوري أبطال أوروبا':       'beIN SPORTS',
+  'الدوري الإنجليزي الممتاز':'beIN SPORTS',
+  'الدوري الإسباني':         'beIN SPORTS',
+  'الدوري الإيطالي':         'beIN SPORTS',
+  'الدوري الألماني':         'beIN SPORTS',
+  'الدوري الفرنسي':          'beIN SPORTS'
 };
 
 /* =====================================================================
@@ -590,7 +596,7 @@ var CHANNELS = {
 var EXTRA_MATCHES = [
   { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
     time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي',
-    channel: 'MBC Action · شاهد', commentator: '',
+    channel: 'MBC Action', commentator: '',
     watch: [
       { label: 'MBC Action / شاهد — السعودية', url: 'https://shahid.mbc.net' },
       { label: 'DAZN — عالمياً', url: 'https://www.dazn.com' },
@@ -650,17 +656,16 @@ function render(){
         var midCell = done
           ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
           : '<div class="vs">VS</div>';
-        var chan = m.channel || CHANNELS[league.name] || '';
-        var caster = m.commentator ||
-          COMMENTATORS[m.home + '|' + m.away] ||
-          COMMENTATORS[m.away + '|' + m.home] || '';
+        var info = MATCH_INFO[m.home + '|' + m.away] || MATCH_INFO[m.away + '|' + m.home] || {};
+        var chan   = m.channel || info.ch || CHANNELS[league.name] || '';
+        var caster = m.commentator || info.caster || '';
         var chanRow = '';
         if (chan || caster) {
           chanRow = '<div class="chan">' +
             (chan ? '<span class="chan__tv">' +
               '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>' +
               chan + '</span>' : '') +
-            (caster ? '<span class="chan__mic">🎙 ' + caster + '</span>' : '') +
+            (caster ? '<span class="chan__mic">🎙 المعلق: ' + caster + '</span>' : '') +
             '</div>';
         }
         var watchBtn = '';
