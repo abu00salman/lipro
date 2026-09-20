@@ -573,7 +573,16 @@ function buildFromEspn(results, todayStr){
             يوسف سيف · رؤوف خليف
    ===================================================================== */
 var MATCH_INFO = {
-  // 'الهلال|نيوم': { ch: 'ثمانية ٢', caster: 'فهد العتيبي' }
+  /* ---- الأحد ٢٠ سبتمبر ٢٠٢٦ ---- */
+  'خيتافي|مالقة':                   { d:'2026-09-20', ch:'beIN SPORTS 9' },
+  'أتلتيكو مدريد|ريال مدريد':       { d:'2026-09-20', ch:'beIN SPORTS 1', caster:'علي سعيد الكعبي' },
+  'ديبورتيفو لاكورونيا|ريال بيتيس': { d:'2026-09-20', ch:'beIN SPORTS 4' },
+  'فياريال|ليفانتي':                { d:'2026-09-20', ch:'beIN SPORTS 3' },
+  'بورنموث|ليفربول':                { d:'2026-09-20', ch:'beIN SPORTS 2' },
+  'ليدز يونايتد|كريستال بالاس':     { d:'2026-09-20', ch:'beIN SPORTS 5' },
+  'مانشستر سيتي|سندرلاند':          { d:'2026-09-20', ch:'beIN SPORTS 4' },
+  'مارسيليا|باريس سان جيرمان':      { d:'2026-09-20', ch:'beIN SPORTS 1', caster:'حسن العيدروس' },
+  'ماميلودي صن داونز|الأهلي':       { d:'2026-09-20', ch:'MBC Action' }
 };
 
 var CHANNELS = {
@@ -583,7 +592,7 @@ var CHANNELS = {
   'دوري أبطال أوروبا':       'beIN SPORTS',
   'الدوري الإنجليزي الممتاز':'beIN SPORTS',
   'الدوري الإسباني':         'beIN SPORTS',
-  'الدوري الإيطالي':         'beIN SPORTS',
+  'الدوري الإيطالي':         'stc tv',
   'الدوري الألماني':         'beIN SPORTS',
   'الدوري الفرنسي':          'beIN SPORTS'
 };
@@ -657,6 +666,8 @@ function render(){
           ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
           : '<div class="vs">VS</div>';
         var info = MATCH_INFO[m.home + '|' + m.away] || MATCH_INFO[m.away + '|' + m.home] || {};
+        /* إدخال مؤرَّخ لا يخص اليوم يُتجاهل تلقائيًا */
+        if (info.d && info.d !== riyadhDate(new Date())) info = {};
         var chan   = m.channel || info.ch || CHANNELS[league.name] || '';
         var caster = m.commentator || info.caster || '';
         var chanRow = '';
