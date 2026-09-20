@@ -239,6 +239,22 @@
   }
   .watch:hover{filter:brightness(1.08)}
   .watch i{width:8px;height:8px;border-radius:50%;background:#fff;animation:lp-pulse 1.4s ease-in-out infinite}
+  .chan{
+    grid-column:1 / -1;display:flex;align-items:center;justify-content:center;
+    gap:7px;flex-wrap:wrap;margin-top:9px;
+    font-family:'Cairo',sans-serif;font-size:12.5px;color:var(--green-700);
+  }
+  .chan__tv{
+    display:inline-flex;align-items:center;gap:6px;font-weight:800;
+    background:rgba(14,74,60,.08);border:1px solid rgba(14,74,60,.18);
+    border-radius:999px;padding:4px 11px;
+  }
+  .chan__tv svg{flex-shrink:0;opacity:.85}
+  .chan__mic{display:inline-flex;align-items:center;gap:5px;opacity:.9;font-weight:600}
+  .watch--alt{background:var(--green-700);box-shadow:none;font-size:13px;padding:8px 14px}
+  .watch-wrap{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+  .watch-wrap .watch{margin-top:0;flex:1 1 auto}
+  .soon-note{grid-column:1 / -1;text-align:center;margin-top:8px;font-size:12.5px;color:var(--green-700);font-weight:700}
   .vs.score{font-size:15px;letter-spacing:1px}
 
   .empty{
@@ -479,6 +495,8 @@ function mergeExtra(leagues, todayStr){
     var same = leagues.filter(function(l){ return l.name === m.league; })[0];
     var entry = { time: m.time, home: m.home, away: m.away };
     if (m.watch) entry.watch = m.watch;
+    if (m.channel) entry.channel = m.channel;
+    if (m.commentator) entry.commentator = m.commentator;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
     if (m.note) entry.note = m.note;
     if (same) {
@@ -533,6 +551,38 @@ function buildFromEspn(results, todayStr){
 }
 
 /* =====================================================================
+   📺 القنوات الناقلة — الافتراضي حسب البطولة (الشرق الأوسط).
+   عدّلها هنا مرة واحدة إذا تغيّرت حقوق البث.
+   ===================================================================== */
+/* =====================================================================
+   🎙 المعلّقون — تُملأ يدويًا لكل مباراة (لا يوجد مصدر تلقائي موثوق).
+   المفتاح: "الفريق الأول|الفريق الثاني" بنفس الأسماء الظاهرة في الجدول.
+   اكتب الاسم وقت ما تعرفه، ويختفي السطر تلقائيًا إن تُرك فارغًا.
+
+   للتذكير السريع — أبرز معلّقي الشبكات:
+   ثمانية:  فهد العتيبي · عبدالله الحربي · عيسى الحربين · خالد الشنيف ·
+            محمد البكيري · عامر عبدالله · عبدالعزيز اليوسف
+   beIN:    حفيظ دراجي · عصام الشوالي · خليل البلوشي · علي محمد علي ·
+            يوسف سيف · رؤوف خليف
+   ===================================================================== */
+var COMMENTATORS = {
+  // 'الهلال|نيوم': 'فهد العتيبي',
+  // 'الاتحاد|النصر': 'عيسى الحربين'
+};
+
+var CHANNELS = {
+  'دوري روشن السعودي':       'ثمانية · تطبيق ثمانية',
+  'دوري أبطال آسيا للنخبة':  'beIN SPORTS 1/2 · الكأس · TOD',
+  'دوري أبطال آسيا 2':       'beIN SPORTS · TOD',
+  'دوري أبطال أوروبا':       'beIN SPORTS · TOD',
+  'الدوري الإنجليزي الممتاز':'beIN SPORTS · TOD',
+  'الدوري الإسباني':         'beIN SPORTS · TOD',
+  'الدوري الإيطالي':         'beIN SPORTS · TOD',
+  'الدوري الألماني':         'beIN SPORTS · TOD',
+  'الدوري الفرنسي':          'beIN SPORTS · TOD'
+};
+
+/* =====================================================================
    ✍️ مباريات تُضاف يدويًا — لبطولات قد لا يغطيها المصدر التلقائي
    date: تاريخ اليوم بصيغة YYYY-MM-DD (بتوقيت السعودية)
    تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
@@ -540,7 +590,12 @@ function buildFromEspn(results, todayStr){
 var EXTRA_MATCHES = [
   { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
     time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي',
-    watch: { label: 'شاهد المباراة على MBC / شاهد', url: 'https://shahid.mbc.net' } }
+    channel: 'MBC Action · شاهد', commentator: '',
+    watch: [
+      { label: 'MBC Action / شاهد — السعودية', url: 'https://shahid.mbc.net' },
+      { label: 'DAZN — عالمياً', url: 'https://www.dazn.com' },
+      { label: 'SuperSport — جنوب أفريقيا', url: 'https://supersport.com' }
+    ] }
 ];
 
 var LEAGUES = [];
@@ -595,13 +650,36 @@ function render(){
         var midCell = done
           ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
           : '<div class="vs">VS</div>';
-        var watchBtn = m.watch
-          ? '<a class="watch" href="' + m.watch.url + '" target="_blank" rel="noopener">' +
-            '<i></i>' + (m.watch.label || 'بث مباشر') + '</a>'
-          : '';
+        var chan = m.channel || CHANNELS[league.name] || '';
+        var caster = m.commentator ||
+          COMMENTATORS[m.home + '|' + m.away] ||
+          COMMENTATORS[m.away + '|' + m.home] || '';
+        var chanRow = '';
+        if (chan || caster) {
+          chanRow = '<div class="chan">' +
+            (chan ? '<span class="chan__tv">' +
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>' +
+              chan + '</span>' : '') +
+            (caster ? '<span class="chan__mic">🎙 ' + caster + '</span>' : '') +
+            '</div>';
+        }
+        var watchBtn = '';
+        if (m.watch) {
+          var chans = Array.isArray(m.watch) ? m.watch : [m.watch];
+          var started = live || done || (function(){
+            var st = toMinutes(m.time); if (st == null) return false;
+            var n = riyadhNow(); return (n.getHours()*60 + n.getMinutes()) >= st;
+          })();
+          watchBtn = '<div class="watch-wrap">' + chans.map(function(c, i){
+            return '<a class="watch' + (i ? ' watch--alt' : '') + '" href="' + c.url +
+                   '" target="_blank" rel="noopener">' + (i ? '' : '<i></i>') +
+                   (c.label || 'بث مباشر') + '</a>';
+          }).join('') + '</div>' +
+          (started ? '' : '<div class="soon-note" data-starts="' + m.time + '">تبدأ المباراة الساعة ' + m.time + '</div>');
+        }
         return '<div class="match">' + timeCell +
           '<div class="team">' + m.home + "</div>" + midCell +
-          '<div class="team">' + m.away + "</div>" + watchBtn + "</div>";
+          '<div class="team">' + m.away + "</div>" + chanRow + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
   });
