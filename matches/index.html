@@ -177,6 +177,27 @@
     margin-bottom:8px;
     text-shadow:0 1px 2px rgba(0,0,0,.18);
   }
+  /* ===== بطولة مميزة (كأس الخليج) — أخضر وطني بإطار ذهبي ===== */
+  .league--featured{
+    border:2px solid var(--gold-500);
+    background:linear-gradient(180deg,#fffdf6,#fff);
+    box-shadow:0 14px 34px -12px rgba(195,154,47,.45);
+    position:relative;
+  }
+  .league--featured::before{
+    content:"البطولة الأبرز";
+    position:absolute;top:-12px;inset-inline-start:18px;
+    background:var(--gold-500);color:#fff;font-weight:900;font-size:11.5px;
+    border-radius:999px;padding:3px 12px;letter-spacing:.02em;
+    box-shadow:0 4px 12px rgba(195,154,47,.4);
+  }
+  .league--featured .league-head{
+    background:linear-gradient(100deg,#04452A,#046A38 55%,#035F32);
+    font-size:19px;padding:10px 14px;
+  }
+  .league--featured .league-badge{background:var(--gold-500);color:#fff;font-size:17px}
+  .league--featured .match{border-color:rgba(195,154,47,.35)}
+
   .league-badge{
     background:#fff;
     color:var(--gold-500);
@@ -503,9 +524,11 @@ function mergeExtra(leagues, todayStr){
       var dup = same.matches.some(function(x){ return x.home === entry.home && x.away === entry.away; });
       if (!dup) same.matches.push(entry);
     } else {
-      leagues.unshift({ name: m.league, badge: m.badge || '⚽', matches: [entry] });
+      leagues.unshift({ name: m.league, badge: m.badge || '⚽', featured: !!m.featured, matches: [entry] });
     }
   });
+  /* البطولات المميزة (مثل كأس الخليج) دائمًا في أعلى القائمة */
+  leagues.sort(function(a, b){ return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); });
   return leagues;
 }
 
@@ -602,6 +625,7 @@ var MATCH_INFO = {
 };
 
 var CHANNELS = {
+  'كأس الخليج العربي «خليجي 27»': 'السعودية الرياضية · أبوظبي الرياضية · الكأس',
   'دوري روشن السعودي':       'ثمانية',
   'دوري أبطال آسيا للنخبة':  'beIN SPORTS',
   'دوري أبطال آسيا 2':       'beIN SPORTS',
@@ -619,6 +643,33 @@ var CHANNELS = {
    تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
    ===================================================================== */
 var EXTRA_MATCHES = [
+  /* ===== كأس الخليج العربي «خليجي 27» — جدة، ٢٣ سبتمبر إلى ٦ أكتوبر ٢٠٢٦ =====
+     نصف النهائي السبت ٣ أكتوبر، والنهائي الثلاثاء ٦ أكتوبر (يُضافان بعد تحديد الطرفين) */
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '05:30 PM', home: 'العراق', away: 'عُمان' },
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'السعودية', away: 'الكويت' },
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'الإمارات', away: 'اليمن' },
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'قطر', away: 'البحرين' },
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'الكويت', away: 'العراق' },
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'عُمان', away: 'السعودية' },
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'اليمن', away: 'قطر' },
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'البحرين', away: 'الإمارات' },
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'السعودية', away: 'العراق' },
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'عُمان', away: 'الكويت' },
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'الإمارات', away: 'قطر' },
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'البحرين', away: 'اليمن' },
+
   { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
     time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي',
     channel: 'MBC Action', commentator: '',
@@ -664,7 +715,7 @@ function render(){
   LEAGUES.forEach(function(league){
     if (!league.matches.length) return;
     var sec = document.createElement("section");
-    sec.className = "league";
+    sec.className = "league" + (league.featured ? " league--featured" : "");
     sec.innerHTML =
       '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
       "<span>" + league.name + "</span></div>" +
