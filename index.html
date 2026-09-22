@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -2939,6 +2939,9 @@ function fallback(text, cb){
   /* w/h = الأبعاد الأصلية — يضبط بها البنر ارتفاعه لكل شريحة */
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
+    /* شريحة مؤقتة: تختفي تلقائيًا بعد الموعد في until (بتوقيت السعودية) */
+    {src:"banner-nd96.jpg", w:900, h:1600, dur:8000, until:"2026-09-24T02:00:00+03:00",
+     title:"عزّنا بطبعنا — اليوم الوطني السعودي ٩٦ — اشترك الآن بـ ٩٦ ريال", noCap:true},
     {type:"video", src:"offer-video.mp4", poster:"offer-video-poster.jpg", w:720, h:1118, dur:18500,
      title:"عرض اليوم الوطني — اشترك الآن في ليبرو", noCap:true},
     {src:"banner-tabby.jpg", w:1080, h:1920, title:"عروض الاشتراكات عن طريق تابي وتمارا — قسّط اشتراكك بدون فوائد", noCap:true},
@@ -2956,6 +2959,11 @@ function fallback(text, cb){
     {src:"banner-4.jpg", w:1280, h:853,  title:"ميداليات فريق الأكاديمية", meta:"منافسات الاتحاد السعودي"},
     {src:"banner-2.jpg", w:562,  h:1000, title:"بطولة الاتحاد السعودي — جازان تحت ١١ سنة", noCap:true}
   ];
+
+  /* استبعاد الشرائح المؤقتة التي انتهى موعدها */
+  SLIDES = SLIDES.filter(function(s){
+    return !s.until || Date.now() < new Date(s.until).getTime();
+  });
 
   var DUR = 5200;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
