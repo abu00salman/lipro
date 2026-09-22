@@ -1940,5 +1940,286 @@ document.getElementById("shareBtn").addEventListener("click", async function() {
   }
 });
 </script>
+  <style>
+/* إخفاء رسالة المصدر أسفل المباريات */
+#data-status {
+  display: none !important;
+}
+
+/* لمسة اليوم الوطني أعلى الصفحة */
+.national-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px auto 4px;
+  padding: 7px 17px;
+  color: #146345;
+  background: #edf6ef;
+  border: 1px solid #c9dfcf;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.national-badge strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #146345;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 19px;
+  line-height: 1;
+}
+
+/* بطاقة عرض اليوم الوطني */
+.national-offer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 12px 16px 20px;
+  padding: 28px 20px 22px;
+  border: 1px solid rgba(195,154,47,.65);
+  border-radius: 24px;
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(116,189,137,.22),
+      transparent 60%
+    ),
+    linear-gradient(145deg, #164f3c, #0b352a);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(18,63,53,.16);
+}
+
+.national-offer::before,
+.national-offer::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 200px;
+  height: 200px;
+  border: 1px solid rgba(222,193,112,.17);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.national-offer::before {
+  top: -110px;
+  right: -90px;
+  box-shadow:
+    0 0 0 20px rgba(222,193,112,.04),
+    0 0 0 40px rgba(222,193,112,.03);
+}
+
+.national-offer::after {
+  bottom: -140px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+  box-shadow:
+    0 0 0 20px rgba(222,193,112,.04),
+    0 0 0 40px rgba(222,193,112,.03);
+}
+
+.national-offer__occasion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid rgba(234,209,146,.4);
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  color: #f3dfac;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.national-offer__occasion strong {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.national-offer h2 {
+  margin-top: 17px;
+  color: #fff;
+  font-size: clamp(25px, 7vw, 33px);
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.national-offer__subtitle {
+  margin-top: 3px;
+  color: #dfebe2;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.national-offer__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: #eed18b;
+}
+
+.national-offer__price strong {
+  font-size: clamp(70px, 20vw, 94px);
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: -3px;
+}
+
+.national-offer__price span {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.national-offer__duration {
+  display: inline-block;
+  padding: 3px 23px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.09);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.national-offer__tabby {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 17px;
+  color: #e5eee7;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.national-offer__tabby b {
+  padding: 2px 11px;
+  background: #b8f5cf;
+  color: #123f35;
+  border-radius: 7px;
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.national-offer__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 22px;
+  padding: 11px 16px;
+  border: 1px solid #f0d899;
+  border-radius: 13px;
+  background: linear-gradient(110deg, #e3bd64, #f2dca5);
+  color: #123f35;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow: 0 5px 14px rgba(0,0,0,.12);
+  transition: filter .2s ease;
+}
+
+.national-offer__cta:hover {
+  filter: brightness(1.06);
+}
+
+.national-offer__phone {
+  display: inline-block;
+  margin-top: 13px;
+  color: #e2ebe4;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  direction: ltr;
+  letter-spacing: 1px;
+}
+</style>
+
+<script>
+(function () {
+  /* منع تكرار الإضافة */
+  if (document.getElementById("nationalOffer96")) return;
+
+  var header = document.querySelector(".frame header");
+  var footer = document.querySelector(".frame footer");
+
+  if (!header || !footer) return;
+
+  /* شارة اليوم الوطني — لمسة تصميمية وليست شعارًا رسميًا */
+  var badge = document.createElement("div");
+  badge.className = "national-badge";
+  badge.innerHTML =
+    '<span aria-hidden="true">🇸🇦</span>' +
+    '<span>اليوم الوطني السعودي</span>' +
+    '<strong>٩٦</strong>';
+
+  header.appendChild(badge);
+
+  /* رسالة الاشتراك */
+  var message =
+    "السلام عليكم، أرغب بالاشتراك في أكاديمية ليبرو " +
+    "بعرض اليوم الوطني 96: شهرين بـ296 ريال.";
+
+  var whatsappURL =
+    "https://wa.me/966530634750?text=" +
+    encodeURIComponent(message);
+
+  /* بطاقة العرض أسفل المباريات */
+  var offer = document.createElement("section");
+  offer.id = "nationalOffer96";
+  offer.className = "national-offer";
+  offer.setAttribute("aria-labelledby", "nationalOfferTitle");
+
+  offer.innerHTML =
+    '<div class="national-offer__occasion">' +
+      '<span>بمناسبة اليوم الوطني السعودي</span>' +
+      '<strong>٩٦</strong>' +
+    '</div>' +
+
+    '<h2 id="nationalOfferTitle">اشترك الآن في ليبرو</h2>' +
+    '<p class="national-offer__subtitle">' +
+      'احتفل معنا… وخَلّ موهبتك تكبر' +
+    '</p>' +
+
+    '<div class="national-offer__price">' +
+      '<strong>٢٩٦</strong>' +
+      '<span>ريال</span>' +
+    '</div>' +
+
+    '<div class="national-offer__duration">لمدة شهرين</div>' +
+
+    '<div class="national-offer__tabby">' +
+      '<span>وتقدر تقسّطها عبر تابي</span>' +
+      '<b dir="ltr">tabby</b>' +
+    '</div>' +
+
+    '<a class="national-offer__cta" ' +
+      'href="' + whatsappURL + '" ' +
+      'target="_blank" rel="noopener noreferrer">' +
+      'اشترك الآن عبر الواتساب' +
+      '<span aria-hidden="true">↗</span>' +
+    '</a>' +
+
+    '<a class="national-offer__phone" href="tel:+966530634750">' +
+      '0530634750' +
+    '</a>';
+
+  footer.parentNode.insertBefore(offer, footer);
+})();
+</script>
 </body>
 </html>
