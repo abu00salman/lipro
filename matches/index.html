@@ -198,6 +198,10 @@
   .league--featured .league-badge{background:var(--gold-500);color:#fff;font-size:17px}
   .league--featured .match{border-color:rgba(195,154,47,.35)}
 
+  .league-badge.is-text{
+    font-size:11px;font-weight:900;letter-spacing:.04em;padding:0 6px;
+    min-width:38px;height:28px;border-radius:8px;font-family:'Cairo',sans-serif;
+  }
   .league-badge{
     background:#fff;
     color:var(--gold-500);
@@ -597,8 +601,8 @@ function buildFromEspn(results, todayStr){
    ===================================================================== */
 var MATCH_INFO = {
   /* ---- الخميس ٢٤ سبتمبر ٢٠٢٦ — خليجي 27 ---- */
-  'الإمارات|اليمن':  { d:'2026-09-24', ch:'السعودية الرياضية · أبوظبي الرياضية · الكأس' },
-  'قطر|البحرين':     { d:'2026-09-24', ch:'السعودية الرياضية · أبوظبي الرياضية · الكأس' },
+  'الإمارات|اليمن':  { d:'2026-09-24', ch:'الكأس 1', caster:'سمير المعيرفي' },
+  'قطر|البحرين':     { d:'2026-09-24', ch:'الكأس 1', caster:'خليل البلوشي' },
   /* ---- الأحد ٢٠ سبتمبر ٢٠٢٦ (المصدر: عالم كورة) ---- */
   /* الدوري الإنجليزي */
   'بورنموث|ليفربول':                { d:'2026-09-20', ch:'beIN SPORTS 2', caster:'حفيظ دراجي' },
@@ -646,52 +650,42 @@ var CHANNELS = {
    تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
    ===================================================================== */
 var EXTRA_MATCHES = [
-  /* ===== الخميس ٢٤ سبتمبر ٢٠٢٦ — التوقف الدولي ===== */
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '07:00 PM', home: 'أندورا', away: 'مالطا', channel: 'beIN SPORTS 3', commentator: 'عبدالله الغامدي' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'هولندا', away: 'ألمانيا', channel: 'beIN SPORTS 2', commentator: 'حفيظ دراجي' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'البرتغال', away: 'ويلز', channel: 'beIN SPORTS 3', commentator: 'عامر الخوذيري' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'النرويج', away: 'الدنمارك', channel: 'beIN SPORTS 4', commentator: 'حسن العيدروس' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'كوسوفو', away: 'أيرلندا', channel: 'beIN SPORTS 5', commentator: 'باسم الزير' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'صربيا', away: 'اليونان', channel: 'beIN SPORTS 6', commentator: 'أحمد عبده' },
-  { date: '2026-09-24', league: 'دوري الأمم الأوروبية ٢٠٢٦/٢٧', badge: '🇪🇺', time: '09:45 PM', home: 'ليشتنشتاين', away: 'ليتوانيا', channel: 'beIN SPORTS Xtra 1', commentator: 'محمد المبروكي' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '04:00 PM', home: 'ناميبيا', away: 'الكونغو' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '07:00 PM', home: 'ليبيا', away: 'بوتسوانا', channel: 'beIN SPORTS 1', commentator: 'محمد بركات' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '07:00 PM', home: 'موريتانيا', away: 'أفريقيا الوسطى', channel: 'beIN SPORTS 2', commentator: 'علي محمد علي' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '07:00 PM', home: 'الكونغو الديمقراطية', away: 'غينيا الاستوائية', channel: 'beIN SPORTS 2' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '10:00 PM', home: 'تونس', away: 'أوغندا', channel: 'beIN SPORTS 1', commentator: 'عصام الشوالي' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '10:00 PM', home: 'كوت ديفوار', away: 'غانا', channel: 'beIN SPORTS 7', commentator: 'جواد بدة' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '10:00 PM', home: 'الكاميرون', away: 'جزر القمر', channel: 'beIN SPORTS 8', commentator: 'نوفل باشي' },
-  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا ٢٠٢٧ — الجولة ١', badge: '🌍', time: '10:00 PM', home: 'سيراليون', away: 'زيمبابوي', channel: 'beIN CONNECT' },
-
-  /* ===== دورة الألعاب الآسيوية ٢٠٢٦ (آيتشي–ناغويا) — كرة القدم ===== */
-  { date: '2026-09-22', league: 'دورة الألعاب الآسيوية ٢٠٢٦ — المجموعة D', badge: '🥇', featured: true,
-    time: '01:00 PM', home: 'السعودية', away: 'كوريا الجنوبية' },
+  /* ===== الخميس ٢٤ سبتمبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
+  { date: '2026-09-24', league: 'دوري الأمم الأوروبية — دوري أ · الجولة ١', badge: 'UNL', time: '09:45 PM', home: 'هولندا', away: 'ألمانيا', channel: 'beIN SPORTS 2', commentator: 'حفيظ دراجي' },
+  { date: '2026-09-24', league: 'دوري الأمم الأوروبية — دوري أ · الجولة ١', badge: 'UNL', time: '09:45 PM', home: 'البرتغال', away: 'ويلز', channel: 'beIN SPORTS 3', commentator: 'عامر الخوذيري' },
+  { date: '2026-09-24', league: 'دوري الأمم الأوروبية — دوري أ · الجولة ١', badge: 'UNL', time: '09:45 PM', home: 'النرويج', away: 'الدنمارك', channel: 'beIN SPORTS 4', commentator: 'حسن العيدروس' },
+  { date: '2026-09-24', league: 'دوري الأمم الأوروبية — دوري أ · الجولة ١', badge: 'UNL', time: '09:45 PM', home: 'صربيا', away: 'اليونان', channel: 'beIN SPORTS 6', commentator: 'أحمد عبده' },
+  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '07:00 PM', home: 'ليبيا', away: 'بوتسوانا', channel: 'beIN SPORTS 1', commentator: 'محمد بركات' },
+  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '07:00 PM', home: 'موريتانيا', away: 'أفريقيا الوسطى', channel: 'beIN SPORTS 2', commentator: 'علي محمد علي' },
+  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '10:00 PM', home: 'تونس', away: 'أوغندا', channel: 'beIN SPORTS 1', commentator: 'عصام الشوالي' },
+  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '10:00 PM', home: 'ساحل العاج', away: 'غانا', channel: 'beIN SPORTS 7', commentator: 'جواد بدة' },
+  { date: '2026-09-24', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '10:00 PM', home: 'الكاميرون', away: 'جزر القمر', channel: 'beIN SPORTS 8', commentator: 'نوفل باشي' },
 
   /* ===== كأس الخليج العربي «خليجي 27» — جدة، ٢٣ سبتمبر إلى ٦ أكتوبر ٢٠٢٦ =====
      نصف النهائي السبت ٣ أكتوبر، والنهائي الثلاثاء ٦ أكتوبر (يُضافان بعد تحديد الطرفين) */
-  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '05:30 PM', home: 'العراق', away: 'عُمان' },
-  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '09:00 PM', home: 'السعودية', away: 'الكويت' },
-  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '06:55 PM', home: 'الإمارات', away: 'اليمن' },
-  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '09:00 PM', home: 'قطر', away: 'البحرين' },
-  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '06:55 PM', home: 'الكويت', away: 'العراق' },
-  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '09:00 PM', home: 'عُمان', away: 'السعودية' },
-  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '06:55 PM', home: 'اليمن', away: 'قطر' },
-  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '09:00 PM', home: 'البحرين', away: 'الإمارات' },
-  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '08:30 PM', home: 'السعودية', away: 'العراق' },
-  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '08:30 PM', home: 'عُمان', away: 'الكويت' },
-  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '08:30 PM', home: 'الإمارات', away: 'قطر' },
-  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true,
     time: '08:30 PM', home: 'البحرين', away: 'اليمن' },
 
   { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
@@ -741,7 +735,7 @@ function render(){
     var sec = document.createElement("section");
     sec.className = "league" + (league.featured ? " league--featured" : "");
     sec.innerHTML =
-      '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
+      '<div class="league-head"><span class="league-badge' + (/^[A-Za-z0-9]{2,5}$/.test(league.badge || '') ? ' is-text' : '') + '">' + (league.badge || "⚽") + "</span>" +
       "<span>" + league.name + "</span></div>" +
       league.matches.map(function(m){
         var done = Array.isArray(m.score);
