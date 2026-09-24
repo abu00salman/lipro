@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مباريات اليوم — أكاديمية ليبرو الرياضية</title>
-<meta name="description" content="مواعيد ونتائج مباريات اليوم: دوري روشن، البطولات الآسيوية والدوريات الأوروبية الكبرى — بتوقيت السعودية.">
+<meta name="description" content="مواعيد ونتائج مباريات اليوم مباشرة: دوري روشن، أبطال آسيا، أبطال أوروبا والدوريات الأوروبية الكبرى — تحديث مستمر بتوقيت السعودية.">
 <link rel="canonical" href="https://liproacademy.com/matches/">
-
+<!-- معاينة الرابط في واتساب وتويتر وغيرها -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="أكاديمية ليبرو الرياضية">
 <meta property="og:title" content="مباريات اليوم — أكاديمية ليبرو">
-<meta property="og:description" content="المواعيد والنتائج المباشرة لكل البطولات في مكان واحد — بتوقيت السعودية.">
+<meta property="og:description" content="المواعيد والنتائج المباشرة لكل البطولات في مكان واحد — تحديث مستمر بتوقيت السعودية.">
 <meta property="og:url" content="https://liproacademy.com/matches/">
 <meta property="og:image" content="https://liproacademy.com/matches/og-matches.jpg">
 <meta property="og:image:secure_url" content="https://liproacademy.com/matches/og-matches.jpg">
@@ -19,2207 +19,823 @@
 <meta property="og:image:height" content="1200">
 <meta property="og:image:alt" content="مباريات اليوم — أكاديمية ليبرو الرياضية">
 <meta property="og:locale" content="ar_SA">
-
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="مباريات اليوم — أكاديمية ليبرو">
 <meta name="twitter:description" content="المواعيد والنتائج المباشرة لكل البطولات في مكان واحد.">
 <meta name="twitter:image" content="https://liproacademy.com/matches/og-matches.jpg">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --green-900: #123f35;
-  --green-700: #1b5e4b;
-  --green-600: #20705a;
-  --gold-500: #c39a2f;
-  --gold-400: #d4ad45;
-  --cream: #f7f4ec;
-  --ink: #173d33;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Cairo', sans-serif;
-  background:
-    radial-gradient(
-      ellipse 120% 60% at 50% -10%,
-      rgba(255,255,255,.12),
-      transparent 60%
-    ),
-    linear-gradient(
-      180deg,
-      var(--green-900) 0%,
-      var(--green-700) 45%,
-      #2a7a5e 100%
-    );
-  min-height: 100vh;
-  color: var(--ink);
-  padding-bottom: 48px;
-}
-
-button, a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible, a:focus-visible {
-  outline: 3px solid var(--gold-500);
-  outline-offset: 4px;
-}
-
-.frame {
-  max-width: 520px;
-  margin: 0 auto;
-  background: linear-gradient(180deg, #fdfcf8 0%, var(--cream) 100%);
-  border-radius: 0 0 28px 28px;
-  overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0,0,0,.35);
-}
-
-.ribbon {
-  height: 14px;
-  background: linear-gradient(
-    90deg,
-    var(--gold-500),
-    var(--gold-400) 40%,
-    var(--green-700) 40%,
-    var(--green-900)
-  );
-}
-
-.topbar {
-  padding: 14px 16px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.back-btn, .share-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-family: 'Cairo', sans-serif;
-  font-weight: 800;
-  font-size: 14px;
-  border-radius: 999px;
-  text-decoration: none;
-}
-
-.back-btn {
-  background: #fff;
-  color: var(--green-700);
-  border: 1px solid rgba(27,94,75,.25);
-  padding: 6px 16px;
-  box-shadow: 0 2px 6px rgba(18,63,53,.08);
-}
-
-.share-btn {
-  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  padding: 7px 16px;
-  box-shadow: 0 2px 6px rgba(18,63,53,.15);
-}
-
-.share-btn:disabled {
-  opacity: .65;
-  cursor: wait;
-}
-
-header {
-  text-align: center;
-  padding: 28px 24px 8px;
-}
-
-header img.logo {
-  height: 110px;
-  max-width: 100%;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 10px;
-}
-
-.academy-name {
-  color: var(--gold-500);
-  font-weight: 800;
-  font-size: 20px;
-  margin-top: 6px;
-}
-
-.academy-name span {
-  display: block;
-  color: var(--green-700);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 4px;
-}
-
-h1 {
-  font-size: 52px;
-  font-weight: 900;
-  color: var(--green-700);
-  text-shadow: 0 2px 0 rgba(195,154,47,.35);
-  line-height: 1.2;
-  margin-top: 8px;
-}
-
-.date-pill {
-  display: inline-block;
-  background: var(--green-700);
-  color: #fff;
-  font-weight: 800;
-  font-size: 18px;
-  padding: 6px 22px;
-  border-radius: 12px;
-  margin-top: 10px;
-  box-shadow: 0 3px 0 var(--gold-500);
-}
-
-.timezone {
-  margin-top: 10px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--green-700);
-  opacity: .8;
-}
-
-main {
-  padding: 24px 16px 8px;
-}
-
-.league {
-  background: #fff;
-  border: 1px solid rgba(27,94,75,.12);
-  border-radius: 18px;
-  margin-bottom: 16px;
-  padding: 10px 10px 6px;
-  box-shadow: 0 6px 18px rgba(18,63,53,.08);
-}
-
-.league-head {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
-  color: #fff;
-  font-weight: 900;
-  font-size: 18px;
-  border-radius: 12px;
-  padding: 7px 14px;
-  margin-bottom: 8px;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0,0,0,.18);
-}
-
-.league-badge {
-  background: #fff;
-  color: var(--gold-500);
-  font-weight: 900;
-  font-size: 12px;
-  min-width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  flex: none;
-}
-
-.league--featured {
-  border: 2px solid var(--gold-500);
-  background: linear-gradient(180deg, #fffdf6, #fff);
-  box-shadow: 0 14px 34px -12px rgba(195,154,47,.45);
-  position: relative;
-  margin-top: 8px;
-}
-
-.league--featured::before {
-  content: "البطولة الأبرز";
-  position: absolute;
-  top: -13px;
-  inset-inline-start: 18px;
-  background: var(--gold-500);
-  color: #fff;
-  font-weight: 900;
-  font-size: 11.5px;
-  border-radius: 999px;
-  padding: 3px 12px;
-  box-shadow: 0 4px 12px rgba(195,154,47,.3);
-}
-
-.league--featured .league-head {
-  background: linear-gradient(100deg, #04452a, #046a38 55%, #035f32);
-  font-size: 18px;
-  padding: 12px 10px;
-  margin-top: 4px;
-}
-
-.league--featured .league-badge {
-  background: var(--gold-500);
-  color: #fff;
-  font-size: 17px;
-}
-
-.league--featured .match {
-  border-color: rgba(195,154,47,.35);
-}
-
-.match {
-  display: grid;
-  grid-template-columns: 86px minmax(0,1fr) 58px minmax(0,1fr);
-  align-items: center;
-  gap: 8px;
-  background: var(--cream);
-  border: 1px solid rgba(27,94,75,.1);
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 6px;
-}
-
-.time {
-  background: var(--gold-500);
-  color: #fff;
-  font-weight: 800;
-  font-size: 14px;
-  text-align: center;
-  border-radius: 9px;
-  padding: 5px 3px;
-}
-
-.time.live {
-  background: #e8453f;
-  animation: lp-pulse 1.4s ease-in-out infinite;
-}
-
-.time.ft {
-  background: var(--green-700);
-}
-
-.time.estimated {
-  background: #6b7568;
-  font-size: 11px;
-}
-
-@keyframes lp-pulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: .6; }
-}
-
-.team {
-  min-width: 0;
-  font-weight: 800;
-  font-size: 16px;
-  text-align: center;
-  color: var(--ink);
-  overflow-wrap: break-word;
-}
-
-.team-flag {
-  display: block;
-  font-size: 25px;
-  line-height: 1.3;
-  margin-bottom: 4px;
-}
-
-.vs {
-  background: var(--green-700);
-  color: var(--gold-400);
-  font-weight: 900;
-  font-size: 14px;
-  text-align: center;
-  border-radius: 8px;
-  padding: 5px 0;
-  clip-path: polygon(
-    12% 0, 88% 0, 100% 50%,
-    88% 100%, 12% 100%, 0 50%
-  );
-}
-
-.vs.score {
-  display: flex;
-  direction: rtl;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-size: 15px;
-}
-
-.venue, .match-note {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--green-700);
-  line-height: 1.8;
-}
-
-.venue {
-  border-top: 1px solid rgba(27,94,75,.1);
-  padding-top: 8px;
-  margin-top: 4px;
-}
-
-.match-note {
-  opacity: .85;
-}
-
-.chan {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  flex-wrap: wrap;
-  margin-top: 5px;
-  font-size: 12.5px;
-  color: var(--green-700);
-}
-
-.chan__tv {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 800;
-  background: rgba(14,74,60,.08);
-  border: 1px solid rgba(14,74,60,.18);
-  border-radius: 999px;
-  padding: 4px 11px;
-}
-
-.chan__tv svg {
-  flex-shrink: 0;
-  opacity: .85;
-}
-
-.chan__mic {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  opacity: .9;
-  font-weight: 600;
-}
-
-.watch-wrap {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.watch {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  background: linear-gradient(135deg, #d64545, #b93030);
-  color: #fff;
-  font-weight: 800;
-  font-size: 14px;
-  box-shadow: 0 8px 18px -10px rgba(214,69,69,.8);
-}
-
-.watch:hover {
-  filter: brightness(1.08);
-}
-
-.watch--alt {
-  background: var(--green-700);
-  box-shadow: none;
-  font-size: 13px;
-  padding: 8px 14px;
-}
-
-.empty {
-  text-align: center;
-  background: #fff;
-  border-radius: 18px;
-  padding: 34px 20px;
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--green-700);
-  line-height: 1.9;
-}
-
-.status-note {
-  text-align: center;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--green-700);
-  padding: 0 20px 10px;
-  line-height: 1.9;
-}
-
-.status-note:empty {
-  display: none;
-}
-
-footer {
-  text-align: center;
-  padding: 14px 16px 26px;
-}
-
-.site-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--green-700);
-  color: #fff;
-  font-weight: 800;
-  font-size: 16px;
-  padding: 9px 26px;
-  border-radius: 999px;
-  direction: ltr;
-  text-decoration: none;
-  box-shadow: 0 3px 0 var(--gold-500);
-}
-
-@media (max-width: 420px) {
-  h1 { font-size: 42px; }
-
-  header {
-    padding-right: 16px;
-    padding-left: 16px;
+  :root{
+    --green-900:#123f35;
+    --green-700:#1b5e4b;
+    --green-600:#20705a;
+    --gold-500:#c39a2f;
+    --gold-400:#d4ad45;
+    --cream:#f7f4ec;
+    --ink:#173d33;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(255,255,255,.12), transparent 60%),
+      linear-gradient(180deg, var(--green-900) 0%, var(--green-700) 45%, #2a7a5e 100%);
+    min-height:100vh;
+    color:var(--ink);
+    padding:0 0 48px;
   }
 
-  .academy-name { font-size: 18px; }
-  .date-pill { font-size: 16px; }
-
-  .match {
-    grid-template-columns: 70px minmax(0,1fr) 46px minmax(0,1fr);
-    gap: 6px;
-    padding: 9px 7px;
+  .frame{
+    max-width:520px;
+    margin:0 auto;
+    background:
+      linear-gradient(180deg, #fdfcf8 0%, var(--cream) 100%);
+    border-radius:0 0 28px 28px;
+    overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
   }
 
-  .team { font-size: 14px; }
-  .time { font-size: 12px; }
-  .league-head { font-size: 16px; }
-
-  .league--featured .league-head {
-    font-size: 16px;
+  /* الشريط العلوي المائل */
+  .ribbon{
+    height:14px;
+    background:linear-gradient(90deg, var(--gold-500), var(--gold-400) 40%, var(--green-700) 40%, var(--green-900));
   }
 
-  .back-btn, .share-btn {
-    font-size: 12px;
-    padding-left: 11px;
-    padding-right: 11px;
+  .topbar{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    color:var(--green-700);
+    font-weight:800;
+    font-size:14px;
+    text-decoration:none;
+    border:1px solid rgba(27,94,75,.25);
+    border-radius:999px;
+    padding:6px 16px;
+    box-shadow:0 2px 6px rgba(18,63,53,.08);
   }
-}
+  .share-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(90deg,var(--gold-500),var(--gold-400));
+    color:#fff;
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:14px;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:7px 16px;
+    box-shadow:0 2px 6px rgba(18,63,53,.15);
+  }
+  .share-btn:disabled{opacity:.65;cursor:wait}
+  .time.live{background:#e8453f;animation:lp-pulse 1.4s ease-in-out infinite}
+  @keyframes lp-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  header{
+    text-align:center;
+    padding:28px 24px 8px;
+  }
+  header img.logo{
+    height:110px;
+    display:block;
+    margin:0 auto 10px;
+  }
+  .logo-fallback{
+    font-weight:900;
+    font-size:44px;
+    letter-spacing:2px;
+    color:var(--green-700);
+    line-height:1;
+  }
+  .logo-fallback small{
+    display:block;
+    font-size:15px;
+    font-weight:700;
+    color:var(--gold-500);
+    letter-spacing:6px;
+    margin-top:4px;
+  }
+  .academy-name{
+    color:var(--gold-500);
+    font-weight:800;
+    font-size:20px;
+    margin-top:6px;
+  }
+  .academy-name span{
+    display:block;
+    color:var(--green-700);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:4px;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .time.live { animation: none; }
-}
+  h1{
+    font-size:52px;
+    font-weight:900;
+    color:var(--green-700);
+    text-shadow:0 2px 0 rgba(195,154,47,.35);
+    line-height:1.1;
+    margin-top:4px;
+  }
+  .date-pill{
+    display:inline-block;
+    background:var(--green-700);
+    color:#fff;
+    font-weight:800;
+    font-size:18px;
+    padding:6px 26px;
+    border-radius:12px;
+    margin-top:10px;
+    box-shadow:0 3px 0 var(--gold-500);
+  }
+
+  main{padding:22px 16px 8px}
+
+  .league{
+    background:#fff;
+    border:1px solid rgba(27,94,75,.12);
+    border-radius:18px;
+    margin-bottom:16px;
+    padding:10px 10px 6px;
+    box-shadow:0 6px 18px rgba(18,63,53,.08);
+  }
+  .league-head{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(90deg, var(--gold-500), var(--gold-400));
+    color:#fff;
+    font-weight:900;
+    font-size:18px;
+    border-radius:12px;
+    padding:7px 14px;
+    margin-bottom:8px;
+    text-shadow:0 1px 2px rgba(0,0,0,.18);
+  }
+  /* ===== بطولة مميزة (كأس الخليج) — أخضر وطني بإطار ذهبي ===== */
+  .league--featured{
+    border:2px solid var(--gold-500);
+    background:linear-gradient(180deg,#fffdf6,#fff);
+    box-shadow:0 14px 34px -12px rgba(195,154,47,.45);
+    position:relative;
+  }
+  .league--featured::before{
+    content:"البطولة الأبرز";
+    position:absolute;top:-12px;inset-inline-start:18px;
+    background:var(--gold-500);color:#fff;font-weight:900;font-size:11.5px;
+    border-radius:999px;padding:3px 12px;letter-spacing:.02em;
+    box-shadow:0 4px 12px rgba(195,154,47,.4);
+  }
+  .league--featured .league-head{
+    background:linear-gradient(100deg,#04452A,#046A38 55%,#035F32);
+    font-size:19px;padding:10px 14px;
+  }
+  .league--featured .league-badge{background:var(--gold-500);color:#fff;font-size:17px}
+  .league--featured .match{border-color:rgba(195,154,47,.35)}
+
+  .league-badge{
+    background:#fff;
+    color:var(--gold-500);
+    font-weight:900;
+    font-size:12px;
+    min-width:34px;
+    height:34px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 4px;
+    flex:none;
+  }
+
+  .match{
+    display:grid;
+    grid-template-columns:96px 1fr 64px 1fr;
+    align-items:center;
+    gap:8px;
+    background:var(--cream);
+    border:1px solid rgba(27,94,75,.1);
+    border-radius:12px;
+    padding:8px 10px;
+    margin-bottom:6px;
+  }
+  .time{
+    background:var(--gold-500);
+    color:#fff;
+    font-weight:800;
+    font-size:15px;
+    text-align:center;
+    border-radius:9px;
+    padding:4px 0;
+    direction:ltr;
+  }
+  .team{
+    font-weight:800;
+    font-size:17px;
+    text-align:center;
+    color:var(--ink);
+  }
+  .vs{
+    background:var(--green-700);
+    color:var(--gold-400);
+    font-weight:900;
+    font-size:14px;
+    text-align:center;
+    border-radius:8px;
+    padding:5px 0;
+    clip-path:polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);
+  }
+  .time.ft{background:var(--green-700)}
+  .watch{
+    grid-column:1 / -1;display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:10px;padding:10px 16px;border-radius:10px;text-decoration:none;
+    background:linear-gradient(135deg,#D64545,#B93030);color:#fff;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;
+    box-shadow:0 8px 18px -10px rgba(214,69,69,.8);
+  }
+  .watch:hover{filter:brightness(1.08)}
+  .watch i{width:8px;height:8px;border-radius:50%;background:#fff;animation:lp-pulse 1.4s ease-in-out infinite}
+  .chan{
+    grid-column:1 / -1;display:flex;align-items:center;justify-content:center;
+    gap:7px;flex-wrap:wrap;margin-top:9px;
+    font-family:'Cairo',sans-serif;font-size:12.5px;color:var(--green-700);
+  }
+  .chan__tv{
+    display:inline-flex;align-items:center;gap:6px;font-weight:800;
+    background:rgba(14,74,60,.08);border:1px solid rgba(14,74,60,.18);
+    border-radius:999px;padding:4px 11px;
+  }
+  .chan__tv svg{flex-shrink:0;opacity:.85}
+  .chan__mic{display:inline-flex;align-items:center;gap:5px;opacity:.9;font-weight:600}
+  .watch--alt{background:var(--green-700);box-shadow:none;font-size:13px;padding:8px 14px}
+  .watch-wrap{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+  .watch-wrap .watch{margin-top:0;flex:1 1 auto}
+  .soon-note{grid-column:1 / -1;text-align:center;margin-top:8px;font-size:12.5px;color:var(--green-700);font-weight:700}
+  .vs.score{font-size:15px;letter-spacing:1px}
+
+  .empty{
+    text-align:center;
+    background:#fff;
+    border-radius:18px;
+    padding:40px 20px;
+    font-weight:800;
+    font-size:20px;
+    color:var(--green-700);
+  }
+
+  footer{
+    text-align:center;
+    padding:14px 16px 26px;
+  }
+  .site-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--green-700);
+    color:#fff;
+    font-weight:800;
+    font-size:16px;
+    padding:9px 26px;
+    border-radius:999px;
+    direction:ltr;
+    box-shadow:0 3px 0 var(--gold-500);
+  }
+
+  @media (max-width:420px){
+    h1{font-size:42px}
+    .match{grid-template-columns:78px 1fr 52px 1fr}
+    .team{font-size:15px}
+    .time{font-size:13px}
+  }
 </style>
 </head>
-
 <body>
+
 <div class="frame">
   <div class="ribbon"></div>
 
   <div class="topbar">
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
-    <button class="share-btn" id="shareBtn" type="button">
-      📤 حفظ / مشاركة
-    </button>
+    <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
   </div>
 
   <header>
-    <img
-      class="logo"
-      src="/logo-lipro.png"
-      alt="شعار أكاديمية ليبرو"
-      onerror="this.style.display='none'"
-    >
-    <div class="academy-name">
-      أكاديمية ليبرو الرياضية
-      <span>LIPRO ACADEMY</span>
-    </div>
-
+    <!-- ضع شعار الأكاديمية هنا: بدّل src برابط الشعار في موقعك، أو احذف سطر img ليظهر الشعار النصي -->
+    <img class="logo" src="/logo-lipro.png" alt="ليبرو" onerror="this.remove()">
+    <div class="academy-name">أكاديمية ليبرو الرياضية <span>LIPRO ACADEMY</span></div>
     <h1>مباريات اليوم</h1>
     <div class="date-pill" id="today-date"></div>
-    <div class="timezone">جميع المواعيد بتوقيت السعودية</div>
   </header>
 
-  <main id="leagues" aria-label="جدول مباريات اليوم">
-    <div class="empty">جاري تحميل مباريات اليوم…</div>
-  </main>
-
-  <div class="status-note" id="data-status" role="status"></div>
+  <main id="leagues"></main>
 
   <footer>
-    <a class="site-pill" href="https://liproacademy.com/">
-      🌐 www.liproacademy.com
-    </a>
+    <div class="site-pill">🌐 www.liproacademy.com</div>
   </footer>
 </div>
 
 <script>
-"use strict";
-
-/* =========================================================
-   التاريخ والوقت — السعودية
-   ========================================================= */
-
-function riyadhDate(date) {
-  var parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Riyadh",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).formatToParts(date);
-
-  var values = {};
-  parts.forEach(function(part) {
-    values[part.type] = part.value;
+document.getElementById("today-date").textContent =
+  new Date().toLocaleDateString("ar-SA-u-ca-gregory", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-  return values.year + "-" + values.month + "-" + values.day;
+/* الوقت الحالي بتوقيت الرياض — لكشف المباريات الجارية الآن */
+function riyadhNow(){
+  try { return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" })); }
+  catch (e) { return new Date(); }
 }
 
-function updateDateHeading() {
-  document.getElementById("today-date").textContent =
-    new Intl.DateTimeFormat("ar-SA-u-ca-gregory", {
-      timeZone: "Asia/Riyadh",
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }).format(new Date());
+/* "09:00 PM" → دقائق من بداية اليوم */
+function toMinutes(t){
+  var m = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(String(t || ""));
+  if (!m) return null;
+  var h = Number(m[1]) % 12;
+  if (/pm/i.test(m[3])) h += 12;
+  return h * 60 + Number(m[2]);
 }
 
-function riyadhTime12(date) {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Riyadh",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true
-  }).format(date).toUpperCase();
+/* مباراة بلا نتيجة وبين انطلاقها ونهايتها التقريبية = جارية الآن.
+   ومباراة معها score و live:true = نتيجة مباشرة أثناء اللعب. */
+var LIVE_WINDOW_MIN = 115;
+function isLiveNow(m){
+  if (Array.isArray(m.score)) return m.live === true;
+  var start = toMinutes(m.time);
+  if (start == null) return false;
+  var now = riyadhNow();
+  var diff = (now.getHours() * 60 + now.getMinutes()) - start;
+  return diff >= 0 && diff <= LIVE_WINDOW_MIN;
 }
 
-function toMinutes(value) {
-  var match = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(
-    String(value || "")
-  );
-
-  if (!match) return null;
-
-  var hour = Number(match[1]);
-  var minute = Number(match[2]);
-
-  if (hour < 1 || hour > 12 || minute > 59) return null;
-
-  hour %= 12;
-  if (/PM/i.test(match[3])) hour += 12;
-
-  return hour * 60 + minute;
-}
-
-function kickoffTimestamp(date, time) {
-  var minutes = toMinutes(time);
-  if (minutes === null) return null;
-
-  var hour = String(Math.floor(minutes / 60)).padStart(2, "0");
-  var minute = String(minutes % 60).padStart(2, "0");
-  var timestamp = Date.parse(
-    date + "T" + hour + ":" + minute + ":00+03:00"
-  );
-
-  return Number.isFinite(timestamp) ? timestamp : null;
-}
-
-function arabicDigits(value) {
-  return String(value).replace(/\d/g, function(digit) {
-    return "٠١٢٣٤٥٦٧٨٩"[Number(digit)];
-  });
-}
-
-function displayTime(value) {
-  var match = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(
-    String(value || "")
-  );
-
-  if (!match) return String(value || "لم يحدد");
-
-  return arabicDigits(Number(match[1]) + ":" + match[2]) +
-    (/PM/i.test(match[3]) ? " م" : " ص");
-}
-
-/* حماية النصوص عند إدراجها داخل الصفحة */
-function escapeHTML(value) {
-  return String(value == null ? "" : value).replace(
-    /[&<>"']/g,
-    function(character) {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[character];
-    }
-  );
-}
-
-function safeURL(value) {
-  try {
-    var url = new URL(String(value || ""), location.href);
-    return /^https?:$/.test(url.protocol) ? url.href : "";
-  } catch (error) {
-    return "";
-  }
-}
-
-/* =========================================================
-   البطولات التي يجري تحميلها تلقائيًا
-   ========================================================= */
-
+/* =====================================================================
+   مصدر البيانات — تلقائي من المتصفح مباشرة (بلا خادم وبلا مفتاح):
+   واجهة ESPN العامة لكل دوري، تُقرأ وتُترجم أسماء الأندية للعربي هنا.
+   لو تعذّر الجلب لأي سبب: نرجع لملف matches-data.js اليدوي القديم.
+   ===================================================================== */
 var MATCH_LEAGUES = [
-  { code: "ksa.1", name: "دوري روشن السعودي", badge: "RSL" },
-  { code: "afc.champions", name: "دوري أبطال آسيا للنخبة", badge: "ACL" },
-  { code: "fifa.intercontinental", name: "كأس القارات للأندية", badge: "FIFA" },
-  { code: "afc.cup", name: "دوري أبطال آسيا 2", badge: "ACL2" },
-  { code: "uefa.champions", name: "دوري أبطال أوروبا", badge: "UCL" },
-  { code: "eng.1", name: "الدوري الإنجليزي الممتاز", badge: "PL" },
-  { code: "esp.1", name: "الدوري الإسباني", badge: "LL" },
-  { code: "ita.1", name: "الدوري الإيطالي", badge: "SA" },
-  { code: "ger.1", name: "الدوري الألماني", badge: "BL" },
-  { code: "fra.1", name: "الدوري الفرنسي", badge: "L1" }
+  { code: 'ksa.1',          name: 'دوري روشن السعودي',        badge: 'RSL' },
+  { code: 'afc.champions',  name: 'دوري أبطال آسيا للنخبة',   badge: 'ACL' },
+  { code: 'fifa.intercontinental', name: 'كأس القارات للأندية', badge: 'FIFA' },
+  { code: 'afc.cup',        name: 'دوري أبطال آسيا 2',        badge: 'ACL2' },
+  { code: 'uefa.champions', name: 'دوري أبطال أوروبا',        badge: 'UCL' },
+  { code: 'eng.1',          name: 'الدوري الإنجليزي الممتاز',  badge: 'PL'  },
+  { code: 'esp.1',          name: 'الدوري الإسباني',           badge: 'LL'  },
+  { code: 'ita.1',          name: 'الدوري الإيطالي',           badge: 'SA'  },
+  { code: 'ger.1',          name: 'الدوري الألماني',           badge: 'BL'  },
+  { code: 'fra.1',          name: 'الدوري الفرنسي',            badge: 'L1'  }
 ];
-
-/* =========================================================
-   ترجمة أسماء الأندية
-   ========================================================= */
-
-var TEAM_AR = {
-  "hilal":"الهلال","nassr":"النصر","ittihad":"الاتحاد",
-  "ahli":"الأهلي","shabab":"الشباب","ettifaq":"الاتفاق",
-  "taawoun":"التعاون","taawon":"التعاون","fateh":"الفتح",
-  "khaleej":"الخليج","riyadh":"الرياض","fayha":"الفيحاء",
-  "feiha":"الفيحاء","okhdood":"الأخدود","akhdoud":"الأخدود",
-  "damac":"ضمك","dhamk":"ضمك","qadsiah":"القادسية",
-  "qadisiyah":"القادسية","kholood":"الخلود","hazem":"الحزم",
-  "hazm":"الحزم","neom":"نيوم","najma":"النجمة",
-  "abha":"أبها","raed":"الرائد","wehda":"الوحدة",
-  "tai":"الطائي","faisaly":"الفيصلي","orobah":"العروبة",
-  "jabalain":"الجبلين","diriyah":"الدرعية","jeddah":"جدة",
-  "ohod":"أحد","batin":"الباطن","adalah":"العدالة",
-  "shoulla":"الشعلة","arabi":"العربي","ain":"العين",
-  "jubail":"الجبيل","bukiryah":"البكيرية","sahel":"الساحل",
-  "zulfi":"الزلفي",
-
-  "gharafa":"الغرافة","sadd":"السد","duhail":"الدحيل",
-  "rayyan":"الريان","wakrah":"الوكرة","wahda":"الوحدة",
-  "shabab ahli":"شباب الأهلي","shabab ahli dubai":"شباب الأهلي",
-  "shabab al ahli":"شباب الأهلي","sharjah":"الشارقة",
-  "sharjah fc":"الشارقة","wasl":"الوصل","jazira":"الجزيرة",
-  "nasr":"النصر الإماراتي","kuwait":"الكويت",
-  "qadsia":"القادسية الكويتي","sepahan":"سباهان",
-  "persepolis":"بيرسبوليس","esteghlal":"استقلال",
-  "tractor":"تراكتور","foolad":"فولاد","shorta":"الشرطة",
-  "quwa jawiya":"القوة الجوية","zawraa":"الزوراء",
-  "pakhtakor":"باختاكور","nasaf":"نسف","navbahor":"نافباهور",
-  "istiklol":"استقلال دوشنبه","muharraq":"المحرق",
-  "riffa":"الرفاع","seeb":"السيب",
-
-  "ulsan hd":"أولسان","ulsan hyundai":"أولسان",
-  "jeonbuk hyundai motors":"جيونبوك","jeonbuk":"جيونبوك",
-  "gwangju":"غوانغجو","pohang steelers":"بوهانغ",
-  "pohang":"بوهانغ","fc seoul":"سيول","seoul":"سيول",
-  "vissel kobe":"فيسل كوبي",
-  "yokohama f marinos":"يوكوهاما مارينوس",
-  "yokohama marinos":"يوكوهاما مارينوس",
-  "kawasaki frontale":"كاواساكي فرونتال",
-  "sanfrecce hiroshima":"سانفريتشي هيروشيما",
-  "gamba osaka":"غامبا أوساكا",
-  "machida zelvia":"ماتشيدا زيلفيا",
-  "fc machida zelvia":"ماتشيدا زيلفيا",
-  "kashima antlers":"كاشيما أنتلرز",
-  "urawa red diamonds":"أوراوا ريدز","urawa reds":"أوراوا ريدز",
-  "shanghai port":"شنغهاي بورت",
-  "shanghai shenhua":"شنغهاي شينهوا",
-  "shandong taishan":"شاندونغ تايشان",
-  "chengdu rongcheng":"تشنغدو رونغتشنغ",
-  "beijing guoan":"بكين غوان",
-  "buriram united":"بوريرام يونايتد",
-  "bangkok united":"بانكوك يونايتد",
-  "johor darul tazim":"جوهور دار التعظيم",
-  "johor darul ta zim":"جوهور دار التعظيم",
-  "melbourne city":"ملبورن سيتي",
-  "melbourne victory":"ملبورن فيكتوري",
-  "sydney":"سيدني",
-  "central coast mariners":"سنترال كوست مارينرز",
-  "western sydney wanderers":"وسترن سيدني",
-  "auckland":"أوكلاند","macarthur":"ماكارثر",
-  "lion city sailors":"ليون سيتي سيلورز",
-  "hanoi":"هانوي","nam dinh":"نام دينه",
-  "cong an ha noi":"شرطة هانوي",
-  "cong an hanoi":"شرطة هانوي",
-  "tampines rovers":"تامبينيس روفرز",
-  "kyoto sanga":"كيوتو سانغا",
-  "daejeon hana citizen":"دايجون","daejeon":"دايجون",
-  "newcastle jets":"نيوكاسل جيتس",
-  "ratchaburi":"راتشابوري","arkadag":"أركاداغ",
-  "altyn asyr":"ألتين أسير",
-  "sanfrecce":"سانفريتشي هيروشيما",
-  "avispa fukuoka":"أفيسبا فوكوكا",
-  "cerezo osaka":"سيريزو أوساكا",
-  "nagoya grampus":"ناغويا غرامبوس",
-  "suwon":"سوون","incheon united":"إنتشون يونايتد",
-  "daegu":"دايغو","gangwon":"غانغوون","jeju":"جيجو",
-  "kim cheon sangmu":"كيمتشون سانغمو",
-  "shenzhen peng city":"شنتشن بينغ سيتي",
-  "tianjin jinmen tiger":"تيانجين","zhejiang":"تشجيانغ",
-  "wuhan three towns":"ووهان ثري تاونز",
-  "port":"بورت","muangthong united":"موانغ ثونغ يونايتد",
-  "bg pathum united":"بي جي باثوم يونايتد",
-  "pathum united":"بي جي باثوم يونايتد",
-  "selangor":"سيلانغور","kuala lumpur city":"كوالالمبور سيتي",
-  "persib bandung":"بيرسيب باندونغ",
-  "persija jakarta":"بيرسيجا جاكرتا",
-  "adelaide united":"أديلايد يونايتد",
-  "brisbane roar":"بريزبن رور","perth glory":"بيرث غلوري",
-  "wellington phoenix":"ولينغتون فينيكس",
-  "kaya":"كايا","ceres negros":"سيريس",
-  "thanh hoa":"ثانه هوا","viettel":"فيتيل",
-  "the cong viettel":"فيتيل","east bengal":"إيست بنغال",
-  "mohun bagan super giant":"موهون باغان",
-  "mohun bagan":"موهون باغان","mumbai city":"مومباي سيتي",
-  "goa":"غوا","abahani":"أباهاني",
-  "bashundhara kings":"باشوندرا كينغز",
-  "dhaka abahani":"أباهاني","maziya":"مازيا",
-
-  "al ahli doha":"الأهلي القطري","ahli doha":"الأهلي القطري",
-  "umm salal":"أم صلال","qatar sc":"قطر","qatar":"قطر",
-  "shamal":"الشمال","markhiya":"المرخية",
-  "bani yas":"بني ياس","ajman":"عجمان",
-  "khor fakkan":"خورفكان","ittihad kalba":"اتحاد كلباء",
-  "dibba":"دبا","sib":"السيب","nahda":"النهضة",
-  "dhofar":"ظفار","oruba":"العروبة","salalah":"صلالة",
-  "kazma":"كاظمة","arabi kuwait":"العربي الكويتي",
-  "salmiya":"السالمية","jahra":"الجهراء",
-  "hussein":"الحسين","wehdat":"الوحدات",
-  "faisaly amman":"الفيصلي الأردني","ramtha":"الرمثا",
-  "najaf":"النجف","karkh":"الكرخ","naft":"النفط",
-  "erbil":"أربيل","duhok":"دهوك","zakho":"زاخو",
-  "talaba":"الطلبة","bunyodkor":"بونيودكور",
-  "neftchi fergana":"نفتشي فرغانة","olmaliq":"ألمالق",
-  "andijon":"أنديجان","aktobe":"أكتوبي",
-  "astana":"أستانا","tobol":"توبول","ordabasy":"أورداباسي",
-  "kairat almaty":"كايرات","ravshan":"رافشان",
-  "regar tadaz":"ريغار","khujand":"خوجند","dordoi":"دوردوي",
-  "abdysh ata":"أبديش أتا","alay":"ألاي",
-  "mes rafsanjan":"مس رفسنجان","gol gohar":"كل كهر",
-  "zob ahan":"ذوب آهن","malavan":"ملوان",
-  "aluminium arak":"ألومنيوم أراك",
-  "united arab emirates":"الإمارات",
-
-  "arsenal":"آرسنال","aston villa":"أستون فيلا",
-  "bournemouth":"بورنموث","brentford":"برينتفورد",
-  "brighton hove albion":"برايتون","brighton":"برايتون",
-  "chelsea":"تشيلسي","crystal palace":"كريستال بالاس",
-  "everton":"إيفرتون","fulham":"فولهام","liverpool":"ليفربول",
-  "manchester city":"مانشستر سيتي",
-  "manchester united":"مانشستر يونايتد",
-  "newcastle united":"نيوكاسل يونايتد",
-  "nottingham forest":"نوتنغهام فورست",
-  "tottenham hotspur":"توتنهام","west ham united":"وست هام",
-  "wolverhampton wanderers":"ولفرهامبتون",
-  "leeds united":"ليدز يونايتد","burnley":"بيرنلي",
-  "sunderland":"سندرلاند","ipswich town":"إيبسويتش تاون",
-  "leicester city":"ليستر سيتي","southampton":"ساوثهامبتون",
-  "hull city":"هال سيتي","coventry city":"كوفنتري سيتي",
-  "sheffield united":"شيفيلد يونايتد",
-  "middlesbrough":"ميدلسبره","norwich city":"نوريتش سيتي",
-
-  "real madrid":"ريال مدريد","barcelona":"برشلونة",
-  "atletico madrid":"أتلتيكو مدريد","athletic":"أتلتيك بلباو",
-  "athletic bilbao":"أتلتيك بلباو","sevilla":"إشبيلية",
-  "real betis":"ريال بيتيس","real sociedad":"ريال سوسييداد",
-  "villarreal":"فياريال","valencia":"فالنسيا",
-  "girona":"جيرونا","celta vigo":"سيلتا فيغو",
-  "celta":"سيلتا فيغو","getafe":"خيتافي","osasuna":"أوساسونا",
-  "rayo vallecano":"رايو فاييكانو","mallorca":"ريال مايوركا",
-  "alaves":"ديبورتيفو ألافيس","deportivo alaves":"ديبورتيفو ألافيس",
-  "espanyol":"إسبانيول","elche":"إلتشي","levante":"ليفانتي",
-  "real oviedo":"ريال أوفييدو","oviedo":"ريال أوفييدو",
-  "malaga":"مالقة","deportivo la coruna":"ديبورتيفو لاكورونيا",
-  "dep la coruna":"ديبورتيفو لاكورونيا",
-  "deportivo":"ديبورتيفو لاكورونيا",
-  "racing santander":"راسينغ سانتاندير",
-  "las palmas":"لاس بالماس","valladolid":"بلد الوليد",
-  "leganes":"ليغانيس","cadiz":"قادش","granada":"غرناطة",
-  "almeria":"ألميريا",
-
-  "inter milan":"إنتر ميلان","internazionale":"إنتر ميلان",
-  "inter":"إنتر ميلان","milan":"ميلان","juventus":"يوفنتوس",
-  "napoli":"نابولي","roma":"روما","lazio":"لاتسيو",
-  "atalanta":"أتالانتا","fiorentina":"فيورنتينا",
-  "bologna":"بولونيا","torino":"تورينو","udinese":"أودينيزي",
-  "genoa":"جنوى","como":"كومو","cagliari":"كالياري",
-  "parma":"بارما","verona":"هيلاس فيرونا",
-  "hellas verona":"هيلاس فيرونا","lecce":"ليتشي",
-  "sassuolo":"ساسولو","cremonese":"كريمونيزي","pisa":"بيزا",
-  "monza":"مونزا","venezia":"فينيسيا","empoli":"إمبولي",
-  "frosinone":"فروسينوني","salernitana":"ساليرنيتانا",
-  "sampdoria":"سامبدوريا","palermo":"باليرمو",
-
-  "bayern munich":"بايرن ميونخ","bayern munchen":"بايرن ميونخ",
-  "borussia dortmund":"دورتموند",
-  "bayer leverkusen":"باير ليفركوزن","leipzig":"لايبزيغ",
-  "rb leipzig":"لايبزيغ",
-  "eintracht frankfurt":"آينتراخت فرانكفورت",
-  "stuttgart":"شتوتغارت","freiburg":"فرايبورغ",
-  "borussia monchengladbach":"مونشنغلادباخ",
-  "wolfsburg":"فولفسبورغ","mainz":"ماينتس",
-  "augsburg":"أوغسبورغ","werder bremen":"فيردر بريمن",
-  "hoffenheim":"هوفنهايم","union berlin":"يونيون برلين",
-  "heidenheim":"هايدنهايم","st pauli":"سانت باولي",
-  "koln":"كولن","cologne":"كولن","hamburg":"هامبورغ",
-  "hamburger":"هامبورغ","schalke 04":"شالكه",
-  "schalke":"شالكه","elversberg":"إلفرسبيرغ",
-  "paderborn":"بادربورن","hertha berlin":"هيرتا برلين",
-  "hannover 96":"هانوفر","bochum":"بوخوم",
-  "holstein kiel":"هولشتاين كيل",
-  "fortuna dusseldorf":"فورتونا دوسلدورف",
-
-  "paris saint germain":"باريس سان جيرمان",
-  "marseille":"مارسيليا","lyon":"ليون",
-  "olympique lyonnais":"ليون","monaco":"موناكو",
-  "lille":"ليل","nice":"نيس","rennes":"رين","lens":"لانس",
-  "strasbourg":"ستراسبورغ","nantes":"نانت",
-  "toulouse":"تولوز","brest":"بريست","auxerre":"أوكسير",
-  "le havre":"لوهافر","angers":"أنجيه","lorient":"لوريان",
-  "metz":"ميتز","paris":"باريس إف سي","reims":"ريمس",
-  "montpellier":"مونبلييه","saint etienne":"سانت إتيان",
-  "troyes":"تروا","le mans":"لومان",
-
-  "benfica":"بنفيكا","porto":"بورتو",
-  "sporting":"سبورتينغ لشبونة","sporting cp":"سبورتينغ لشبونة",
-  "ajax":"أياكس","psv eindhoven":"آيندهوفن","psv":"آيندهوفن",
-  "feyenoord":"فينورد","celtic":"سيلتيك","rangers":"رينجرز",
-  "galatasaray":"غلطة سراي","fenerbahce":"فنربخشة",
-  "besiktas":"بشكتاش","club brugge":"كلوب بروج",
-  "brugge":"كلوب بروج","anderlecht":"أندرلخت",
-  "shakhtar donetsk":"شاختار","dinamo zagreb":"دينامو زغرب",
-  "red bull salzburg":"سالزبورغ","salzburg":"سالزبورغ",
-  "young boys":"يونغ بويز","copenhagen":"كوبنهاغن",
-  "olympiacos":"أولمبياكوس","panathinaikos":"باناثينايكوس",
-  "slavia prague":"سلافيا براغ","sparta prague":"سبارتا براغ",
-  "red star belgrade":"النجم الأحمر","crvena zvezda":"النجم الأحمر",
-  "bodo glimt":"بودو غليمت","qarabag":"قره باغ",
-  "pafos":"بافوس","kairat":"كايرات",
-  "mamelodi sundowns":"ماميلودي صن داونز",
-  "saudi arabia":"السعودية","south korea":"كوريا الجنوبية",
-  "korea republic":"كوريا الجنوبية"
+const TEAM_AR = {
+  // دوري روشن
+  'hilal':'الهلال','nassr':'النصر','ittihad':'الاتحاد','ahli':'الأهلي','shabab':'الشباب',
+  'ettifaq':'الاتفاق','taawoun':'التعاون','taawon':'التعاون','fateh':'الفتح','khaleej':'الخليج',
+  'riyadh':'الرياض','fayha':'الفيحاء','feiha':'الفيحاء','okhdood':'الأخدود','akhdoud':'الأخدود',
+  'damac':'ضمك','dhamk':'ضمك','qadsiah':'القادسية','qadisiyah':'القادسية','kholood':'الخلود',
+  'hazem':'الحزم','hazm':'الحزم','neom':'نيوم','najma':'النجمة','abha':'أبها','raed':'الرائد',
+  'wehda':'الوحدة','tai':'الطائي','faisaly':'الفيصلي','orobah':'العروبة','jabalain':'الجبلين',
+  'diriyah':'الدرعية','jeddah':'جدة','ohod':'أحد','batin':'الباطن','adalah':'العدالة','shoulla':'الشعلة',
+  'arabi':'العربي','ain':'العين','jubail':'الجبيل','bukiryah':'البكيرية','sahel':'الساحل','zulfi':'الزلفي',
+  // آسيا (أبطال آسيا)
+  'gharafa':'الغرافة','sadd':'السد','duhail':'الدحيل','rayyan':'الريان','arabi':'العربي','wakrah':'الوكرة',
+  'ain':'العين','wahda':'الوحدة','shabab ahli':'شباب الأهلي','shabab ahli dubai':'شباب الأهلي','sharjah':'الشارقة',
+  'wasl':'الوصل','jazira':'الجزيرة','nasr':'النصر الإماراتي','kuwait':'الكويت','qadsia':'القادسية الكويتي',
+  'sepahan':'سباهان','persepolis':'بيرسبوليس','esteghlal':'استقلال','tractor':'تراكتور','foolad':'فولاد',
+  'shorta':'الشرطة','quwa jawiya':'القوة الجوية','zawraa':'الزوراء','pakhtakor':'باختاكور','nasaf':'نسف',
+  'navbahor':'نافباهور','istiklol':'استقلال دوشنبه','muharraq':'المحرق','riffa':'الرفاع','seeb':'السيب',
+  'ulsan hd':'أولسان','ulsan hyundai':'أولسان','jeonbuk hyundai motors':'جيونبوك','jeonbuk':'جيونبوك',
+  'gwangju':'غوانغجو','pohang steelers':'بوهانغ','pohang':'بوهانغ','fc seoul':'سيول','seoul':'سيول',
+  'vissel kobe':'فيسل كوبي','yokohama f marinos':'يوكوهاما مارينوس','yokohama marinos':'يوكوهاما مارينوس',
+  'kawasaki frontale':'كاواساكي فرونتال','sanfrecce hiroshima':'سانفريتشي هيروشيما','gamba osaka':'غامبا أوساكا',
+  'machida zelvia':'ماتشيدا زيلفيا','fc machida zelvia':'ماتشيدا زيلفيا','kashima antlers':'كاشيما أنتلرز',
+  'urawa red diamonds':'أوراوا ريدز','urawa reds':'أوراوا ريدز','shanghai port':'شنغهاي بورت','shanghai shenhua':'شنغهاي شينهوا',
+  'shandong taishan':'شاندونغ تايشان','chengdu rongcheng':'تشنغدو رونغتشنغ','beijing guoan':'بكين غوان',
+  'buriram united':'بوريرام يونايتد','bangkok united':'بانكوك يونايتد','johor darul tazim':'جوهور دار التعظيم','johor darul ta zim':'جوهور دار التعظيم',
+  'melbourne city':'ملبورن سيتي','melbourne victory':'ملبورن فيكتوري','sydney':'سيدني','central coast mariners':'سنترال كوست مارينرز',
+  'western sydney wanderers':'وسترن سيدني','auckland':'أوكلاند','macarthur':'ماكارثر','lion city sailors':'ليون سيتي سيلورز',
+  'hanoi':'هانوي','nam dinh':'نام دينه','cong an ha noi':'شرطة هانوي','tampines rovers':'تامبينيس روفرز',
+  'kyoto sanga':'كيوتو سانغا','daejeon hana citizen':'دايجون','daejeon':'دايجون','cong an hanoi':'شرطة هانوي',
+  'newcastle jets':'نيوكاسل جيتس','ratchaburi':'راتشابوري','arkadag':'أركاداغ','altyn asyr':'ألتين أسير',
+  'sanfrecce':'سانفريتشي هيروشيما','avispa fukuoka':'أفيسبا فوكوكا','cerezo osaka':'سيريزو أوساكا','nagoya grampus':'ناغويا غرامبوس',
+  'suwon':'سوون','incheon united':'إنتشون يونايتد','daegu':'دايغو','gangwon':'غانغوون','jeju':'جيجو','kim cheon sangmu':'كيمتشون سانغمو',
+  'shenzhen peng city':'شنتشن بينغ سيتي','tianjin jinmen tiger':'تيانجين','zhejiang':'تشجيانغ','wuhan three towns':'ووهان ثري تاونز',
+  'port':'بورت','muangthong united':'موانغ ثونغ يونايتد','bg pathum united':'بي جي باثوم يونايتد','pathum united':'بي جي باثوم يونايتد',
+  'selangor':'سيلانغور','kuala lumpur city':'كوالالمبور سيتي','persib bandung':'بيرسيب باندونغ','persija jakarta':'بيرسيجا جاكرتا',
+  'adelaide united':'أديلايد يونايتد','brisbane roar':'بريزبن رور','perth glory':'بيرث غلوري','wellington phoenix':'ولينغتون فينيكس',
+  'kaya':'كايا','ceres negros':'سيريس','thanh hoa':'ثانه هوا','viettel':'فيتيل','the cong viettel':'فيتيل',
+  'east bengal':'إيست بنغال','mohun bagan super giant':'موهون باغان','mohun bagan':'موهون باغان','mumbai city':'مومباي سيتي','goa':'غوا',
+  'abahani':'أباهاني','bashundhara kings':'باشوندرا كينغز','dhaka abahani':'أباهاني','maziya':'مازيا',
+  'al ahli doha':'الأهلي القطري','umm salal':'أم صلال','qatar sc':'قطر','shamal':'الشمال','markhiya':'المرخية',
+  'bani yas':'بني ياس','ajman':'عجمان','khor fakkan':'خورفكان','ittihad kalba':'اتحاد كلباء','dibba':'دبا',
+  'sib':'السيب','nahda':'النهضة','dhofar':'ظفار','oruba':'العروبة','salalah':'صلالة',
+  'kazma':'كاظمة','arabi kuwait':'العربي الكويتي','salmiya':'السالمية','jahra':'الجهراء',
+  'hussein':'الحسين','wehdat':'الوحدات','faisaly amman':'الفيصلي الأردني','ramtha':'الرمثا',
+  'najaf':'النجف','karkh':'الكرخ','naft':'النفط','erbil':'أربيل','duhok':'دهوك','zakho':'زاخو','talaba':'الطلبة',
+  'bunyodkor':'بونيودكور','neftchi fergana':'نفتشي فرغانة','olmaliq':'ألمالق','andijon':'أنديجان',
+  'aktobe':'أكتوبي','astana':'أستانا','tobol':'توبول','ordabasy':'أورداباسي','kairat almaty':'كايرات',
+  'ravshan':'رافشان','regar tadaz':'ريغار','khujand':'خوجند','dordoi':'دوردوي','abdysh ata':'أبديش أتا','alay':'ألاي',
+  'mes rafsanjan':'مس رفسنجان','gol gohar':'كل كهر','zob ahan':'ذوب آهن','malavan':'ملوان','aluminium arak':'ألومنيوم أراك',
+  'shabab al ahli':'شباب الأهلي','sharjah fc':'الشارقة','united arab emirates':'الإمارات',
+  // إنجلترا
+  'arsenal':'آرسنال','aston villa':'أستون فيلا','bournemouth':'بورنموث','brentford':'برينتفورد',
+  'brighton hove albion':'برايتون','brighton':'برايتون','chelsea':'تشيلسي','crystal palace':'كريستال بالاس',
+  'everton':'إيفرتون','fulham':'فولهام','liverpool':'ليفربول','manchester city':'مانشستر سيتي',
+  'manchester united':'مانشستر يونايتد','newcastle united':'نيوكاسل يونايتد','nottingham forest':'نوتنغهام فورست',
+  'tottenham hotspur':'توتنهام','west ham united':'وست هام','wolverhampton wanderers':'ولفرهامبتون',
+  'leeds united':'ليدز يونايتد','burnley':'بيرنلي','sunderland':'سندرلاند','ipswich town':'إيبسويتش تاون',
+  'leicester city':'ليستر سيتي','southampton':'ساوثهامبتون','hull city':'هال سيتي','coventry city':'كوفنتري سيتي',
+  'sheffield united':'شيفيلد يونايتد','middlesbrough':'ميدلسبره','norwich city':'نوريتش سيتي',
+  // إسبانيا
+  'real madrid':'ريال مدريد','barcelona':'برشلونة','atletico madrid':'أتلتيكو مدريد','athletic':'أتلتيك بلباو',
+  'athletic bilbao':'أتلتيك بلباو','sevilla':'إشبيلية','real betis':'ريال بيتيس','real sociedad':'ريال سوسييداد',
+  'villarreal':'فياريال','valencia':'فالنسيا','girona':'جيرونا','celta vigo':'سيلتا فيغو','celta':'سيلتا فيغو',
+  'getafe':'خيتافي','osasuna':'أوساسونا','rayo vallecano':'رايو فاييكانو','mallorca':'ريال مايوركا',
+  'alaves':'ديبورتيفو ألافيس','deportivo alaves':'ديبورتيفو ألافيس','espanyol':'إسبانيول','elche':'إلتشي',
+  'levante':'ليفانتي','real oviedo':'ريال أوفييدو','oviedo':'ريال أوفييدو','malaga':'مالقة',
+  'deportivo la coruna':'ديبورتيفو لاكورونيا','dep la coruna':'ديبورتيفو لاكورونيا','deportivo':'ديبورتيفو لاكورونيا','racing santander':'راسينغ سانتاندير','las palmas':'لاس بالماس',
+  'valladolid':'بلد الوليد','leganes':'ليغانيس','cadiz':'قادش','granada':'غرناطة','almeria':'ألميريا',
+  // إيطاليا
+  'inter milan':'إنتر ميلان','internazionale':'إنتر ميلان','inter':'إنتر ميلان','milan':'ميلان','juventus':'يوفنتوس',
+  'napoli':'نابولي','roma':'روما','lazio':'لاتسيو','atalanta':'أتالانتا','fiorentina':'فيورنتينا',
+  'bologna':'بولونيا','torino':'تورينو','udinese':'أودينيزي','genoa':'جنوى','como':'كومو','cagliari':'كالياري',
+  'parma':'بارما','verona':'هيلاس فيرونا','hellas verona':'هيلاس فيرونا','lecce':'ليتشي','sassuolo':'ساسولو',
+  'cremonese':'كريمونيزي','pisa':'بيزا','monza':'مونزا','venezia':'فينيسيا','empoli':'إمبولي','frosinone':'فروسينوني',
+  'salernitana':'ساليرنيتانا','sampdoria':'سامبدوريا','palermo':'باليرمو',
+  // ألمانيا
+  'bayern munich':'بايرن ميونخ','bayern munchen':'بايرن ميونخ','borussia dortmund':'دورتموند',
+  'bayer leverkusen':'باير ليفركوزن','leipzig':'لايبزيغ','rb leipzig':'لايبزيغ','eintracht frankfurt':'آينتراخت فرانكفورت',
+  'stuttgart':'شتوتغارت','freiburg':'فرايبورغ','borussia monchengladbach':'مونشنغلادباخ','wolfsburg':'فولفسبورغ',
+  'mainz':'ماينتس','augsburg':'أوغسبورغ','werder bremen':'فيردر بريمن','hoffenheim':'هوفنهايم','union berlin':'يونيون برلين',
+  'heidenheim':'هايدنهايم','st pauli':'سانت باولي','koln':'كولن','cologne':'كولن','hamburg':'هامبورغ','hamburger':'هامبورغ',
+  'schalke 04':'شالكه','schalke':'شالكه','elversberg':'إلفرسبيرغ','paderborn':'بادربورن','hertha berlin':'هيرتا برلين',
+  'hannover 96':'هانوفر','bochum':'بوخوم','holstein kiel':'هولشتاين كيل','fortuna dusseldorf':'فورتونا دوسلدورف',
+  // فرنسا
+  'paris saint germain':'باريس سان جيرمان','marseille':'مارسيليا','lyon':'ليون','olympique lyonnais':'ليون','monaco':'موناكو',
+  'lille':'ليل','nice':'نيس','rennes':'رين','lens':'لانس','strasbourg':'ستراسبورغ','nantes':'نانت','toulouse':'تولوز',
+  'brest':'بريست','auxerre':'أوكسير','le havre':'لوهافر','angers':'أنجيه','lorient':'لوريان','metz':'ميتز',
+  'paris':'باريس إف سي','reims':'ريمس','montpellier':'مونبلييه','saint etienne':'سانت إتيان','troyes':'تروا','le mans':'لومان',
+  // أندية أوروبية شهيرة (أبطال أوروبا)
+  'benfica':'بنفيكا','porto':'بورتو','sporting':'سبورتينغ لشبونة','sporting cp':'سبورتينغ لشبونة','ajax':'أياكس',
+  'psv eindhoven':'آيندهوفن','psv':'آيندهوفن','feyenoord':'فينورد','celtic':'سيلتيك','rangers':'رينجرز',
+  'galatasaray':'غلطة سراي','fenerbahce':'فنربخشة','besiktas':'بشكتاش','club brugge':'كلوب بروج','anderlecht':'أندرلخت',
+  'shakhtar donetsk':'شاختار','dinamo zagreb':'دينامو زغرب','red bull salzburg':'سالزبورغ','salzburg':'سالزبورغ',
+  'young boys':'يونغ بويز','copenhagen':'كوبنهاغن','olympiacos':'أولمبياكوس','panathinaikos':'باناثينايكوس',
+  'slavia prague':'سلافيا براغ','sparta prague':'سبارتا براغ','red star belgrade':'النجم الأحمر','crvena zvezda':'النجم الأحمر',
+  'bodo glimt':'بودو غليمت','qarabag':'قره باغ','pafos':'بافوس','kairat':'كايرات'
 };
-
-var TEAM_STOP = new Set([
-  "al","fc","sc","cf","ac","as","ss","us","ssc","afc",
-  "rc","rcd","ud","sd","club","saudi","de","the",
-  "fk","sk","bk","if","ol","og","sv","vfl","vfb",
-  "tsg","fsv","bsc","sco","stade","calcio",
-  "1899","1904","1909","1910","1913","1846","1893","1900"
-]);
-
+const TEAM_STOP = new Set(['al','fc','sc','cf','ac','as','ss','us','ssc','afc','rc','rcd','ud','sd','club','saudi','de','the',
+  'fk','sk','bk','if','ol','og','sv','vfl','vfb','tsg','fsv','bsc','sco','stade','calcio','1899','1904','1909','1910','1913','1846','1893','1900']);
 function teamKey(name) {
-  return String(name || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9 ]/g, " ")
-    .split(/\s+/)
-    .filter(function(word) {
-      return word && !TEAM_STOP.has(word);
-    })
-    .join(" ")
-    .trim();
+  return String(name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w && !TEAM_STOP.has(w)).join(' ').trim();
+}
+function arTeam(name, short) {
+  const k = teamKey(name);
+  if (TEAM_AR[k]) return TEAM_AR[k];
+  const words = k.split(' ');
+  for (let n = words.length; n >= 1; n--) { const sub = words.slice(0, n).join(' '); if (TEAM_AR[sub]) return TEAM_AR[sub]; }
+  return short || name;
+}
+function riyadhDate(d){
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
+function riyadhTime12(d){
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', hour: '2-digit', minute: '2-digit', hour12: true }).format(d).toUpperCase();
+}
+function fetchLeagueDay(code, ymd){
+  var url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/' + code + '/scoreboard?dates=' + ymd.replace(/-/g, '') + '&limit=100';
+  return fetch(url, { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error('espn_' + r.status); return r.json(); });
+}
+/* يدمج المباريات المضافة يدويًا لليوم الحالي مع مباريات المصدر التلقائي */
+function mergeExtra(leagues, todayStr){
+  leagues = leagues || [];
+  EXTRA_MATCHES.filter(function(m){ return m.date === todayStr; }).forEach(function(m){
+    var same = leagues.filter(function(l){ return l.name === m.league; })[0];
+    var entry = { time: m.time, home: m.home, away: m.away };
+    if (m.watch) entry.watch = m.watch;
+    if (m.channel) entry.channel = m.channel;
+    if (m.commentator) entry.commentator = m.commentator;
+    if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
+    if (m.note) entry.note = m.note;
+    if (same) {
+      var dup = same.matches.some(function(x){ return x.home === entry.home && x.away === entry.away; });
+      if (!dup) same.matches.push(entry);
+    } else {
+      leagues.unshift({ name: m.league, badge: m.badge || '⚽', featured: !!m.featured, matches: [entry] });
+    }
+  });
+  /* البطولات المميزة (مثل كأس الخليج) دائمًا في أعلى القائمة */
+  leagues.sort(function(a, b){ return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); });
+  return leagues;
 }
 
-var NORMALIZED_TEAM_AR = {};
-Object.keys(TEAM_AR).forEach(function(name) {
-  NORMALIZED_TEAM_AR[teamKey(name)] = TEAM_AR[name];
-});
-
-function arTeam(name, shortName) {
-  if (/[\u0600-\u06ff]/.test(String(name || ""))) return name;
-
-  var key = teamKey(name);
-  if (NORMALIZED_TEAM_AR[key]) return NORMALIZED_TEAM_AR[key];
-
-  var words = key.split(" ");
-  for (var length = words.length - 1; length >= 1; length--) {
-    var prefix = words.slice(0, length).join(" ");
-    if (NORMALIZED_TEAM_AR[prefix]) return NORMALIZED_TEAM_AR[prefix];
-  }
-
-  return shortName || name || "فريق";
+function buildFromEspn(results, todayStr){
+  var leagues = [];
+  MATCH_LEAGUES.forEach(function(lg, i){
+    var res = results[i];
+    if (!res || res.status !== 'fulfilled' || !res.value || !Array.isArray(res.value.events)) return;
+    var matches = [];
+    res.value.events.forEach(function(ev){
+      var when = new Date(ev.date);
+      if (isNaN(when.getTime()) || riyadhDate(when) !== todayStr) return;
+      var comp = (ev.competitions && ev.competitions[0]) || {};
+      var comps = comp.competitors || [];
+      var home = comps.filter(function(c){ return c.homeAway === 'home'; })[0] || comps[0];
+      var away = comps.filter(function(c){ return c.homeAway === 'away'; })[0] || comps[1];
+      if (!home || !away) return;
+      var st = (ev.status && ev.status.type) || {};
+      var m = {
+        time: riyadhTime12(when),
+        home: arTeam(home.team && home.team.displayName, home.team && home.team.shortDisplayName),
+        away: arTeam(away.team && away.team.displayName, away.team && away.team.shortDisplayName),
+        _ts: when.getTime()
+      };
+      if (st.state === 'in') {
+        m.score = [Number(home.score) || 0, Number(away.score) || 0];
+        m.live = true;
+        m.minute = (ev.status && ev.status.displayClock) || st.shortDetail || '';
+        if (/HALFTIME/i.test(st.name || '')) m.minute = 'استراحة';
+      } else if (st.state === 'post') {
+        m.score = [Number(home.score) || 0, Number(away.score) || 0];
+        if (/POSTPONED|CANCEL/i.test(st.name || '')) { delete m.score; m.note = 'مؤجلة'; }
+      } else if (/POSTPONED|CANCEL/i.test(st.name || '')) {
+        m.note = 'مؤجلة';
+      }
+      matches.push(m);
+    });
+    matches.sort(function(a, b){ return a._ts - b._ts; });
+    matches.forEach(function(m){ delete m._ts; });
+    if (matches.length) leagues.push({ name: lg.name, badge: lg.badge, matches: matches });
+  });
+  return leagues;
 }
 
-/* =========================================================
-   القنوات — إعداداتك اليدوية السابقة
-   راجعها عند تغيّر حقوق البث.
-   ========================================================= */
+/* =====================================================================
+   📺 القنوات الناقلة — الافتراضي حسب البطولة (الشرق الأوسط).
+   عدّلها هنا مرة واحدة إذا تغيّرت حقوق البث.
+   ===================================================================== */
+/* =====================================================================
+   📋 تفاصيل المباراة — القناة المحددة والمعلّق (تُملأ يدويًا)
+   لا يوجد مصدر تلقائي يعطي رقم القناة ولا اسم المعلّق، فالقنوات توزّعهم
+   قبل المباراة بساعات. اكتبهم هنا وقت ما تعرفهم من حساب القناة الرسمي.
+
+   المفتاح: "الفريق الأول|الفريق الثاني" بنفس الأسماء الظاهرة في الجدول
+   (يعمل بأي ترتيب). أمثلة:
+
+   'خيتافي|مالقة':        { ch: 'beIN SPORTS 1', caster: 'عصام الشوالي' },
+   'أتلتيكو مدريد|ريال مدريد': { ch: 'beIN SPORTS 2', caster: 'حفيظ دراجي' },
+   'الهلال|نيوم':          { ch: 'ثمانية ٢',      caster: 'فهد العتيبي' },
+
+   أبرز المعلّقين للتذكير:
+   ثمانية — فهد العتيبي · عبدالله الحربي · عيسى الحربين · خالد الشنيف ·
+            محمد البكيري · عامر عبدالله · عبدالعزيز اليوسف
+   beIN   — حفيظ دراجي · عصام الشوالي · خليل البلوشي · علي محمد علي ·
+            يوسف سيف · رؤوف خليف
+   ===================================================================== */
+var MATCH_INFO = {
+  /* ---- الأحد ٢٠ سبتمبر ٢٠٢٦ (المصدر: عالم كورة) ---- */
+  /* الدوري الإنجليزي */
+  'بورنموث|ليفربول':                { d:'2026-09-20', ch:'beIN SPORTS 2', caster:'حفيظ دراجي' },
+  'مانشستر سيتي|سندرلاند':          { d:'2026-09-20', ch:'beIN SPORTS 3', caster:'عصام الشوالي' },
+  'ليدز يونايتد|كريستال بالاس':     { d:'2026-09-20', ch:'beIN SPORTS 5', caster:'نوفل باشي' },
+  'فولهام|مانشستر يونايتد':         { d:'2026-09-20', ch:'beIN SPORTS 2', caster:'أحمد البلوشي' },
+  /* الدوري الإسباني */
+  'أتلتيكو مدريد|ريال مدريد':       { d:'2026-09-20', ch:'beIN SPORTS 1', caster:'علي الكعبي' },
+  'فياريال|ليفانتي':                { d:'2026-09-20', ch:'beIN SPORTS 3', caster:'محمد بركات' },
+  'ديبورتيفو لاكورونيا|ريال بيتيس': { d:'2026-09-20', ch:'beIN SPORTS 4', caster:'عامر الخوذيري' },
+  'فالنسيا|ريال سوسييداد':          { d:'2026-09-20', ch:'beIN SPORTS 2', caster:'علي محمد علي' },
+  /* الدوري الإيطالي */
+  'فيورنتينا|نابولي':               { d:'2026-09-20', ch:'STARZPLAY', caster:'فيصل الهندي' },
+  'فروسينوني|كومو':                 { d:'2026-09-20', ch:'STARZPLAY', caster:'أحمد الحامد' },
+  'يوفنتوس|أتالانتا':               { d:'2026-09-20', ch:'STARZPLAY', caster:'عامر عبدالله' },
+  'ميلان|ليتشي':                    { d:'2026-09-20', ch:'STARZPLAY', caster:'محمد الشامسي' },
+  /* الدوري الفرنسي */
+  'أوكسير|بريست':                   { d:'2026-09-20', ch:'beIN SPORTS 6', caster:'أحمد فؤاد' },
+  'نيس|ليل':                        { d:'2026-09-20', ch:'beIN SPORTS 5', caster:'جواد بدة' },
+  'مارسيليا|باريس سان جيرمان':      { d:'2026-09-20', ch:'beIN SPORTS 1', caster:'حسن العيدروس' },
+  /* الدوري الألماني */
+  'باير ليفركوزن|لايبزيغ':          { d:'2026-09-20', ch:'MBC Action', caster:'محمد حسين' },
+  'شالكه|إلفرسبيرغ':                { d:'2026-09-20', ch:'شاهد', caster:'عبدالله الشهري' },
+  'بادربورن|هوفنهايم':              { d:'2026-09-20', ch:'MBC Action', caster:'أحمد النفيسة' },
+  /* كأس القارات */
+  'ماميلودي صن داونز|الأهلي':       { d:'2026-09-20', ch:'MBC Action' }
+};
 
 var CHANNELS = {
-  "كأس الخليج العربي «خليجي 27»":
-    "السعودية الرياضية · أبوظبي الرياضية · الكأس",
-  "دوري روشن السعودي": "ثمانية",
-  "دوري أبطال آسيا للنخبة": "beIN SPORTS",
-  "دوري أبطال آسيا 2": "beIN SPORTS",
-  "دوري أبطال أوروبا": "beIN SPORTS",
-  "الدوري الإنجليزي الممتاز": "beIN SPORTS",
-  "الدوري الإسباني": "beIN SPORTS",
-  "الدوري الإيطالي": "STARZPLAY",
-  "الدوري الألماني": "MBC Action / شاهد",
-  "الدوري الفرنسي": "beIN SPORTS"
+  'كأس الخليج العربي «خليجي 27»': 'السعودية الرياضية · أبوظبي الرياضية · الكأس',
+  'دوري روشن السعودي':       'ثمانية',
+  'دوري أبطال آسيا للنخبة':  'beIN SPORTS',
+  'دوري أبطال آسيا 2':       'beIN SPORTS',
+  'دوري أبطال أوروبا':       'beIN SPORTS',
+  'الدوري الإنجليزي الممتاز':'beIN SPORTS',
+  'الدوري الإسباني':         'beIN SPORTS',
+  'الدوري الإيطالي':         'STARZPLAY',
+  'الدوري الألماني':         'MBC Action / شاهد',
+  'الدوري الفرنسي':          'beIN SPORTS'
 };
 
-/* القنوات والمعلقون كما وردوا في ملفك؛ لا يظهر الإدخال إلا في تاريخه */
-var MATCH_INFO = {
-  "بورنموث|ليفربول":
-    { d:"2026-09-20", ch:"beIN SPORTS 2", caster:"حفيظ دراجي" },
-  "مانشستر سيتي|سندرلاند":
-    { d:"2026-09-20", ch:"beIN SPORTS 3", caster:"عصام الشوالي" },
-  "ليدز يونايتد|كريستال بالاس":
-    { d:"2026-09-20", ch:"beIN SPORTS 5", caster:"نوفل باشي" },
-  "فولهام|مانشستر يونايتد":
-    { d:"2026-09-20", ch:"beIN SPORTS 2", caster:"أحمد البلوشي" },
-  "أتلتيكو مدريد|ريال مدريد":
-    { d:"2026-09-20", ch:"beIN SPORTS 1", caster:"علي الكعبي" },
-  "فياريال|ليفانتي":
-    { d:"2026-09-20", ch:"beIN SPORTS 3", caster:"محمد بركات" },
-  "ديبورتيفو لاكورونيا|ريال بيتيس":
-    { d:"2026-09-20", ch:"beIN SPORTS 4", caster:"عامر الخوذيري" },
-  "فالنسيا|ريال سوسييداد":
-    { d:"2026-09-20", ch:"beIN SPORTS 2", caster:"علي محمد علي" },
-  "فيورنتينا|نابولي":
-    { d:"2026-09-20", ch:"STARZPLAY", caster:"فيصل الهندي" },
-  "فروسينوني|كومو":
-    { d:"2026-09-20", ch:"STARZPLAY", caster:"أحمد الحامد" },
-  "يوفنتوس|أتالانتا":
-    { d:"2026-09-20", ch:"STARZPLAY", caster:"عامر عبدالله" },
-  "ميلان|ليتشي":
-    { d:"2026-09-20", ch:"STARZPLAY", caster:"محمد الشامسي" },
-  "أوكسير|بريست":
-    { d:"2026-09-20", ch:"beIN SPORTS 6", caster:"أحمد فؤاد" },
-  "نيس|ليل":
-    { d:"2026-09-20", ch:"beIN SPORTS 5", caster:"جواد بدة" },
-  "مارسيليا|باريس سان جيرمان":
-    { d:"2026-09-20", ch:"beIN SPORTS 1", caster:"حسن العيدروس" },
-  "باير ليفركوزن|لايبزيغ":
-    { d:"2026-09-20", ch:"MBC Action", caster:"محمد حسين" },
-  "شالكه|إلفرسبيرغ":
-    { d:"2026-09-20", ch:"شاهد", caster:"عبدالله الشهري" },
-  "بادربورن|هوفنهايم":
-    { d:"2026-09-20", ch:"MBC Action", caster:"أحمد النفيسة" },
-  "ماميلودي صن داونز|الأهلي":
-    { d:"2026-09-20", ch:"MBC Action" }
-};
-
-/* =========================================================
-   المباريات اليدوية
-   تظهر في تاريخها فقط، حسب توقيت السعودية.
-   ========================================================= */
-
+/* =====================================================================
+   ✍️ مباريات تُضاف يدويًا — لبطولات قد لا يغطيها المصدر التلقائي
+   date: تاريخ اليوم بصيغة YYYY-MM-DD (بتوقيت السعودية)
+   تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
+   ===================================================================== */
 var EXTRA_MATCHES = [
-  {
-    date: "2026-09-22",
-    league: "دورة الألعاب الآسيوية ٢٠٢٦ — المجموعة D",
-    badge: "🥇",
-    featured: true,
-    time: "01:00 PM",
-    home: "السعودية",
-    away: "كوريا الجنوبية",
-    homeFlag: "🇸🇦",
-    awayFlag: "🇰🇷",
-    venue: "استاد بالوما ميزوهو — ناغويا، اليابان"
-    /*
-      لم تُحدد قناة أو نتيجة لأن الصورة لا تتضمنهما.
-      لتحديث النتيجة يدويًا أثناء اللعب، أضف مثلًا:
-      score: [1, 0],
-      live: true,
-      minute: "٦٥′"
+  /* ===== دورة الألعاب الآسيوية ٢٠٢٦ (آيتشي–ناغويا) — كرة القدم ===== */
+  { date: '2026-09-22', league: 'دورة الألعاب الآسيوية ٢٠٢٦ — المجموعة D', badge: '🥇', featured: true,
+    time: '01:00 PM', home: 'السعودية', away: 'كوريا الجنوبية' },
 
-      عند النهاية اجعل live: false.
-      ترتيب score هو [أهداف السعودية، أهداف كوريا الجنوبية].
-    */
-  },
+  /* ===== كأس الخليج العربي «خليجي 27» — جدة، ٢٣ سبتمبر إلى ٦ أكتوبر ٢٠٢٦ =====
+     نصف النهائي السبت ٣ أكتوبر، والنهائي الثلاثاء ٦ أكتوبر (يُضافان بعد تحديد الطرفين) */
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '05:30 PM', home: 'العراق', away: 'عُمان' },
+  { date: '2026-09-23', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'السعودية', away: 'الكويت' },
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'الإمارات', away: 'اليمن' },
+  { date: '2026-09-24', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'قطر', away: 'البحرين' },
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'الكويت', away: 'العراق' },
+  { date: '2026-09-26', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'عُمان', away: 'السعودية' },
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '06:55 PM', home: 'اليمن', away: 'قطر' },
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '09:00 PM', home: 'البحرين', away: 'الإمارات' },
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'السعودية', away: 'العراق' },
+  { date: '2026-09-29', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'عُمان', away: 'الكويت' },
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'الإمارات', away: 'قطر' },
+  { date: '2026-09-30', league: 'كأس الخليج العربي «خليجي 27»', badge: '🏆', featured: true,
+    time: '08:30 PM', home: 'البحرين', away: 'اليمن' },
 
-  /* جدول كأس الخليج كما ورد في ملفك */
-  {
-    date:"2026-09-23",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"05:30 PM", home:"العراق", away:"عُمان"
-  },
-  {
-    date:"2026-09-23",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"09:00 PM", home:"السعودية", away:"الكويت"
-  },
-  {
-    date:"2026-09-24",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"06:55 PM", home:"الإمارات", away:"اليمن"
-  },
-  {
-    date:"2026-09-24",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"09:00 PM", home:"قطر", away:"البحرين"
-  },
-  {
-    date:"2026-09-26",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"06:55 PM", home:"الكويت", away:"العراق"
-  },
-  {
-    date:"2026-09-26",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"09:00 PM", home:"عُمان", away:"السعودية"
-  },
-  {
-    date:"2026-09-27",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"06:55 PM", home:"اليمن", away:"قطر"
-  },
-  {
-    date:"2026-09-27",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"09:00 PM", home:"البحرين", away:"الإمارات"
-  },
-  {
-    date:"2026-09-29",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"08:30 PM", home:"السعودية", away:"العراق"
-  },
-  {
-    date:"2026-09-29",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"08:30 PM", home:"عُمان", away:"الكويت"
-  },
-  {
-    date:"2026-09-30",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"08:30 PM", home:"الإمارات", away:"قطر"
-  },
-  {
-    date:"2026-09-30",
-    league:"كأس الخليج العربي «خليجي 27»",
-    badge:"🏆", featured:true,
-    time:"08:30 PM", home:"البحرين", away:"اليمن"
-  },
-  {
-    date:"2026-09-19",
-    league:"كأس القارات للأندية",
-    badge:"FIFA",
-    time:"04:00 PM",
-    home:"ماميلودي صن داونز",
-    away:"الأهلي",
-    channel:"MBC Action",
-    watch:[
-      {
-        label:"MBC Action / شاهد — السعودية",
-        url:"https://shahid.mbc.net"
-      },
-      {
-        label:"DAZN — عالمياً",
-        url:"https://www.dazn.com"
-      },
-      {
-        label:"SuperSport — جنوب أفريقيا",
-        url:"https://supersport.com"
-      }
-    ]
-  }
+  { date: '2026-09-19', league: 'كأس القارات للأندية', badge: 'FIFA',
+    time: '04:00 PM', home: 'ماميلودي صن داونز', away: 'الأهلي',
+    channel: 'MBC Action', commentator: '',
+    watch: [
+      { label: 'MBC Action / شاهد — السعودية', url: 'https://shahid.mbc.net' },
+      { label: 'DAZN — عالمياً', url: 'https://www.dazn.com' },
+      { label: 'SuperSport — جنوب أفريقيا', url: 'https://supersport.com' }
+    ] }
 ];
-
-/* =========================================================
-   تحميل المصدر التلقائي
-   ========================================================= */
 
 var LEAGUES = [];
 var DATA_SOURCE = "";
-var FAILED_COUNT = 0;
-var LOADING = false;
-var DISPLAY_DATE = riyadhDate(new Date());
-var REFRESH_TIMER = null;
-
-async function fetchWithTimeout(url, timeout) {
-  var controller = new AbortController();
-  var timer = setTimeout(function() {
-    controller.abort();
-  }, timeout || 12000);
-
-  try {
-    var response = await fetch(url, {
-      cache: "no-store",
-      signal: controller.signal
+function loadManual(){
+  return fetch("/matches-data.js", { cache: "no-store" })
+    .then(function(r){ return r.text(); })
+    .then(function(code){
+      var shared = new Function(code + "\n;return (typeof LEAGUES !== 'undefined') ? LEAGUES : null;")();
+      if (shared) { LEAGUES = mergeExtra(shared, riyadhDate(new Date())); DATA_SOURCE = "manual"; }
     });
-
-    if (!response.ok) {
-      throw new Error("http_" + response.status);
-    }
-
-    // قراءة الجسم ضمن المهلة نفسها أيضًا.
-    return await response.text();
-  } finally {
-    clearTimeout(timer);
-  }
 }
-
-async function fetchLeagueDay(code, date) {
-  /*
-    طلب نطاق يومين بالتوقيت العالمي لتغطية اليوم السعودي،
-    ثم تصفية النتائج بتاريخ الرياض أدناه.
-  */
-  var previousDate = new Date(
-    date + "T00:00:00Z"
-  );
-
-  previousDate.setUTCDate(previousDate.getUTCDate() - 1);
-
-  var start = previousDate.toISOString().slice(0, 10).replace(/-/g, "");
-  var end = date.replace(/-/g, "");
-
-  var url =
-    "https://site.api.espn.com/apis/site/v2/sports/soccer/" +
-    encodeURIComponent(code) +
-    "/scoreboard?dates=" + start + "-" + end +
-    "&limit=100";
-
-  var data = JSON.parse(await fetchWithTimeout(url, 12000));
-
-  if (!data || !Array.isArray(data.events)) {
-    throw new Error("invalid_scoreboard");
-  }
-
-  return data;
+function loadData(then){
+  var todayStr = riyadhDate(new Date());
+  Promise.allSettled(MATCH_LEAGUES.map(function(lg){ return fetchLeagueDay(lg.code, todayStr); }))
+    .then(function(results){
+      var okCount = results.filter(function(r){ return r.status === 'fulfilled'; }).length;
+      if (!okCount) throw new Error('all_failed');
+      LEAGUES = mergeExtra(buildFromEspn(results, todayStr), todayStr);
+      DATA_SOURCE = "auto";
+    })
+    .catch(function(){ return loadManual().catch(function(){}); })
+    .then(then);
 }
+loadData(function(){ render(); tick(); });
 
-function readScore(value) {
-  if (value && typeof value === "object") {
-    value = value.value != null ? value.value : value.displayValue;
-  }
-
-  if (value == null || value === "") return null;
-
-  var number = Number(value);
-  return Number.isFinite(number) ? number : null;
-}
-
-function buildFromEspn(results, today) {
-  var leagues = [];
-
-  MATCH_LEAGUES.forEach(function(league, index) {
-    var result = results[index];
-
-    if (!result || result.status !== "fulfilled") return;
-
-    var matches = [];
-    var seen = new Set();
-
-    result.value.events.forEach(function(event) {
-      if (event.id && seen.has(event.id)) return;
-      if (event.id) seen.add(event.id);
-
-      var when = new Date(event.date);
-
-      if (!Number.isFinite(when.getTime())) return;
-      if (riyadhDate(when) !== today) return;
-
-      var competition = (event.competitions || [])[0] || {};
-      var competitors = competition.competitors || [];
-
-      var home = competitors.find(function(item) {
-        return item.homeAway === "home";
-      }) || competitors[0];
-
-      var away = competitors.find(function(item) {
-        return item.homeAway === "away";
-      }) || competitors[1];
-
-      if (!home || !away) return;
-
-      var status = event.status || competition.status || {};
-      var type = status.type || {};
-      var statusName = type.name || "";
-
-      var match = {
-        id: event.id,
-        date: today,
-        time: riyadhTime12(when),
-        home: arTeam(
-          home.team && home.team.displayName,
-          home.team && home.team.shortDisplayName
-        ),
-        away: arTeam(
-          away.team && away.team.displayName,
-          away.team && away.team.shortDisplayName
-        ),
-        kickoff: when.getTime(),
-        source: "auto",
-        state: type.state || "pre"
-      };
-
-      var homeScore = readScore(home.score);
-      var awayScore = readScore(away.score);
-
-      if (/POSTPONED/i.test(statusName)) {
-        match.note = "مؤجلة";
-        match.state = "postponed";
-      } else if (/CANCEL/i.test(statusName)) {
-        match.note = "ملغاة";
-        match.state = "cancelled";
-      } else if (/SUSPEND|ABANDON/i.test(statusName)) {
-        match.note = "متوقفة";
-        match.state = "suspended";
-      } else if (/DELAY/i.test(statusName)) {
-        match.note = "متأخرة";
-        match.state = "delayed";
-      } else if (type.state === "in") {
-        match.live = true;
-        match.minute = /HALFTIME/i.test(statusName)
-          ? "استراحة"
-          : (status.displayClock || "مباشر");
-
-        if (homeScore !== null && awayScore !== null) {
-          match.score = [homeScore, awayScore];
-        }
-      } else if (type.state === "post" || type.completed === true) {
-        match.state = "post";
-
-        if (homeScore !== null && awayScore !== null) {
-          match.score = [homeScore, awayScore];
-        }
-      }
-
-      matches.push(match);
-    });
-
-    matches.sort(function(a, b) {
-      return a.kickoff - b.kickoff;
-    });
-
-    if (matches.length) {
-      leagues.push({
-        name: league.name,
-        badge: league.badge,
-        matches: matches
-      });
-    }
-  });
-
-  return leagues;
-}
-
-/* =========================================================
-   دمج المباريات اليدوية مع منع تكرارها
-   ========================================================= */
-
-function mergeExtra(leagues, today) {
-  var output = (leagues || []).map(function(league) {
-    return Object.assign({}, league, {
-      matches: (league.matches || []).slice()
-    });
-  });
-
-  EXTRA_MATCHES.filter(function(match) {
-    return match.date === today;
-  }).forEach(function(extra) {
-    var league = output.find(function(item) {
-      return item.name === extra.league;
-    });
-
-    if (!league) {
-      league = {
-        name: extra.league,
-        badge: extra.badge || "⚽",
-        featured: !!extra.featured,
-        matches: []
-      };
-
-      output.unshift(league);
-    }
-
-    if (extra.featured) league.featured = true;
-
-    var existing = league.matches.find(function(match) {
-      return (
-        match.home === extra.home &&
-        match.away === extra.away
-      ) || (
-        match.home === extra.away &&
-        match.away === extra.home
-      );
-    });
-
-    if (existing) {
-      // الاحتفاظ بالنتيجة التلقائية وإضافة تفاصيل الملعب والقناة.
-      ["venue", "channel", "commentator", "watch"].forEach(function(key) {
-        if (extra[key] && !existing[key]) existing[key] = extra[key];
-      });
-
-      if (existing.home === extra.home) {
-        existing.homeFlag = extra.homeFlag || existing.homeFlag;
-        existing.awayFlag = extra.awayFlag || existing.awayFlag;
-      } else {
-        existing.homeFlag = extra.awayFlag || existing.homeFlag;
-        existing.awayFlag = extra.homeFlag || existing.awayFlag;
-      }
-
-      return;
-    }
-
-    var entry = Object.assign({}, extra, {
-      source: "manual",
-      kickoff: kickoffTimestamp(extra.date, extra.time)
-    });
-
-    delete entry.league;
-    delete entry.badge;
-    delete entry.featured;
-
-    league.matches.push(entry);
-  });
-
-  output.forEach(function(league) {
-    league.matches.sort(function(a, b) {
-      var first = a.kickoff || kickoffTimestamp(today, a.time) || 0;
-      var second = b.kickoff || kickoffTimestamp(today, b.time) || 0;
-      return first - second;
-    });
-  });
-
-  output.sort(function(a, b) {
-    return Number(!!b.featured) - Number(!!a.featured);
-  });
-
-  return output;
-}
-
-/* =========================================================
-   المصدر اليدوي الاحتياطي
-   يقبل بيانات مؤرخة حتى لا يعرض جدول يوم قديم على أنه اليوم.
-
-   يمكن أن يحتوي /matches-data.js على:
-   var MATCHES_DATE = "2026-09-22";
-   var LEAGUES = [ ... ];
-   ========================================================= */
-
-async function loadManual(today) {
-  var code = await fetchWithTimeout("/matches-data.js", 8000);
-
-  // ملف من موقعك نفسه، كما في آلية ملفك الأصلي.
-  var shared = new Function(
-    code +
-    "\n;return {" +
-    "leagues: typeof LEAGUES !== 'undefined' ? LEAGUES : null," +
-    "date: typeof MATCHES_DATE !== 'undefined' ? MATCHES_DATE : null" +
-    "};"
-  )();
-
-  if (!shared || !Array.isArray(shared.leagues)) {
-    throw new Error("invalid_manual_data");
-  }
-
-  var leagues = [];
-
-  shared.leagues.forEach(function(league) {
-    var matches = (league.matches || []).filter(function(match) {
-      var date = match.date || league.date || shared.date;
-      return date === today;
-    }).map(function(match) {
-      return Object.assign({}, match, {
-        date: today,
-        source: "manual",
-        kickoff: kickoffTimestamp(today, match.time)
-      });
-    });
-
-    if (matches.length) {
-      leagues.push(Object.assign({}, league, {
-        matches: matches
-      }));
-    }
-  });
-
-  if (!leagues.length) throw new Error("no_dated_manual_matches");
-
-  return leagues;
-}
-
-async function loadData() {
-  if (LOADING) return;
-  LOADING = true;
-
-  var today = riyadhDate(new Date());
-
-  if (DISPLAY_DATE !== today) {
-    DISPLAY_DATE = today;
-    LEAGUES = mergeExtra([], today);
-    DATA_SOURCE = "loading";
-    updateDateHeading();
-    render();
-  }
-
-  try {
-    var results = await Promise.allSettled(
-      MATCH_LEAGUES.map(function(league) {
-        return fetchLeagueDay(league.code, today);
-      })
-    );
-
-    // إذا تغيّر اليوم أثناء التحميل، لا نعرض بيانات اليوم السابق.
-    if (riyadhDate(new Date()) !== today) return;
-
-    FAILED_COUNT = results.filter(function(result) {
-      return result.status === "rejected";
-    }).length;
-
-    if (FAILED_COUNT === MATCH_LEAGUES.length) {
-      throw new Error("all_sources_failed");
-    }
-
-    LEAGUES = mergeExtra(buildFromEspn(results, today), today);
-    DATA_SOURCE = FAILED_COUNT ? "partial" : "auto";
-  } catch (error) {
-    try {
-      var manualLeagues = await loadManual(today);
-
-      if (riyadhDate(new Date()) !== today) return;
-
-      LEAGUES = mergeExtra(manualLeagues, today);
-      DATA_SOURCE = "manual";
-    } catch (manualError) {
-      /*
-        الإضافات اليدوية المحلية تظهر حتى عند تعذّر
-        ESPN وملف matches-data.js معًا.
-      */
-      if (riyadhDate(new Date()) !== today) return;
-
-      LEAGUES = mergeExtra([], today);
-      DATA_SOURCE = "extras";
-    }
-  } finally {
-    LOADING = false;
-
-    if (riyadhDate(new Date()) !== today) {
-      refresh();
-    } else {
-      updateDateHeading();
-      render();
-    }
-  }
-}
-
-/* =========================================================
-   عرض المباريات
-   لا نعتبر المباراة مباشرة لمجرد حلول وقتها.
-   ========================================================= */
-
-function hasScore(match) {
-  return Array.isArray(match.score) &&
-    match.score.length >= 2 &&
-    match.score[0] != null &&
-    match.score[1] != null;
-}
-
-function matchStatus(match) {
-  if (match.note) {
-    return { text: match.note, className: "ft" };
-  }
-
-  if (match.live === true) {
-    return {
-      text: "● " + (match.minute || "مباشر"),
-      className: "live"
-    };
-  }
-
-  if (match.state === "post" || hasScore(match)) {
-    return { text: "انتهت", className: "ft" };
-  }
-
-  if (
-    match.source === "manual" &&
-    match.kickoff &&
-    Date.now() >= match.kickoff
-  ) {
-    return {
-      text: displayTime(match.time),
-      className: "estimated",
-      note: "حلّ موعد المباراة — النتيجة غير متاحة"
-    };
-  }
-
-  return { text: displayTime(match.time), className: "" };
-}
-
-function renderMatch(match, league) {
-  var status = matchStatus(match);
-  var scoreAvailable = hasScore(match);
-
-  var info =
-    MATCH_INFO[match.home + "|" + match.away] ||
-    MATCH_INFO[match.away + "|" + match.home] ||
-    {};
-
-  if (info.d && info.d !== DISPLAY_DATE) info = {};
-
-  var channel = match.channel || info.ch || CHANNELS[league.name] || "";
-  var commentator = match.commentator || info.caster || "";
-
-  var channelHTML = "";
-
-  if (channel || commentator) {
-    channelHTML =
-      '<div class="chan">' +
-      (channel
-        ? '<span class="chan__tv">' +
-          '<svg width="12" height="12" viewBox="0 0 24 24" ' +
-          'fill="none" stroke="currentColor" stroke-width="2.2" ' +
-          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<rect x="2" y="7" width="20" height="13" rx="2"></rect>' +
-          '<path d="m8 3 4 4 4-4"></path></svg>' +
-          '<bdi>' + escapeHTML(channel) + '</bdi></span>'
-        : "") +
-      (commentator
-        ? '<span class="chan__mic">🎙 المعلق: ' +
-          escapeHTML(commentator) + '</span>'
-        : "") +
-      '</div>';
-  }
-
-  var watchHTML = "";
-
-  if (match.watch) {
-    var links = Array.isArray(match.watch) ? match.watch : [match.watch];
-
-    var buttons = links.map(function(link, index) {
-      if (!link || typeof link !== "object") return "";
-
-      var url = safeURL(link.url);
-      if (!url) return "";
-
-      return '<a class="watch' + (index ? ' watch--alt' : '') +
-        '" href="' + escapeHTML(url) +
-        '" target="_blank" rel="noopener noreferrer">' +
-        escapeHTML(link.label || "المشاهدة") + '</a>';
-    }).join("");
-
-    if (buttons) watchHTML = '<div class="watch-wrap">' + buttons + '</div>';
-  }
-
-  /*
-    ترتيب النتيجة من اليمين:
-    أهداف الفريق الموجود يمين البطاقة ثم أهداف الفريق الأيسر.
-  */
-  var middle = scoreAvailable
-    ? '<div class="vs score" aria-label="' +
-      escapeHTML(match.home + " " + match.score[0] +
-      " - " + match.score[1] + " " + match.away) + '">' +
-      '<span>' + escapeHTML(match.score[0]) + '</span>' +
-      '<span aria-hidden="true">-</span>' +
-      '<span>' + escapeHTML(match.score[1]) + '</span></div>'
-    : '<div class="vs" dir="ltr">VS</div>';
-
-  return '<div class="match">' +
-    '<div class="time ' + status.className + '">' +
-      escapeHTML(status.text) +
-    '</div>' +
-
-    '<div class="team">' +
-      (match.homeFlag
-        ? '<span class="team-flag" aria-hidden="true">' +
-          escapeHTML(match.homeFlag) + '</span>'
-        : "") +
-      escapeHTML(match.home) +
-    '</div>' +
-
-    middle +
-
-    '<div class="team">' +
-      (match.awayFlag
-        ? '<span class="team-flag" aria-hidden="true">' +
-          escapeHTML(match.awayFlag) + '</span>'
-        : "") +
-      escapeHTML(match.away) +
-    '</div>' +
-
-    (match.venue
-      ? '<div class="venue">📍 ' + escapeHTML(match.venue) + '</div>'
-      : "") +
-
-    (status.note
-      ? '<div class="match-note">' + escapeHTML(status.note) + '</div>'
-      : "") +
-
-    channelHTML +
-    watchHTML +
-  '</div>';
-}
-
-function render() {
+function render(){
   var root = document.getElementById("leagues");
-  var status = document.getElementById("data-status");
-
-  var visible = LEAGUES.filter(function(league) {
-    return Array.isArray(league.matches) && league.matches.length;
-  });
-
-  if (!visible.length) {
-    var message = "لا توجد مباريات اليوم في البطولات المعروضة ⚽";
-
-    if (DATA_SOURCE === "loading") {
-      message = "جاري تحميل مباريات اليوم…";
-    } else if (DATA_SOURCE === "extras" || DATA_SOURCE === "partial") {
-      message = "تعذّر تحميل جدول المباريات كاملًا، سيُعاد التحديث تلقائيًا.";
-    }
-
-    root.innerHTML = '<div class="empty">' + escapeHTML(message) + '</div>';
-  } else {
-    root.innerHTML = visible.map(function(league) {
-      return '<section class="league' +
-        (league.featured ? ' league--featured' : '') + '">' +
-        '<h2 class="league-head">' +
-          '<span class="league-badge">' +
-            escapeHTML(league.badge || "⚽") +
-          '</span>' +
-          '<span>' + escapeHTML(league.name) + '</span>' +
-        '</h2>' +
-        league.matches.map(function(match) {
-          return renderMatch(match, league);
-        }).join("") +
-      '</section>';
-    }).join("");
+  root.innerHTML = "";
+  var ok = LEAGUES.length && LEAGUES.some(function(l){ return l.matches.length; });
+  if (!ok) {
+    root.innerHTML = '<div class="empty">لا توجد مباريات اليوم — نلقاكم غداً ⚽</div>';
+    return;
   }
-
-  var messages = {
-    loading: "جاري تحميل بقية مباريات اليوم…",
-    auto: "",
-    partial: "تعذّر تحميل بعض البطولات، وقد يكون الجدول غير مكتمل.",
-    manual: "تعذّر التحديث المباشر؛ المعروض هو الجدول اليدوي المؤرّخ لليوم.",
-    extras: "تعذّر تحميل المصدر التلقائي؛ المعروض حاليًا هو المباريات المضافة يدويًا."
-  };
-
-  status.textContent = messages[DATA_SOURCE] || "";
-}
-
-/* =========================================================
-   التحديث التلقائي
-   ========================================================= */
-
-function scheduleRefresh() {
-  clearTimeout(REFRESH_TIMER);
-
-  var needsFastRefresh = LEAGUES.some(function(league) {
-    return league.matches.some(function(match) {
-      if (match.live === true) return true;
-      if (match.note || match.state === "post" || hasScore(match)) return false;
-
-      var kickoff = match.kickoff ||
-        kickoffTimestamp(DISPLAY_DATE, match.time);
-
-      if (!kickoff) return false;
-
-      var difference = Date.now() - kickoff;
-      return difference >= -60000 && difference <= 3 * 60 * 60 * 1000;
-    });
-  });
-
-  REFRESH_TIMER = setTimeout(
-    refresh,
-    needsFastRefresh ? 60000 : 300000
-  );
-}
-
-async function refresh() {
-  if (LOADING) return;
-  clearTimeout(REFRESH_TIMER);
-  await loadData();
-  scheduleRefresh();
-}
-
-document.addEventListener("visibilitychange", function() {
-  if (!document.hidden) {
-    updateDateHeading();
-    refresh();
-  }
-});
-
-window.addEventListener("online", refresh);
-
-/* عرض مباراة المنتخب فورًا ثم تحميل بقية البطولات */
-updateDateHeading();
-LEAGUES = mergeExtra([], DISPLAY_DATE);
-DATA_SOURCE = "loading";
-render();
-refresh();
-
-/* =========================================================
-   حفظ ومشاركة الجدول كصورة
-   ========================================================= */
-
-var canvasLibraryPromise = null;
-
-function loadCanvasLibrary() {
-  if (window.html2canvas) return Promise.resolve();
-
-  if (!canvasLibraryPromise) {
-    canvasLibraryPromise = new Promise(function(resolve, reject) {
-      var script = document.createElement("script");
-
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-
-      script.onload = function() {
-        if (window.html2canvas) {
-          resolve();
-        } else {
-          reject(new Error("canvas_library_missing"));
+  LEAGUES.forEach(function(league){
+    if (!league.matches.length) return;
+    var sec = document.createElement("section");
+    sec.className = "league" + (league.featured ? " league--featured" : "");
+    sec.innerHTML =
+      '<div class="league-head"><span class="league-badge">' + (league.badge || "⚽") + "</span>" +
+      "<span>" + league.name + "</span></div>" +
+      league.matches.map(function(m){
+        var done = Array.isArray(m.score);
+        var live = isLiveNow(m);
+        var timeCell = live
+          ? '<div class="time live" dir="ltr">● ' + (m.minute || 'مباشر') + '</div>'
+          : done
+            ? '<div class="time ft">انتهت</div>'
+            : m.note
+              ? '<div class="time ft">' + m.note + '</div>'
+              : '<div class="time">' + m.time + "</div>";
+        var midCell = done
+          ? '<div class="vs score" dir="ltr">' + m.score[1] + " - " + m.score[0] + "</div>"
+          : '<div class="vs">VS</div>';
+        var info = MATCH_INFO[m.home + '|' + m.away] || MATCH_INFO[m.away + '|' + m.home] || {};
+        /* إدخال مؤرَّخ لا يخص اليوم يُتجاهل تلقائيًا */
+        if (info.d && info.d !== riyadhDate(new Date())) info = {};
+        var chan   = m.channel || info.ch || CHANNELS[league.name] || '';
+        var caster = m.commentator || info.caster || '';
+        var chanRow = '';
+        if (chan || caster) {
+          chanRow = '<div class="chan">' +
+            (chan ? '<span class="chan__tv">' +
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>' +
+              chan + '</span>' : '') +
+            (caster ? '<span class="chan__mic">🎙 المعلق: ' + caster + '</span>' : '') +
+            '</div>';
         }
-      };
-
-      script.onerror = function() {
-        script.remove();
-        canvasLibraryPromise = null;
-        reject(new Error("canvas_library_failed"));
-      };
-
-      document.head.appendChild(script);
-    });
-  }
-
-  return canvasLibraryPromise;
+        var watchBtn = '';
+        if (m.watch) {
+          var chans = Array.isArray(m.watch) ? m.watch : [m.watch];
+          var started = live || done || (function(){
+            var st = toMinutes(m.time); if (st == null) return false;
+            var n = riyadhNow(); return (n.getHours()*60 + n.getMinutes()) >= st;
+          })();
+          watchBtn = '<div class="watch-wrap">' + chans.map(function(c, i){
+            return '<a class="watch' + (i ? ' watch--alt' : '') + '" href="' + c.url +
+                   '" target="_blank" rel="noopener">' + (i ? '' : '<i></i>') +
+                   (c.label || 'بث مباشر') + '</a>';
+          }).join('') + '</div>' +
+          (started ? '' : '<div class="soon-note" data-starts="' + m.time + '">تبدأ المباراة الساعة ' + m.time + '</div>');
+        }
+        return '<div class="match">' + timeCell +
+          '<div class="team">' + m.home + "</div>" + midCell +
+          '<div class="team">' + m.away + "</div>" + chanRow + watchBtn + "</div>";
+      }).join("");
+    root.appendChild(sec);
+  });
 }
 
-function downloadBlob(blob) {
-  var url = URL.createObjectURL(blob);
-  var link = document.createElement("a");
-
-  link.href = url;
-  link.download = "lipro-matches-" + DISPLAY_DATE + ".png";
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(function() {
-    URL.revokeObjectURL(url);
-  }, 30000);
+/* تحديث تلقائي: كل دقيقة أثناء مباراة جارية، وكل ٥ دقائق خلاف ذلك */
+function tick(){
+  var anyLive = LEAGUES.some(function(l){ return l.matches.some(function(m){ return m.live || isLiveNow(m); }); });
+  setTimeout(function(){ loadData(function(){ render(); tick(); }); }, anyLive ? 60000 : 300000);
 }
 
-document.getElementById("shareBtn").addEventListener("click", async function() {
-  var button = this;
-  var originalText = button.textContent;
+/* ===== حفظ / مشاركة الجدول كصورة ===== */
+document.getElementById("shareBtn").addEventListener("click", function(){
+  var btn = this;
+  var old = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري التجهيز…";
+  function restore(){ btn.disabled = false; btn.textContent = old; }
+  function failed(){ btn.disabled = false; btn.textContent = "تعذّر الحفظ — حاول مرة أخرى";
+    setTimeout(function(){ btn.textContent = old; }, 2600); }
 
-  button.disabled = true;
-  button.textContent = "⏳ جاري التجهيز…";
-
-  try {
-    await loadCanvasLibrary();
-
-    if (document.fonts && document.fonts.ready) {
-      await document.fonts.ready;
-    }
-
+  function capture(){
     var frame = document.querySelector(".frame");
+    /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
+       نحسب أعلى دقة ممكنة ضمن هذا الحد بدل تثبيت رقم يفشل مع الصفحات الطويلة. */
+    var w = frame.scrollWidth, hgt = frame.scrollHeight;
+    var MAX_PX = 15000000;
+    var maxScale = Math.sqrt(MAX_PX / (w * hgt));
+    var scale = Math.max(1.5, Math.min(4, maxScale, (window.devicePixelRatio || 1) * 2.5));
 
-    await Promise.all(
-      Array.from(frame.images || frame.querySelectorAll("img")).map(function(img) {
-        if (img.complete) return Promise.resolve();
-
-        return new Promise(function(resolve) {
-          var timer = setTimeout(resolve, 5000);
-
-          function finish() {
-            clearTimeout(timer);
-            resolve();
-          }
-
-          img.addEventListener("load", finish, { once: true });
-          img.addEventListener("error", finish, { once: true });
-        });
-      })
-    );
-
-    var width = Math.max(1, frame.scrollWidth);
-    var height = Math.max(1, frame.scrollHeight);
-
-    /*
-      تقييد مساحة الصورة وأبعادها لتقليل مشاكل
-      الصفحات الطويلة، خصوصًا على الآيفون.
-    */
-    var maxPixels = 12000000;
-    var maxDimension = 16000;
-
-    var scale = Math.min(
-      3,
-      window.devicePixelRatio || 1,
-      Math.sqrt(maxPixels / (width * height)),
-      maxDimension / width,
-      maxDimension / height
-    );
-
-    var canvas = await html2canvas(frame, {
+    html2canvas(frame, {
       backgroundColor: "#f7f4ec",
       scale: scale,
       useCORS: true,
       allowTaint: false,
-      imageTimeout: 12000,
-      windowWidth: document.documentElement.clientWidth,
-      ignoreElements: function(element) {
-        return element.classList &&
-          element.classList.contains("topbar");
-      }
-    });
-
-    var blob = await new Promise(function(resolve, reject) {
-      canvas.toBlob(function(result) {
-        if (result) resolve(result);
-        else reject(new Error("empty_image"));
-      }, "image/png");
-    });
-
-    var file = new File(
-      [blob],
-      "lipro-matches-" + DISPLAY_DATE + ".png",
-      { type: "image/png" }
-    );
-
-    if (
-      navigator.share &&
-      navigator.canShare &&
-      navigator.canShare({ files: [file] })
-    ) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: "مباريات اليوم — أكاديمية ليبرو الرياضية"
-        });
-      } catch (shareError) {
-        if (shareError.name !== "AbortError") {
-          downloadBlob(blob);
+      imageTimeout: 15000,
+      windowWidth: w,
+      windowHeight: hgt,
+      ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
+    }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if (!blob) { failed(); return; }
+        var file = new File([blob], "lipro-matches.png", { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: "مباريات اليوم — أكاديمية ليبرو الرياضية" })
+            .catch(function(){})
+            .then(restore);
+        } else {
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "lipro-matches.png";
+          a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+          restore();
         }
-      }
-    } else {
-      downloadBlob(blob);
-    }
-  } catch (error) {
-    alert("تعذّر تجهيز الصورة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.");
-  } finally {
-    button.disabled = false;
-    button.textContent = originalText;
+      }, "image/png");
+    }).catch(failed);
+  }
+
+  if (window.html2canvas) { capture(); }
+  else {
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = capture;
+    s.onerror = failed;
+    document.head.appendChild(s);
   }
 });
 </script>
-  <style>
-/* إخفاء رسالة المصدر أسفل المباريات */
-#data-status {
-  display: none !important;
-}
 
-/* لمسة اليوم الوطني أعلى الصفحة */
-.national-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 16px auto 4px;
-  padding: 7px 17px;
-  color: #146345;
-  background: #edf6ef;
-  border: 1px solid #c9dfcf;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.national-badge strong {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: #146345;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 19px;
-  line-height: 1;
-}
-
-/* بطاقة عرض اليوم الوطني */
-.national-offer {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  margin: 12px 16px 20px;
-  padding: 28px 20px 22px;
-  border: 1px solid rgba(195,154,47,.65);
-  border-radius: 24px;
-  background:
-    radial-gradient(
-      ellipse at 100% 0%,
-      rgba(116,189,137,.22),
-      transparent 60%
-    ),
-    linear-gradient(145deg, #164f3c, #0b352a);
-  color: #fff;
-  text-align: center;
-  box-shadow: 0 12px 28px rgba(18,63,53,.16);
-}
-
-.national-offer::before,
-.national-offer::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 200px;
-  height: 200px;
-  border: 1px solid rgba(222,193,112,.17);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.national-offer::before {
-  top: -110px;
-  right: -90px;
-  box-shadow:
-    0 0 0 20px rgba(222,193,112,.04),
-    0 0 0 40px rgba(222,193,112,.03);
-}
-
-.national-offer::after {
-  bottom: -140px;
-  left: -80px;
-  width: 260px;
-  height: 260px;
-  box-shadow:
-    0 0 0 20px rgba(222,193,112,.04),
-    0 0 0 40px rgba(222,193,112,.03);
-}
-
-.national-offer__occasion {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border: 1px solid rgba(234,209,146,.4);
-  border-radius: 999px;
-  background: rgba(255,255,255,.07);
-  color: #f3dfac;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.national-offer__occasion strong {
-  font-size: 20px;
-  line-height: 1.4;
-}
-
-.national-offer h2 {
-  margin-top: 17px;
-  color: #fff;
-  font-size: clamp(25px, 7vw, 33px);
-  font-weight: 900;
-  line-height: 1.5;
-}
-
-.national-offer__subtitle {
-  margin-top: 3px;
-  color: #dfebe2;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.national-offer__price {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  color: #eed18b;
-}
-
-.national-offer__price strong {
-  font-size: clamp(70px, 20vw, 94px);
-  font-weight: 900;
-  line-height: 1.3;
-  letter-spacing: -3px;
-}
-
-.national-offer__price span {
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.national-offer__duration {
-  display: inline-block;
-  padding: 3px 23px;
-  border-radius: 9px;
-  background: rgba(255,255,255,.09);
-  color: #fff;
-  font-size: 21px;
-  font-weight: 800;
-}
-
-.national-offer__tabby {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  margin-top: 17px;
-  color: #e5eee7;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.national-offer__tabby b {
-  padding: 2px 11px;
-  background: #b8f5cf;
-  color: #123f35;
-  border-radius: 7px;
-  font-family: Arial, sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.national-offer__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 50px;
-  margin-top: 22px;
-  padding: 11px 16px;
-  border: 1px solid #f0d899;
-  border-radius: 13px;
-  background: linear-gradient(110deg, #e3bd64, #f2dca5);
-  color: #123f35;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 900;
-  box-shadow: 0 5px 14px rgba(0,0,0,.12);
-  transition: filter .2s ease;
-}
-
-.national-offer__cta:hover {
-  filter: brightness(1.06);
-}
-
-.national-offer__phone {
-  display: inline-block;
-  margin-top: 13px;
-  color: #e2ebe4;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 700;
-  direction: ltr;
-  letter-spacing: 1px;
-}
-</style>
-
-<script>
-(function () {
-  /* منع تكرار الإضافة */
-  if (document.getElementById("nationalOffer96")) return;
-
-  var header = document.querySelector(".frame header");
-  var footer = document.querySelector(".frame footer");
-
-  if (!header || !footer) return;
-
-  /* شارة اليوم الوطني — لمسة تصميمية وليست شعارًا رسميًا */
-  var badge = document.createElement("div");
-  badge.className = "national-badge";
-  badge.innerHTML =
-    '<span aria-hidden="true">🇸🇦</span>' +
-    '<span>اليوم الوطني السعودي</span>' +
-    '<strong>٩٦</strong>';
-
-  header.appendChild(badge);
-
-  /* رسالة الاشتراك */
-  var message =
-    "السلام عليكم، أرغب بالاشتراك في أكاديمية ليبرو " +
-    "بعرض اليوم الوطني 96: شهرين بـ296 ريال.";
-
-  var whatsappURL =
-    "https://wa.me/966530634750?text=" +
-    encodeURIComponent(message);
-
-  /* بطاقة العرض أسفل المباريات */
-  var offer = document.createElement("section");
-  offer.id = "nationalOffer96";
-  offer.className = "national-offer";
-  offer.setAttribute("aria-labelledby", "nationalOfferTitle");
-
-  offer.innerHTML =
-    '<div class="national-offer__occasion">' +
-      '<span>بمناسبة اليوم الوطني السعودي</span>' +
-      '<strong>٩٦</strong>' +
-    '</div>' +
-
-    '<h2 id="nationalOfferTitle">اشترك الآن في ليبرو</h2>' +
-    '<p class="national-offer__subtitle">' +
-      'احتفل معنا… وخَلّ موهبتك تكبر' +
-    '</p>' +
-
-    '<div class="national-offer__price">' +
-      '<strong>٢٩٦</strong>' +
-      '<span>ريال</span>' +
-    '</div>' +
-
-    '<div class="national-offer__duration">لمدة شهرين</div>' +
-
-    '<div class="national-offer__tabby">' +
-      '<span>وتقدر تقسّطها عبر تابي</span>' +
-      '<b dir="ltr">tabby</b>' +
-    '</div>' +
-
-    '<a class="national-offer__cta" ' +
-      'href="' + whatsappURL + '" ' +
-      'target="_blank" rel="noopener noreferrer">' +
-      'اشترك الآن عبر الواتساب' +
-      '<span aria-hidden="true">↗</span>' +
-    '</a>' +
-
-    '<a class="national-offer__phone" href="tel:+966530634750">' +
-      '0530634750' +
-    '</a>';
-
-  footer.parentNode.insertBefore(offer, footer);
-})();
-</script>
 </body>
 </html>
