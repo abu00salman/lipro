@@ -488,7 +488,20 @@ const TEAM_AR = {
   'shakhtar donetsk':'شاختار','dinamo zagreb':'دينامو زغرب','red bull salzburg':'سالزبورغ','salzburg':'سالزبورغ',
   'young boys':'يونغ بويز','copenhagen':'كوبنهاغن','olympiacos':'أولمبياكوس','panathinaikos':'باناثينايكوس',
   'slavia prague':'سلافيا براغ','sparta prague':'سبارتا براغ','red star belgrade':'النجم الأحمر','crvena zvezda':'النجم الأحمر',
-  'bodo glimt':'بودو غليمت','qarabag':'قره باغ','pafos':'بافوس','kairat':'كايرات'
+  'bodo glimt':'بودو غليمت','qarabag':'قره باغ','pafos':'بافوس','kairat':'كايرات',
+  // منتخبات (لنتائج المباريات المضافة يدويًا)
+  'arabia':'السعودية','uzbekistan':'أوزبكستان','iraq':'العراق','oman':'عُمان','qatar':'قطر','bahrain':'البحرين',
+  'yemen':'اليمن','jordan':'الأردن','palestine':'فلسطين','syria':'سوريا','lebanon':'لبنان',
+  'egypt':'مصر','angola':'أنغولا','morocco':'المغرب','gabon':'الغابون','algeria':'الجزائر','zambia':'زامبيا',
+  'mozambique':'موزمبيق','senegal':'السنغال','sudan':'السودان','ethiopia':'إثيوبيا','libya':'ليبيا',
+  'botswana':'بوتسوانا','mauritania':'موريتانيا','central african republic':'أفريقيا الوسطى','tunisia':'تونس',
+  'uganda':'أوغندا','ivory coast':'ساحل العاج','cote d ivoire':'ساحل العاج','cote divoire':'ساحل العاج',
+  'ghana':'غانا','cameroon':'الكاميرون','comoros':'جزر القمر','nigeria':'نيجيريا','south africa':'جنوب أفريقيا',
+  'turkey':'تركيا','turkiye':'تركيا','france':'فرنسا','italy':'إيطاليا','belgium':'بلجيكا','poland':'بولندا',
+  'bosnia herzegovina':'البوسنة والهرسك','bosnia and herzegovina':'البوسنة والهرسك','sweden':'السويد',
+  'romania':'رومانيا','netherlands':'هولندا','germany':'ألمانيا','portugal':'البرتغال','wales':'ويلز',
+  'norway':'النرويج','denmark':'الدنمارك','serbia':'صربيا','greece':'اليونان','spain':'إسبانيا',
+  'england':'إنجلترا','croatia':'كرواتيا','switzerland':'سويسرا','austria':'النمسا','scotland':'اسكتلندا'
 };
 const TEAM_STOP = new Set(['al','fc','sc','cf','ac','as','ss','us','ssc','afc','rc','rcd','ud','sd','club','saudi','de','the',
   'fk','sk','bk','if','ol','og','sv','vfl','vfb','tsg','fsv','bsc','sco','stade','calcio','1899','1904','1909','1910','1913','1846','1893','1900']);
@@ -514,8 +527,9 @@ function fetchLeagueDay(code, ymd){
   return fetch(url, { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error('espn_' + r.status); return r.json(); });
 }
 /* يدمج المباريات المضافة يدويًا لليوم الحالي مع مباريات المصدر التلقائي */
-function mergeExtra(leagues, todayStr){
+function mergeExtra(leagues, todayStr, liveMap){
   leagues = leagues || [];
+  liveMap = liveMap || {};
   EXTRA_MATCHES.filter(function(m){ return m.date === todayStr; }).forEach(function(m){
     var same = leagues.filter(function(l){ return l.name === m.league; })[0];
     var entry = { time: m.time, home: m.home, away: m.away };
@@ -523,6 +537,15 @@ function mergeExtra(leagues, todayStr){
     if (m.channel) entry.channel = m.channel;
     if (m.commentator) entry.commentator = m.commentator;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
+    else {
+      /* نتيجة تلقائية (مباشرة أو نهائية) من المصدر إن وُجدت نفس المباراة */
+      var auto = liveMap[m.home + '|' + m.away], flip = false;
+      if (!auto) { auto = liveMap[m.away + '|' + m.home]; flip = !!auto; }
+      if (auto && auto.score) {
+        entry.score = flip ? [auto.score[1], auto.score[0]] : auto.score.slice();
+        if (auto.live) { entry.live = true; entry.minute = auto.minute; }
+      } else if (auto && auto.note) entry.note = auto.note;
+    }
     if (m.note) entry.note = m.note;
     if (same) {
       var dup = same.matches.some(function(x){ return x.home === entry.home && x.away === entry.away; });
@@ -543,13 +566,38 @@ function buildFromEspn(results, todayStr){
     if (!res || res.status !== 'fulfilled' || !res.value || !Array.isArray(res.value.events)) return;
     var matches = [];
     res.value.events.forEach(function(ev){
+      var m = espnEventToMatch(ev, todayStr);
+      if (m) matches.push(m);
+    });
+    matches.sort(function(a, b){ return a._ts - b._ts; });
+    matches.forEach(function(m){ delete m._ts; });
+    if (matches.length) leagues.push({ name: lg.name, badge: lg.badge, matches: matches });
+  });
+  return leagues;
+}
+
+/* بطولات لا تُعرض كقسم مستقل، تُجلب فقط لتحديث نتائج المباريات المضافة يدويًا */
+var EXTRA_SCORE_LEAGUES = ['uefa.nations', 'caf.nations_qual'];
+function buildLiveMap(results, todayStr){
+  var map = {};
+  results.forEach(function(res){
+    if (!res || res.status !== 'fulfilled' || !res.value || !Array.isArray(res.value.events)) return;
+    res.value.events.forEach(function(ev){
+      var m = espnEventToMatch(ev, todayStr);
+      if (m) map[m.home + '|' + m.away] = m;
+    });
+  });
+  return map;
+}
+
+function espnEventToMatch(ev, todayStr){
       var when = new Date(ev.date);
-      if (isNaN(when.getTime()) || riyadhDate(when) !== todayStr) return;
+      if (isNaN(when.getTime()) || riyadhDate(when) !== todayStr) return null;
       var comp = (ev.competitions && ev.competitions[0]) || {};
       var comps = comp.competitors || [];
       var home = comps.filter(function(c){ return c.homeAway === 'home'; })[0] || comps[0];
       var away = comps.filter(function(c){ return c.homeAway === 'away'; })[0] || comps[1];
-      if (!home || !away) return;
+      if (!home || !away) return null;
       var st = (ev.status && ev.status.type) || {};
       var m = {
         time: riyadhTime12(when),
@@ -568,13 +616,7 @@ function buildFromEspn(results, todayStr){
       } else if (/POSTPONED|CANCEL/i.test(st.name || '')) {
         m.note = 'مؤجلة';
       }
-      matches.push(m);
-    });
-    matches.sort(function(a, b){ return a._ts - b._ts; });
-    matches.forEach(function(m){ delete m._ts; });
-    if (matches.length) leagues.push({ name: lg.name, badge: lg.badge, matches: matches });
-  });
-  return leagues;
+      return m;
 }
 
 /* =====================================================================
@@ -711,11 +753,13 @@ function loadManual(){
 }
 function loadData(then){
   var todayStr = riyadhDate(new Date());
-  Promise.allSettled(MATCH_LEAGUES.map(function(lg){ return fetchLeagueDay(lg.code, todayStr); }))
+  var codes = MATCH_LEAGUES.map(function(lg){ return lg.code; }).concat(EXTRA_SCORE_LEAGUES);
+  Promise.allSettled(codes.map(function(code){ return fetchLeagueDay(code, todayStr); }))
     .then(function(results){
-      var okCount = results.filter(function(r){ return r.status === 'fulfilled'; }).length;
+      var main = results.slice(0, MATCH_LEAGUES.length);
+      var okCount = main.filter(function(r){ return r.status === 'fulfilled'; }).length;
       if (!okCount) throw new Error('all_failed');
-      LEAGUES = mergeExtra(buildFromEspn(results, todayStr), todayStr);
+      LEAGUES = mergeExtra(buildFromEspn(main, todayStr), todayStr, buildLiveMap(results, todayStr));
       DATA_SOURCE = "auto";
     })
     .catch(function(){ return loadManual().catch(function(){}); })
