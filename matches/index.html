@@ -501,8 +501,9 @@ const TEAM_AR = {
   'bosnia herzegovina':'البوسنة والهرسك','bosnia and herzegovina':'البوسنة والهرسك','sweden':'السويد',
   'romania':'رومانيا','netherlands':'هولندا','germany':'ألمانيا','portugal':'البرتغال','wales':'ويلز',
   'norway':'النرويج','denmark':'الدنمارك','serbia':'صربيا','greece':'اليونان','spain':'إسبانيا',
-  'england':'إنجلترا','croatia':'كرواتيا','switzerland':'سويسرا','austria':'النمسا','scotland':'اسكتلندا',
-  'slovenia':'سلوفينيا','czechia':'التشيك','czech republic':'التشيك','north macedonia':'مقدونيا الشمالية','guinea':'غينيا','guinea bissau':'غينيا بيساو'
+  'england':'إنجلترا','croatia':'كرواتيا','switzerland':'سويسرا','austria':'النمسا','scotland':'اسكتلندا','kosovo':'كوسوفو',
+  'slovenia':'سلوفينيا','czechia':'التشيك','czech republic':'التشيك','north macedonia':'مقدونيا الشمالية','guinea':'غينيا','guinea bissau':'غينيا بيساو',
+  'yemen':'اليمن','qatar':'قطر','bahrain':'البحرين','united arab emirates':'الإمارات'
 };
 const TEAM_STOP = new Set(['al','fc','sc','cf','ac','as','ss','us','ssc','afc','rc','rcd','ud','sd','club','saudi','de','the',
   'fk','sk','bk','if','ol','og','sv','vfl','vfb','tsg','fsv','bsc','sco','stade','calcio','1899','1904','1909','1910','1913','1846','1893','1900']);
@@ -693,12 +694,14 @@ var CHANNELS = {
    تُدمج تلقائيًا مع مباريات اليوم، وتختفي وحدها بعد انتهاء يومها.
    ===================================================================== */
 var EXTRA_MATCHES = [
-  /* ===== السبت ٢٦ سبتمبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
-  { date: '2026-09-26', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '04:00 PM', home: 'سلوفينيا', away: 'اسكتلندا', channel: 'beIN SPORTS 1', commentator: 'جواد بدة' },
-  { date: '2026-09-26', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '09:45 PM', home: 'إنجلترا', away: 'إسبانيا', channel: 'beIN SPORTS 1', commentator: 'حسن العيدروس' },
-  { date: '2026-09-26', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '09:45 PM', home: 'التشيك', away: 'كرواتيا', channel: 'beIN SPORTS 2', commentator: 'علي الكعبي' },
-  { date: '2026-09-26', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '09:45 PM', home: 'مقدونيا الشمالية', away: 'سويسرا', channel: 'beIN SPORTS 3', commentator: 'محمد بركات' },
-  { date: '2026-09-26', league: 'تصفيات كأس أمم أفريقيا — الجولة ١', badge: 'CAF', time: '04:00 PM', home: 'جنوب أفريقيا', away: 'غينيا', channel: 'beIN SPORTS XTRA 1', commentator: 'منتصر الأزهري' },
+  /* ===== الأحد ٢٧ سبتمبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true, time: '06:55 PM', home: 'اليمن', away: 'قطر', channel: 'الكأس', commentator: 'خالد الحدي' },
+  { date: '2026-09-27', league: 'كأس الخليج العربي «خليجي 27»', badge: 'GC27', featured: true, time: '09:00 PM', home: 'البحرين', away: 'الإمارات', channel: 'الكأس', commentator: 'سمير المعيرفي' },
+  { date: '2026-09-27', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '07:00 PM', home: 'صربيا', away: 'هولندا', channel: 'beIN SPORTS 1', commentator: 'علي محمد علي' },
+  { date: '2026-09-27', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '07:00 PM', home: 'الدنمارك', away: 'ويلز', channel: 'beIN SPORTS 2', commentator: 'عامر الخوذيري' },
+  { date: '2026-09-27', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '07:00 PM', home: 'النمسا', away: 'كوسوفو', channel: 'beIN SPORTS 3', commentator: 'حسن العيدروس' },
+  { date: '2026-09-27', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '09:45 PM', home: 'النرويج', away: 'البرتغال', channel: 'beIN SPORTS 1', commentator: 'حفيظ دراجي' },
+  { date: '2026-09-27', league: 'دوري الأمم الأوروبية — الجولة ٢', badge: 'UNL', time: '09:45 PM', home: 'ألمانيا', away: 'اليونان', channel: 'beIN SPORTS 2', commentator: 'عبدالله الغامدي' },
 
   /* ===== كأس الخليج العربي «خليجي 27» — جدة، ٢٣ سبتمبر إلى ٦ أكتوبر ٢٠٢٦ =====
      نصف النهائي السبت ٣ أكتوبر، والنهائي الثلاثاء ٦ أكتوبر (يُضافان بعد تحديد الطرفين) */
