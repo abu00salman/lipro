@@ -876,7 +876,7 @@ function render(){
     sec.className = "league" + (league.featured ? " league--featured" : "");
     sec.innerHTML =
       '<div class="league-head"><div class="league-head-content"><span class="league-badge' + (/^[A-Za-z0-9]{2,5}$/.test(league.badge || '') ? ' is-text' : '') + '">' + (league.badge || "⚽") + "</span>" +
-      "<span>" + league.name + "</span></div><button class=\"league-toggle\" type=\"button\" data-league-idx=\"0\" aria-label=\"إخفاء\">−</button></div>" +
+      "<span>" + league.name + "</span></div><button class=\"league-toggle\" type=\"button\" aria-label=\"إخفاء\">−</button></div>" +
       league.matches.map(function(m){
         var done = Array.isArray(m.score);
         var live = isLiveNow(m);
