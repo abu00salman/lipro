@@ -212,7 +212,7 @@
   .league-head{
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:space-between;
     gap:10px;
     background:linear-gradient(90deg, var(--gold-500), var(--gold-400));
     color:#fff;
@@ -223,6 +223,30 @@
     margin-bottom:8px;
     text-shadow:0 1px 2px rgba(0,0,0,.18);
   }
+  .league-head-content{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .league-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:28px;
+    background:rgba(255,255,255,.25);
+    border:none;
+    border-radius:6px;
+    color:#fff;
+    font-weight:900;
+    cursor:pointer;
+    font-size:14px;
+    transition:background .2s ease;
+  }
+  .league-toggle:hover{background:rgba(255,255,255,.4)}
+  .league.collapsed{display:none}
+  .league.collapsed .matches{display:none}
   /* ===== بطولة مميزة (كأس الخليج) — أخضر وطني بإطار ذهبي ===== */
   .league--featured{
     border:2px solid var(--gold-500);
@@ -851,8 +875,8 @@ function render(){
     var sec = document.createElement("section");
     sec.className = "league" + (league.featured ? " league--featured" : "");
     sec.innerHTML =
-      '<div class="league-head"><span class="league-badge' + (/^[A-Za-z0-9]{2,5}$/.test(league.badge || '') ? ' is-text' : '') + '">' + (league.badge || "⚽") + "</span>" +
-      "<span>" + league.name + "</span></div>" +
+      '<div class="league-head"><div class="league-head-content"><span class="league-badge' + (/^[A-Za-z0-9]{2,5}$/.test(league.badge || '') ? ' is-text' : '') + '">' + (league.badge || "⚽") + "</span>" +
+      "<span>" + league.name + "</span></div><button class=\"league-toggle\" type=\"button\" data-league-idx=\"0\" aria-label=\"إخفاء\">−</button></div>" +
       league.matches.map(function(m){
         var done = Array.isArray(m.score);
         var live = isLiveNow(m);
@@ -900,6 +924,18 @@ function render(){
       }).join("");
     root.appendChild(sec);
   });
+  /* ربط أزرار الإخفاء/الإظهار */
+  document.querySelectorAll(".league-toggle").forEach(function(btn, idx){
+    btn.dataset.leagueIdx = idx;
+    btn.addEventListener("click", function(){
+      var league = document.querySelectorAll(".league")[idx];
+      if (league) {
+        league.classList.toggle("collapsed");
+        btn.textContent = league.classList.contains("collapsed") ? "+" : "−";
+        btn.setAttribute("aria-label", league.classList.contains("collapsed") ? "إظهار" : "إخفاء");
+      }
+    });
+  });
 }
 
 /* تحديث تلقائي: كل دقيقة أثناء مباراة جارية، وكل ٥ دقائق خلاف ذلك */
@@ -937,12 +973,18 @@ function tick(){
       ensureHtml2Canvas(function(){
         var frame = document.querySelector(".frame");
         var saved = [];
+        var hiddenLeagues = [];
         frame.querySelectorAll("*").forEach(function(el){
           var computed = window.getComputedStyle(el);
           if (computed.letterSpacing && computed.letterSpacing !== "normal" && computed.letterSpacing !== "0px") {
             saved.push({el: el, ls: el.style.letterSpacing || ""});
             el.style.letterSpacing = "normal";
           }
+        });
+        /* إخفاء الدوريات المخفية مؤقتاً للحفظ */
+        frame.querySelectorAll(".league.collapsed").forEach(function(league){
+          hiddenLeagues.push({el: league, display: league.style.display || ""});
+          league.style.display = "none";
         });
 
         /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
@@ -963,9 +1005,11 @@ function tick(){
           ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
         }).then(function(canvas){
           saved.forEach(function(obj){ obj.el.style.letterSpacing = obj.ls; });
+          hiddenLeagues.forEach(function(obj){ obj.el.style.display = obj.display; });
           canvas.toBlob(function(blob){ blob ? resolve(blob) : reject(new Error("toBlob_failed")); }, "image/png");
         }).catch(function(err){
           saved.forEach(function(obj){ obj.el.style.letterSpacing = obj.ls; });
+          hiddenLeagues.forEach(function(obj){ obj.el.style.display = obj.display; });
           reject(err);
         });
       }, function(){ reject(new Error("html2canvas_load_failed")); });
