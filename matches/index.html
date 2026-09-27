@@ -83,26 +83,6 @@
     align-items:center;
     gap:8px;
   }
-  /* واتساب أخضره الرسمي حتى يُتعرّف عليه فورًا، بحافة ذهبية رفيعة توقّعها ليبرو */
-  .wa-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    background:linear-gradient(160deg,#2CD26A 0%,#1DA851 55%,#128C4A 100%);
-    color:#fff;
-    font-family:'Cairo',sans-serif;
-    font-weight:800;
-    font-size:13.5px;
-    border:1.5px solid var(--gold-500);
-    cursor:pointer;
-    border-radius:999px;
-    padding:7px 17px 7px 14px;
-    box-shadow:0 3px 10px rgba(18,140,74,.35);
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .wa-btn:active{transform:scale(.96)}
-  .wa-btn svg{flex:none}
-  .wa-btn:disabled{opacity:.65;cursor:wait;transform:none}
   .save-btn{
     display:inline-flex;
     align-items:center;
@@ -119,6 +99,7 @@
   }
   .save-btn:active{transform:scale(.9)}
   .save-btn:disabled{opacity:.55;cursor:wait}
+  #waShareBtn svg{color:#2CD26A}
   .share-toast{
     position:absolute;
     top:calc(100% + 8px);
@@ -412,9 +393,8 @@
   <div class="topbar">
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
-      <button class="wa-btn" id="waShareBtn" type="button">
+      <button class="save-btn" id="waShareBtn" type="button" aria-label="مشاركة عبر واتساب" title="مشاركة عبر واتساب">
         <svg width="17" height="17" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.35.65 4.55 1.78 6.43L4 29l7.73-1.73a11.9 11.9 0 0 0 4.29.79h.01c6.62 0 12.02-5.4 12.02-12.02C28.05 8.4 22.65 3 16.02 3zm7.03 17.04c-.3.83-1.7 1.6-2.35 1.68-.6.08-1.35.11-2.18-.14-.5-.15-1.15-.37-1.98-.72-3.5-1.5-5.78-5.04-5.96-5.28-.17-.24-1.42-1.9-1.42-3.62s.9-2.56 1.22-2.9c.32-.35.7-.43.93-.43.24 0 .47.01.68.02.22.01.5-.08.79.6.3.7 1 2.4 1.08 2.58.09.17.14.38.03.6-.11.24-.17.39-.34.6-.17.2-.36.46-.51.62-.17.17-.35.36-.15.7.2.35.89 1.47 1.91 2.38 1.31 1.17 2.42 1.53 2.77 1.7.35.17.56.15.76-.08.2-.24.87-1 1.1-1.35.24-.35.47-.29.79-.17.32.11 2.04.96 2.4 1.14.35.17.58.26.67.4.09.14.09.83-.21 1.66z"/></svg>
-        <span>شارك عبر واتساب</span>
       </button>
       <button class="save-btn" id="saveBtn" type="button" aria-label="حفظ الصورة" title="حفظ الصورة">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -837,6 +817,7 @@ var EXTRA_MATCHES = [
 ];
 
 var LEAGUES = [];
+var collapsedLeagues = {};
 var DATA_SOURCE = "";
 function loadManual(){
   return fetch("/matches-data.js", { cache: "no-store" })
@@ -870,13 +851,15 @@ function render(){
     root.innerHTML = '<div class="empty">لا توجد مباريات اليوم — نلقاكم غداً ⚽</div>';
     return;
   }
-  LEAGUES.forEach(function(league){
+  LEAGUES.forEach(function(league, leagueIdx){
     if (!league.matches.length) return;
     var sec = document.createElement("section");
-    sec.className = "league" + (league.featured ? " league--featured" : "");
+    var isCollapsed = collapsedLeagues[leagueIdx] === true;
+    sec.className = "league" + (league.featured ? " league--featured" : "") + (isCollapsed ? " collapsed" : "");
+    sec.dataset.leagueIdx = leagueIdx;
     sec.innerHTML =
       '<div class="league-head"><div class="league-head-content"><span class="league-badge' + (/^[A-Za-z0-9]{2,5}$/.test(league.badge || '') ? ' is-text' : '') + '">' + (league.badge || "⚽") + "</span>" +
-      "<span>" + league.name + "</span></div><button class=\"league-toggle\" type=\"button\" aria-label=\"إخفاء\">−</button></div>" +
+      "<span>" + league.name + "</span></div><button class=\"league-toggle\" type=\"button\" aria-label=\"" + (isCollapsed ? "إظهار" : "إخفاء") + "\">" + (isCollapsed ? "+" : "−") + "</button></div>" +
       league.matches.map(function(m){
         var done = Array.isArray(m.score);
         var live = isLiveNow(m);
@@ -925,14 +908,15 @@ function render(){
     root.appendChild(sec);
   });
   /* ربط أزرار الإخفاء/الإظهار */
-  document.querySelectorAll(".league-toggle").forEach(function(btn, idx){
-    btn.dataset.leagueIdx = idx;
+  document.querySelectorAll(".league-toggle").forEach(function(btn){
     btn.addEventListener("click", function(){
-      var league = document.querySelectorAll(".league")[idx];
+      var league = btn.closest(".league");
       if (league) {
+        var leagueIdx = league.dataset.leagueIdx;
         league.classList.toggle("collapsed");
         btn.textContent = league.classList.contains("collapsed") ? "+" : "−";
         btn.setAttribute("aria-label", league.classList.contains("collapsed") ? "إظهار" : "إخفاء");
+        collapsedLeagues[leagueIdx] = league.classList.contains("collapsed");
       }
     });
   });
