@@ -310,6 +310,22 @@
     box-shadow:0 3px 0 var(--gold-500);
   }
 
+  .tv-line{
+    margin:0 0 12px;
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  .tv-line a{
+    color:var(--green-700);
+    font-weight:900;
+    text-decoration:underline;
+    text-decoration-color:var(--gold-500);
+    text-underline-offset:2px;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+
   @media (max-width:420px){
     h1{font-size:42px}
     .match{grid-template-columns:78px 1fr 52px 1fr}
@@ -339,6 +355,7 @@
   <main id="leagues"></main>
 
   <footer>
+    <p class="tv-line">📺 شاهد الآن القنوات والمباريات على <a href="https://www.tv-pro.app" target="_blank" rel="noopener">www.tv-pro.app</a></p>
     <div class="site-pill">🌐 www.liproacademy.com</div>
   </footer>
 </div>
