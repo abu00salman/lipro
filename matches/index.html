@@ -77,22 +77,68 @@
     padding:6px 16px;
     box-shadow:0 2px 6px rgba(18,63,53,.08);
   }
-  .share-btn{
+  .share-group{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  /* واتساب أخضره الرسمي حتى يُتعرّف عليه فورًا، بحافة ذهبية رفيعة توقّعها ليبرو */
+  .wa-btn{
     display:inline-flex;
     align-items:center;
-    gap:6px;
-    background:linear-gradient(90deg,var(--gold-500),var(--gold-400));
+    gap:7px;
+    background:linear-gradient(160deg,#2CD26A 0%,#1DA851 55%,#128C4A 100%);
     color:#fff;
     font-family:'Cairo',sans-serif;
     font-weight:800;
-    font-size:14px;
-    border:none;
+    font-size:13.5px;
+    border:1.5px solid var(--gold-500);
     cursor:pointer;
     border-radius:999px;
-    padding:7px 16px;
-    box-shadow:0 2px 6px rgba(18,63,53,.15);
+    padding:7px 17px 7px 14px;
+    box-shadow:0 3px 10px rgba(18,140,74,.35);
+    transition:transform .15s ease, box-shadow .15s ease;
   }
-  .share-btn:disabled{opacity:.65;cursor:wait}
+  .wa-btn:active{transform:scale(.96)}
+  .wa-btn svg{flex:none}
+  .wa-btn:disabled{opacity:.65;cursor:wait;transform:none}
+  .save-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;
+    height:34px;
+    background:#fff;
+    color:var(--green-700);
+    border:1px solid rgba(27,94,75,.25);
+    border-radius:50%;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(18,63,53,.08);
+    transition:transform .15s ease;
+  }
+  .save-btn:active{transform:scale(.9)}
+  .save-btn:disabled{opacity:.55;cursor:wait}
+  .share-toast{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:0;
+    max-width:220px;
+    background:var(--green-900);
+    color:#fff;
+    font-size:12.5px;
+    font-weight:700;
+    line-height:1.5;
+    padding:8px 12px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    opacity:0;
+    transform:translateY(-4px);
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:5;
+  }
+  .share-toast.show{opacity:1;transform:none}
   .time.live{background:#e8453f;animation:lp-pulse 1.4s ease-in-out infinite}
   @keyframes lp-pulse{0%,100%{opacity:1}50%{opacity:.55}}
   header{
@@ -341,7 +387,16 @@
 
   <div class="topbar">
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
-    <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
+    <div class="share-group">
+      <button class="wa-btn" id="waShareBtn" type="button">
+        <svg width="17" height="17" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.02 3C9.4 3 4 8.4 4 15.02c0 2.35.65 4.55 1.78 6.43L4 29l7.73-1.73a11.9 11.9 0 0 0 4.29.79h.01c6.62 0 12.02-5.4 12.02-12.02C28.05 8.4 22.65 3 16.02 3zm7.03 17.04c-.3.83-1.7 1.6-2.35 1.68-.6.08-1.35.11-2.18-.14-.5-.15-1.15-.37-1.98-.72-3.5-1.5-5.78-5.04-5.96-5.28-.17-.24-1.42-1.9-1.42-3.62s.9-2.56 1.22-2.9c.32-.35.7-.43.93-.43.24 0 .47.01.68.02.22.01.5-.08.79.6.3.7 1 2.4 1.08 2.58.09.17.14.38.03.6-.11.24-.17.39-.34.6-.17.2-.36.46-.51.62-.17.17-.35.36-.15.7.2.35.89 1.47 1.91 2.38 1.31 1.17 2.42 1.53 2.77 1.7.35.17.56.15.76-.08.2-.24.87-1 1.1-1.35.24-.35.47-.29.79-.17.32.11 2.04.96 2.4 1.14.35.17.58.26.67.4.09.14.09.83-.21 1.66z"/></svg>
+        <span>شارك عبر واتساب</span>
+      </button>
+      <button class="save-btn" id="saveBtn" type="button" aria-label="حفظ الصورة" title="حفظ الصورة">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      </button>
+      <div class="share-toast" id="shareToast"></div>
+    </div>
   </div>
 
   <header>
@@ -853,63 +908,112 @@ function tick(){
   setTimeout(function(){ loadData(function(){ render(); tick(); }); }, anyLive ? 60000 : 300000);
 }
 
-/* ===== حفظ / مشاركة الجدول كصورة ===== */
-document.getElementById("shareBtn").addEventListener("click", function(){
-  var btn = this;
-  var old = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = "⏳ جاري التجهيز…";
-  function restore(){ btn.disabled = false; btn.textContent = old; }
-  function failed(){ btn.disabled = false; btn.textContent = "تعذّر الحفظ — حاول مرة أخرى";
-    setTimeout(function(){ btn.textContent = old; }, 2600); }
+/* ===== حفظ الجدول كصورة، ومشاركته مباشرة عبر واتساب ===== */
+(function(){
+  var waBtn = document.getElementById("waShareBtn");
+  var saveBtn = document.getElementById("saveBtn");
+  var toastEl = document.getElementById("shareToast");
+  var toastTimer = null;
 
-  function capture(){
-    var frame = document.querySelector(".frame");
-    /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
-       نحسب أعلى دقة ممكنة ضمن هذا الحد بدل تثبيت رقم يفشل مع الصفحات الطويلة. */
-    var w = frame.scrollWidth, hgt = frame.scrollHeight;
-    var MAX_PX = 15000000;
-    var maxScale = Math.sqrt(MAX_PX / (w * hgt));
-    var scale = Math.max(1.5, Math.min(4, maxScale, (window.devicePixelRatio || 1) * 2.5));
-
-    html2canvas(frame, {
-      backgroundColor: "#f7f4ec",
-      scale: scale,
-      useCORS: true,
-      allowTaint: false,
-      imageTimeout: 15000,
-      windowWidth: w,
-      windowHeight: hgt,
-      ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
-    }).then(function(canvas){
-      canvas.toBlob(function(blob){
-        if (!blob) { failed(); return; }
-        var file = new File([blob], "lipro-matches.png", { type: "image/png" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], title: "مباريات اليوم — أكاديمية ليبرو الرياضية" })
-            .catch(function(){})
-            .then(restore);
-        } else {
-          var a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "lipro-matches.png";
-          a.click();
-          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
-          restore();
-        }
-      }, "image/png");
-    }).catch(failed);
+  function toast(msg, ms){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, ms || 5000);
   }
 
-  if (window.html2canvas) { capture(); }
-  else {
+  function ensureHtml2Canvas(then, fail){
+    if (window.html2canvas) { then(); return; }
     var s = document.createElement("script");
     s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-    s.onload = capture;
-    s.onerror = failed;
+    s.onload = then;
+    s.onerror = fail;
     document.head.appendChild(s);
   }
-});
+
+  /* يصوّر البطاقة كاملة ويرجع Blob بصيغة PNG */
+  function captureBlob(){
+    return new Promise(function(resolve, reject){
+      ensureHtml2Canvas(function(){
+        var frame = document.querySelector(".frame");
+        /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
+           نحسب أعلى دقة ممكنة ضمن هذا الحد بدل تثبيت رقم يفشل مع الصفحات الطويلة. */
+        var w = frame.scrollWidth, hgt = frame.scrollHeight;
+        var MAX_PX = 15000000;
+        var maxScale = Math.sqrt(MAX_PX / (w * hgt));
+        var scale = Math.max(1.5, Math.min(4, maxScale, (window.devicePixelRatio || 1) * 2.5));
+
+        html2canvas(frame, {
+          backgroundColor: "#f7f4ec",
+          scale: scale,
+          useCORS: true,
+          allowTaint: false,
+          imageTimeout: 15000,
+          windowWidth: w,
+          windowHeight: hgt,
+          ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
+        }).then(function(canvas){
+          canvas.toBlob(function(blob){ blob ? resolve(blob) : reject(new Error("toBlob_failed")); }, "image/png");
+        }).catch(reject);
+      }, function(){ reject(new Error("html2canvas_load_failed")); });
+    });
+  }
+
+  function withBusy(btn, busyLabel, run){
+    var wasWa = btn === waBtn;
+    var old = wasWa ? btn.innerHTML : btn.innerHTML;
+    btn.disabled = true;
+    if (wasWa) btn.querySelector("span").textContent = busyLabel;
+    function restore(){ btn.disabled = false; btn.innerHTML = old; }
+    function failed(msg){
+      restore();
+      toast(msg || "تعذّر التجهيز — حاول مرة أخرى", 3200);
+    }
+    run(restore, failed);
+  }
+
+  var CAPTION = "⚽ مباريات اليوم — أكاديمية ليبرو الرياضية\nhttps://liproacademy.com/matches/";
+
+  /* مشاركة عبر واتساب: نفتح واتساب مباشرة بالصورة عبر واجهة المشاركة، بدون المرور بقائمة تطبيقات عامة */
+  waBtn.addEventListener("click", function(){
+    withBusy(waBtn, "⏳ جاري التجهيز…", function(restore, failed){
+      captureBlob().then(function(blob){
+        var file = new File([blob], "lipro-matches.png", { type: "image/png" });
+        var shareData = { files: [file], title: "مباريات اليوم — أكاديمية ليبرو الرياضية", text: CAPTION };
+
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          /* على الجوال: تُفتح قائمة المشاركة ومنها واتساب مباشرة مع الصورة والنص جاهزين */
+          navigator.share(shareData).catch(function(){}).then(restore);
+          return;
+        }
+
+        /* لا يدعم المتصفح مشاركة صور (الغالب أجهزة الكمبيوتر): نحفظ الصورة وننقلك لواتساب فورًا */
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "lipro-matches.png";
+        a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+        window.open("https://wa.me/?text=" + encodeURIComponent(CAPTION), "_blank", "noopener");
+        toast("📥 حُفظت الصورة في جهازك — أرفقها في محادثة واتساب اللي فتحناها لك", 6000);
+        restore();
+      }).catch(function(){ failed(); });
+    });
+  });
+
+  /* حفظ الصورة فقط بلا مشاركة */
+  saveBtn.addEventListener("click", function(){
+    withBusy(saveBtn, null, function(restore, failed){
+      captureBlob().then(function(blob){
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "lipro-matches.png";
+        a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+        restore();
+      }).catch(function(){ failed(); });
+    });
+  });
+})();
 </script>
 
 </body>
