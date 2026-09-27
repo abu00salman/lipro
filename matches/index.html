@@ -936,6 +936,15 @@ function tick(){
     return new Promise(function(resolve, reject){
       ensureHtml2Canvas(function(){
         var frame = document.querySelector(".frame");
+        var saved = [];
+        frame.querySelectorAll("*").forEach(function(el){
+          var computed = window.getComputedStyle(el);
+          if (computed.letterSpacing && computed.letterSpacing !== "normal" && computed.letterSpacing !== "0px") {
+            saved.push({el: el, ls: el.style.letterSpacing || ""});
+            el.style.letterSpacing = "normal";
+          }
+        });
+
         /* حد المتصفحات (خاصة سفاري على الآيفون) ~١٦ مليون بكسل للوحة الواحدة.
            نحسب أعلى دقة ممكنة ضمن هذا الحد بدل تثبيت رقم يفشل مع الصفحات الطويلة. */
         var w = frame.scrollWidth, hgt = frame.scrollHeight;
@@ -953,8 +962,12 @@ function tick(){
           windowHeight: hgt,
           ignoreElements: function(el){ return el.classList && el.classList.contains("topbar"); }
         }).then(function(canvas){
+          saved.forEach(function(obj){ obj.el.style.letterSpacing = obj.ls; });
           canvas.toBlob(function(blob){ blob ? resolve(blob) : reject(new Error("toBlob_failed")); }, "image/png");
-        }).catch(reject);
+        }).catch(function(err){
+          saved.forEach(function(obj){ obj.el.style.letterSpacing = obj.ls; });
+          reject(err);
+        });
       }, function(){ reject(new Error("html2canvas_load_failed")); });
     });
   }
