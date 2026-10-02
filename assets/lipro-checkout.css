@@ -689,7 +689,8 @@ html,body{max-width:100%;overflow-x:hidden}
 .order-track-link:hover{background:rgba(245,179,37,.1);border-color:var(--gold)}
 
 .store-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:38px;
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 300px));
+  justify-content:center;gap:22px;margin-top:38px;
 }
 .pcard{
   background:var(--surface);border:1px solid var(--line);border-radius:18px;
@@ -711,7 +712,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .pcard__btn{margin-top:10px;width:100%}
 
 @media(max-width:640px){
-  .store-grid{grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+  .store-grid{grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:14px;margin-top:26px}
   .pcard__body{padding:14px 14px 16px;gap:6px}
   .pcard__name{font-size:15px}
   .pcard__desc{font-size:12px;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
