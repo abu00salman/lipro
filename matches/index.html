@@ -47,6 +47,7 @@
   }
 
   .frame{
+    position:relative;
     max-width:520px;
     margin:0 auto;
     background:
@@ -55,6 +56,17 @@
     overflow:hidden;
     box-shadow:0 24px 60px rgba(0,0,0,.35);
   }
+  /* خلفية الاستاد — طبقة شفافة خلف كل محتوى البطاقة */
+  .frame::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url('matches-bg.jpg') center 35% / cover no-repeat;
+    opacity:.4;
+    z-index:0;
+    pointer-events:none;
+  }
+  .frame > *{position:relative;z-index:1}
 
   /* الشريط العلوي المائل */
   .ribbon{
