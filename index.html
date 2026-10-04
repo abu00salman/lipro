@@ -147,6 +147,17 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   text-shadow:0 2px 12px rgba(0,0,0,.6);
 }
 .slide__meta{font-size:13.5px;color:var(--gold);font-weight:600;margin-top:5px}
+.slide__cta{
+  position:absolute;z-index:4;bottom:42px;inset-inline-start:50%;
+  transform:translateX(-50%);
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(90deg,var(--gold),#e8c354);
+  color:var(--pitch);font-family:var(--display);font-weight:800;font-size:14.5px;
+  text-decoration:none;border-radius:999px;padding:11px 24px;
+  box-shadow:0 10px 26px -8px rgba(0,0,0,.55);
+  transition:transform .18s ease;
+}
+.slide__cta:hover{transform:translateX(-50%) translateY(-2px)}
 
 .banner__label{
   position:absolute;top:16px;inset-inline-start:20px;z-index:4;
@@ -194,6 +205,7 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
   .banner__nav{width:38px;height:38px}
   .banner__nav--prev{inset-inline-start:8px}
   .banner__nav--next{inset-inline-end:8px}
+  .slide__cta{bottom:34px;font-size:13px;padding:9px 20px}
   .banner__label{top:10px;inset-inline-start:12px;font-size:11.5px;padding:5px 12px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -2804,6 +2816,7 @@ function fallback(text, cb){
   /* noCap: الملصقات تحمل نصها داخلها، فلا نغطيها بتعليق مكرر */
   var SLIDES = [
     {src:"banner-11.jpg", w:896, h:1195, title:"تم الافتتاح — أكاديمية ليبرو الباحة", noCap:true},
+    {src:"banner-13.jpg", w:897, h:1600, title:"انتقالات لاعبين ليبرو — موسم 2026–2027", noCap:true, link:"/transfers/", linkLabel:"عرض الانتقالات ⟵"},
     {src:"banner-12.jpg", w:900, h:1600, title:"تتوفر أطقم ليبرو الجديدة في متجرنا — اطلب الآن", noCap:true},
     {src:"banner-10.jpg", w:1024, h:1536, title:"تهانينا ليبرو جيزان — الأول لشهر سبتمبر بين فروع ليبرو", noCap:true},
     {src:"banner-tabby.jpg", w:1080, h:1920, title:"عروض الاشتراكات عن طريق تابي وتمارا — قسّط اشتراكك بدون فوائد", noCap:true},
@@ -2854,7 +2867,8 @@ function fallback(text, cb){
       media +
       (s.noCap ? '' :
         '<div class="slide__cap"><div class="slide__title">' + s.title + '</div>' +
-        '<div class="slide__meta">' + s.meta + '</div></div>');
+        '<div class="slide__meta">' + s.meta + '</div></div>') +
+      (s.link ? '<a class="slide__cta" href="' + s.link + '">' + (s.linkLabel || "اعرف أكثر") + '</a>' : '');
     vp.appendChild(el);
 
     var d = document.createElement("button");
