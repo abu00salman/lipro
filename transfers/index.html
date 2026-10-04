@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>انتقالات لاعبين ليبرو — أكاديمية ليبرو الرياضية</title>
+<meta name="description" content="انتقالات لاعبي أكاديمية ليبرو الرياضية إلى الأندية السعودية — موسم 2026–2027.">
+<link rel="canonical" href="https://liproacademy.com/transfers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="أكاديمية ليبرو الرياضية">
+<meta property="og:title" content="انتقالات لاعبين ليبرو — موسم 2026–2027">
+<meta property="og:description" content="لاعبو أكاديمية ليبرو ينتقلون إلى الأندية السعودية — تابع كل انتقال وتفاصيله.">
+<meta property="og:url" content="https://liproacademy.com/transfers/">
+<meta property="og:locale" content="ar_SA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="انتقالات لاعبين ليبرو — موسم 2026–2027">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#123f35;
+    --green-800:#164a3d;
+    --green-700:#1b5e4b;
+    --green-600:#20705a;
+    --gold-500:#c39a2f;
+    --gold-400:#d4ad45;
+    --cream:#f7f4ec;
+    --ink:#173d33;
+    --muted:#6c8a80;
+    --line:rgba(23,61,51,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit}
+  img{max-width:100%;display:block}
+  button{font-family:inherit}
+
+  /* ===== الشريط العلوي ===== */
+  .topbar{
+    max-width:1180px;margin:0 auto;padding:16px 20px 0;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .back-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:#fff;color:var(--green-700);font-weight:800;font-size:13.5px;
+    text-decoration:none;border:1px solid var(--line);border-radius:999px;
+    padding:8px 16px;box-shadow:0 2px 6px rgba(18,63,53,.08);
+  }
+  .store-track-link{
+    display:inline-flex;align-items:center;gap:6px;
+    background:#fff;color:var(--green-700);font-weight:700;font-size:13px;
+    text-decoration:none;border:1px solid var(--line);border-radius:999px;
+    padding:8px 16px;
+  }
+
+  /* ===== الهيرو ===== */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    margin:14px 16px 0;
+    border-radius:28px;
+    padding:46px 20px 64px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse 110% 70% at 50% -15%, rgba(255,255,255,.14), transparent 60%),
+      linear-gradient(165deg, var(--green-900) 0%, var(--green-700) 55%, var(--green-600) 100%);
+    box-shadow:0 20px 50px -18px rgba(18,63,53,.55);
+  }
+  /* نسيج خطوط ملعب خفيف جدًا */
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 64px);
+    opacity:.5;
+    pointer-events:none;
+  }
+  /* شعار LIPRO عملاق شفاف خلف العنوان */
+  .hero__watermark{
+    position:absolute;
+    bottom:-26px;
+    inset-inline-end:-30px;
+    font-family:'Cairo',sans-serif;
+    font-weight:900;
+    font-size:clamp(90px,22vw,180px);
+    color:transparent;
+    -webkit-text-stroke:1.5px rgba(255,255,255,.08);
+    letter-spacing:2px;
+    pointer-events:none;
+    user-select:none;
+    line-height:1;
+    z-index:0;
+  }
+  .hero__in{position:relative;z-index:1}
+  .hero img.logo{height:64px;margin:0 auto 14px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+  .hero__eng{
+    display:inline-block;color:var(--gold-400);font-weight:800;font-size:12px;
+    letter-spacing:3px;margin-bottom:10px;opacity:.85;
+  }
+  .hero h1{
+    color:#fff;font-weight:900;
+    font-size:clamp(26px,6vw,42px);
+    margin-bottom:10px;
+    text-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  .hero__season{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(245,197,88,.4);
+    color:var(--gold-400);font-weight:800;font-size:15px;
+    border-radius:999px;padding:7px 20px;
+    direction:ltr;
+  }
+  .hero__stats{
+    display:flex;justify-content:center;gap:28px;margin-top:26px;
+    position:relative;z-index:1;
+  }
+  .hero__stat b{display:block;color:#fff;font-size:22px;font-weight:900}
+  .hero__stat span{display:block;color:rgba(255,255,255,.65);font-size:12px;font-weight:700;margin-top:2px}
+
+  /* ===== فلتر المواسم ===== */
+  .filters{
+    max-width:1180px;margin:-30px auto 0;padding:0 16px;
+    position:relative;z-index:2;
+  }
+  .filters__track{
+    display:flex;gap:10px;overflow-x:auto;padding:14px;
+    background:#fff;border-radius:18px;box-shadow:0 10px 30px -14px rgba(18,63,53,.3);
+    border:1px solid var(--line);
+    scrollbar-width:none;
+  }
+  .filters__track::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none;
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--cream);color:var(--green-700);
+    font-weight:800;font-size:13.5px;
+    border:1px solid var(--line);border-radius:999px;
+    padding:9px 18px;cursor:pointer;
+    transition:background .18s ease,color .18s ease,border-color .18s ease;
+    white-space:nowrap;
+  }
+  .chip[aria-pressed="true"]{
+    background:var(--green-700);color:#fff;border-color:var(--green-700);
+  }
+  .chip:hover{border-color:var(--gold-500)}
+
+  /* ===== شبكة البطاقات ===== */
+  .grid-wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+  .tgrid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+  }
+  @media(min-width:640px){.tgrid{grid-template-columns:repeat(3,1fr);gap:18px}}
+  @media(min-width:980px){.tgrid{grid-template-columns:repeat(4,1fr);gap:22px}}
+
+  .tcard{
+    position:relative;
+    display:flex;flex-direction:column;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 8px 20px -12px rgba(18,63,53,.2);
+    cursor:pointer;
+    text-align:right;
+    opacity:0;
+    transform:translateY(25px) scale(.97);
+    transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1), box-shadow .25s ease;
+    transition-delay:calc(var(--i,0) * 70ms);
+  }
+  .tcard.is-visible{opacity:1;transform:translateY(0) scale(1)}
+  @media(hover:hover){
+    .tcard:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 16px 32px -14px rgba(18,63,53,.3)}
+    .tcard:hover .tcard__photo img{transform:translateY(-7px) scale(1.04)}
+    .tcard:hover .tcard__dest{opacity:1}
+  }
+  .tcard__photo{
+    position:relative;
+    aspect-ratio:214/234;
+    background:var(--green-800);
+    overflow:hidden;
+  }
+  .tcard__photo img{
+    width:100%;height:100%;object-fit:cover;object-position:top center;
+    transition:transform .4s cubic-bezier(.22,1,.36,1);
+    display:block;
+  }
+  .tcard__index{
+    position:absolute;top:8px;inset-inline-start:8px;
+    width:22px;height:22px;border-radius:7px;
+    background:rgba(4,30,24,.55);backdrop-filter:blur(2px);
+    color:#fff;font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tcard__status{
+    position:absolute;top:8px;inset-inline-end:8px;
+    display:inline-flex;align-items:center;gap:4px;
+    background:rgba(4,30,24,.55);backdrop-filter:blur(2px);
+    color:var(--gold-400);font-size:10.5px;font-weight:800;
+    border-radius:999px;padding:4px 9px;
+  }
+  .tcard__status i{width:5px;height:5px;border-radius:50%;background:var(--gold-400);display:inline-block}
+  .tcard__accent{height:3px;background:linear-gradient(90deg,var(--gold-500),var(--gold-400))}
+  .tcard__body{padding:12px 13px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .tcard__name{font-weight:800;font-size:15px;color:var(--ink);line-height:1.3}
+  .tcard__year{
+    display:inline-flex;align-self:flex-start;
+    background:var(--cream);color:var(--green-700);
+    font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px;
+    direction:ltr;
+  }
+  .tcard__dest{
+    display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:8px;
+    border-top:1px dashed var(--line);
+    opacity:.9;transition:opacity .25s ease;
+  }
+  .tcard__badge{
+    flex:none;width:26px;height:26px;border-radius:8px;
+    background:var(--green-700);color:var(--gold-400);
+    font-size:11px;font-weight:900;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tcard__club{font-size:12.5px;font-weight:700;color:var(--green-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* ===== نافذة تفاصيل الانتقال ===== */
+  .tbackdrop{
+    position:fixed;inset:0;background:rgba(8,32,27,.55);
+    opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:50;
+  }
+  .tbackdrop.open{opacity:1;pointer-events:auto}
+
+  .tdetail{
+    position:fixed;z-index:51;
+    left:0;right:0;bottom:0;
+    max-height:88vh;overflow-y:auto;
+    background:var(--cream);
+    border-radius:24px 24px 0 0;
+    padding:10px 20px 28px;
+    transform:translateY(102%);
+    transition:transform .45s cubic-bezier(.22,1,.36,1);
+    box-shadow:0 -10px 40px rgba(0,0,0,.25);
+  }
+  .tdetail.open{transform:translateY(0)}
+  @media(min-width:760px){
+    .tdetail{
+      left:50%;right:auto;bottom:auto;top:50%;
+      width:min(460px,92vw);max-height:85vh;
+      border-radius:24px;
+      transform:translate(-50%,-48%) scale(.95);
+      opacity:0;
+    }
+    .tdetail.open{transform:translate(-50%,-50%) scale(1);opacity:1}
+  }
+  .tdetail__handle{width:40px;height:4px;background:var(--line);border-radius:99px;margin:4px auto 14px}
+  @media(min-width:760px){.tdetail__handle{display:none}}
+  .tdetail__close{
+    position:absolute;top:14px;inset-inline-end:16px;
+    width:32px;height:32px;border-radius:50%;border:none;
+    background:#fff;color:var(--green-700);font-size:16px;cursor:pointer;
+    box-shadow:0 2px 6px rgba(18,63,53,.12);
+  }
+  .tdetail__photo{
+    width:132px;height:144px;border-radius:18px;overflow:hidden;
+    margin:6px auto 14px;border:3px solid #fff;box-shadow:0 10px 24px -10px rgba(18,63,53,.4);
+  }
+  .tdetail__photo img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .tdetail__name{text-align:center;font-weight:900;font-size:21px;color:var(--ink)}
+  .tdetail__year{text-align:center;color:var(--muted);font-size:13px;font-weight:700;margin-top:4px;direction:ltr}
+
+  .tpath{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    margin:22px 0 18px;
+  }
+  .tpath__node{display:flex;flex-direction:column;align-items:center;gap:8px;width:92px}
+  .tpath__badge{
+    width:54px;height:54px;border-radius:16px;
+    background:var(--green-700);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px -6px rgba(18,63,53,.4);
+    overflow:hidden;
+  }
+  .tpath__badge img{width:100%;height:100%;object-fit:contain;padding:8px}
+  .tpath__badge.is-dest{background:var(--gold-500)}
+  .tpath__badge.is-dest span{color:var(--green-900)}
+  .tpath__badge span{color:var(--gold-400);font-weight:900;font-size:17px}
+  .tpath__label{font-size:11.5px;font-weight:700;color:var(--muted);text-align:center;line-height:1.3}
+  .tpath__line{
+    flex:none;width:46px;height:2px;position:relative;top:-27px;
+    background:var(--line);
+  }
+  .tpath__line i{
+    position:absolute;inset:0;background:linear-gradient(90deg,var(--gold-500),var(--gold-400));
+    transform-origin:center;
+    transform:scaleX(0);
+    transition:transform .4s cubic-bezier(.22,1,.36,1);
+  }
+  .tdetail.open .tpath__line i{transform:scaleX(1)}
+  .tpath__arrow{
+    position:absolute;top:-6px;inset-inline-end:-5px;color:var(--gold-500);font-size:13px;
+    opacity:0;transition:opacity .25s ease .35s;
+  }
+  .tdetail.open .tpath__arrow{opacity:1}
+
+  .tdetail__badges{display:flex;justify-content:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .tdetail__tag{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(195,154,47,.12);color:var(--gold-500);
+    font-size:12px;font-weight:800;border-radius:999px;padding:6px 14px;
+  }
+  .tdetail__tag.alt{background:var(--cream);color:var(--green-700);border:1px solid var(--line)}
+
+  .tdetail__actions{display:flex;gap:10px;margin-top:6px}
+  .tbtn{
+    flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    border:none;border-radius:14px;padding:13px 14px;font-weight:800;font-size:14px;
+    cursor:pointer;transition:transform .15s ease;
+  }
+  .tbtn:active{transform:scale(.97)}
+  .tbtn--gold{background:linear-gradient(90deg,var(--gold-500),var(--gold-400));color:var(--green-900)}
+  .tbtn--ghost{background:#fff;color:var(--green-700);border:1px solid var(--line)}
+  .tdetail__toast{
+    text-align:center;font-size:12.5px;font-weight:700;color:var(--green-700);
+    margin-top:10px;opacity:0;transition:opacity .25s ease;
+  }
+  .tdetail__toast.show{opacity:1}
+
+  footer{max-width:1180px;margin:0 auto;padding:0 20px 40px;text-align:center}
+  .footer-pill{
+    display:inline-flex;align-items:center;gap:8px;background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:9px 20px;
+    font-size:13px;font-weight:700;color:var(--green-700);
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+    .tcard{opacity:1;transform:none;transition-delay:0ms !important}
+  }
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
+  <a class="store-track-link" href="/">أكاديمية ليبرو الرياضية</a>
+</div>
+
+<section class="hero">
+  <div class="hero__watermark" aria-hidden="true">LIPRO</div>
+  <div class="hero__in">
+    <img class="logo" src="/logo-lipro.png" alt="ليبرو" onerror="this.remove()">
+    <span class="hero__eng">LIPRO PLAYER TRANSFERS</span>
+    <h1>انتقالات لاعبين ليبرو</h1>
+    <span class="hero__season">موسم 2026–2027</span>
+    <div class="hero__stats" id="heroStats"></div>
+  </div>
+</section>
+
+<div class="filters">
+  <div class="filters__track" id="seasonFilter" role="tablist" aria-label="تصفية حسب الموسم"></div>
+</div>
+
+<main class="grid-wrap">
+  <div class="tgrid" id="transferGrid"></div>
+</main>
+
+<footer>
+  <a class="footer-pill" href="/">🌐 www.liproacademy.com</a>
+</footer>
+
+<!-- نافذة تفاصيل الانتقال -->
+<div class="tbackdrop" id="tBackdrop"></div>
+<div class="tdetail" id="tDetail" role="dialog" aria-modal="true" aria-labelledby="tDetailName" tabindex="-1">
+  <div class="tdetail__handle"></div>
+  <button class="tdetail__close" id="tDetailClose" aria-label="إغلاق" type="button">✕</button>
+
+  <div class="tdetail__photo"><img id="tDetailPhoto" src="" alt=""></div>
+  <h2 class="tdetail__name" id="tDetailName"></h2>
+  <p class="tdetail__year" id="tDetailYear"></p>
+
+  <div class="tpath">
+    <div class="tpath__node">
+      <div class="tpath__badge"><img src="/logo-lipro.png" alt="" onerror="this.parentElement.innerHTML='<span>LP</span>'"></div>
+      <span class="tpath__label">أكاديمية ليبرو</span>
+    </div>
+    <div class="tpath__line"><i></i><span class="tpath__arrow">◀</span></div>
+    <div class="tpath__node">
+      <div class="tpath__badge is-dest" id="tDetailClubBadge"><span id="tDetailClubInitial"></span></div>
+      <span class="tpath__label" id="tDetailClubName"></span>
+    </div>
+  </div>
+
+  <div class="tdetail__badges">
+    <span class="tdetail__tag">✓ انتقال رسمي · LIPRO TRANSFER</span>
+    <span class="tdetail__tag alt" id="tDetailSeason"></span>
+  </div>
+
+  <div class="tdetail__actions">
+    <button class="tbtn tbtn--gold" id="tDetailShare" type="button">📤 مشاركة الانتقال</button>
+    <button class="tbtn tbtn--ghost" id="tDetailCloseBtn" type="button">إغلاق</button>
+  </div>
+  <p class="tdetail__toast" id="tDetailToast">تم نسخ رابط الانتقال ✓</p>
+</div>
+
+<script>
+/* =====================================================================
+   مصدر البيانات — أضف لاعبًا جديدًا بإضافة عنصر هنا فقط، بلا لمس أي HTML.
+   أضف موسمًا جديدًا بإضافة قيمة season جديدة؛ تظهر تلقائيًا في الفلتر.
+   ===================================================================== */
+var TRANSFERS = [
+  { id:'yaqoob-sufyani',   name:'يعقوب سفياني',   birthYear:2007, destinationClub:'نادي ضمك',   season:'2026-2027', status:'confirmed', playerImage:'players/yaqoob-sufyani.jpg' },
+  { id:'mohammed-moaini',  name:'محمد معيني',     birthYear:2010, destinationClub:'نادي ضمك',   season:'2026-2027', status:'confirmed', playerImage:'players/mohammed-moaini.jpg' },
+  { id:'fahad-kaabi',      name:'فهد كعبي',       birthYear:2011, destinationClub:'نادي الزلفي', season:'2026-2027', status:'confirmed', playerImage:'players/fahad-kaabi.jpg' },
+  { id:'meshal-jarban',    name:'مشعل جربان',     birthYear:2010, destinationClub:'نادي الزلفي', season:'2026-2027', status:'confirmed', playerImage:'players/meshal-jarban.jpg' },
+  { id:'badr-sufyani',     name:'بدر سفياني',     birthYear:2010, destinationClub:'نادي الزلفي', season:'2026-2027', status:'confirmed', playerImage:'players/badr-sufyani.jpg' },
+  { id:'firas-jabali',     name:'فراس جبلي',      birthYear:2010, destinationClub:'نادي الزلفي', season:'2026-2027', status:'confirmed', playerImage:'players/firas-jabali.jpg' },
+  { id:'anas-obairi',      name:'أنس عبيري',      birthYear:2009, destinationClub:'نادي الوطن', season:'2026-2027', status:'confirmed', playerImage:'players/anas-obairi.jpg' },
+  { id:'amer-alshahrani',  name:'عامر الشهراني',  birthYear:2009, destinationClub:'نادي الوطن', season:'2026-2027', status:'confirmed', playerImage:'players/amer-alshahrani.jpg' }
+];
+
+var STATUS_LABEL = { confirmed:'انتقال رسمي', pending:'قيد الإجراء', rumored:'قيد التفاوض' };
+
+(function(){
+  'use strict';
+
+  var grid = document.getElementById('transferGrid');
+  var filterTrack = document.getElementById('seasonFilter');
+  var heroStats = document.getElementById('heroStats');
+  var activeSeason = 'all';
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== إحصائيات الهيرو ===== */
+  function renderStats(){
+    var clubs = {};
+    TRANSFERS.forEach(function(t){ clubs[t.destinationClub] = true; });
+    var clubCount = Object.keys(clubs).length;
+    heroStats.innerHTML =
+      '<div class="hero__stat"><b>' + TRANSFERS.length + '</b><span>لاعبًا منتقلًا</span></div>' +
+      '<div class="hero__stat"><b>' + clubCount + '</b><span>أندية سعودية</span></div>';
+  }
+
+  /* ===== فلتر المواسم ===== */
+  function renderFilters(){
+    var seasons = [];
+    TRANSFERS.forEach(function(t){ if (seasons.indexOf(t.season) === -1) seasons.push(t.season); });
+    seasons.sort().reverse();
+
+    var chips = [{ key:'all', label:'الكل' }].concat(seasons.map(function(s){
+      return { key:s, label:s.replace('-', '–') };
+    }));
+
+    filterTrack.innerHTML = chips.map(function(c){
+      return '<button class="chip" type="button" role="tab" data-season="' + c.key +
+        '" aria-pressed="' + (c.key === activeSeason ? 'true' : 'false') + '">' + c.label + '</button>';
+    }).join('');
+
+    filterTrack.querySelectorAll('.chip').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        activeSeason = btn.dataset.season;
+        filterTrack.querySelectorAll('.chip').forEach(function(b){
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        renderGrid();
+      });
+    });
+  }
+
+  /* ===== شبكة البطاقات ===== */
+  var observer = null;
+  function ensureObserver(){
+    if (observer || reduceMotion) return;
+    observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  }
+
+  function clubInitial(name){
+    var clean = name.replace(/^نادي\s*/, '').trim();
+    return clean.charAt(0);
+  }
+
+  function renderGrid(){
+    var list = activeSeason === 'all'
+      ? TRANSFERS
+      : TRANSFERS.filter(function(t){ return t.season === activeSeason; });
+
+    grid.innerHTML = list.map(function(t, i){
+      return (
+        '<button class="tcard" type="button" style="--i:' + i + '" data-id="' + t.id + '" aria-label="تفاصيل انتقال ' + t.name + ' إلى ' + t.destinationClub + '">' +
+          '<div class="tcard__photo">' +
+            '<img src="' + t.playerImage + '" alt="' + t.name + '" loading="lazy" decoding="async" width="214" height="234">' +
+            '<span class="tcard__index">' + (i + 1) + '</span>' +
+            '<span class="tcard__status"><i></i>' + (STATUS_LABEL[t.status] || t.status) + '</span>' +
+          '</div>' +
+          '<div class="tcard__accent"></div>' +
+          '<div class="tcard__body">' +
+            '<div class="tcard__name">' + t.name + '</div>' +
+            '<span class="tcard__year">مواليد ' + t.birthYear + '</span>' +
+            '<div class="tcard__dest">' +
+              '<span class="tcard__badge">' + clubInitial(t.destinationClub) + '</span>' +
+              '<span class="tcard__club">' + t.destinationClub + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</button>'
+      );
+    }).join('');
+
+    grid.querySelectorAll('.tcard').forEach(function(card){
+      card.addEventListener('click', function(){ openDetail(card.dataset.id, card); });
+      if (reduceMotion) card.classList.add('is-visible');
+    });
+
+    if (!reduceMotion){
+      ensureObserver();
+      grid.querySelectorAll('.tcard').forEach(function(card){ observer.observe(card); });
+    }
+  }
+
+  /* ===== نافذة التفاصيل ===== */
+  var backdrop = document.getElementById('tBackdrop');
+  var detail = document.getElementById('tDetail');
+  var lastTrigger = null;
+
+  function findTransfer(id){
+    return TRANSFERS.filter(function(t){ return t.id === id; })[0] || null;
+  }
+
+  function openDetail(id, triggerEl){
+    var t = findTransfer(id);
+    if (!t) return;
+    lastTrigger = triggerEl || null;
+
+    document.getElementById('tDetailPhoto').src = t.playerImage;
+    document.getElementById('tDetailPhoto').alt = t.name;
+    document.getElementById('tDetailName').textContent = t.name;
+    document.getElementById('tDetailYear').textContent = 'مواليد ' + t.birthYear;
+    document.getElementById('tDetailClubInitial').textContent = clubInitial(t.destinationClub);
+    document.getElementById('tDetailClubName').textContent = t.destinationClub;
+    document.getElementById('tDetailSeason').textContent = 'موسم ' + t.season.replace('-', '–');
+    document.getElementById('tDetailToast').classList.remove('show');
+
+    backdrop.classList.add('open');
+    detail.classList.add('open');
+    detail.focus();
+    document.body.style.overflow = 'hidden';
+
+    try { history.replaceState(null, '', '?player=' + id); } catch(e){}
+  }
+
+  function closeDetail(){
+    backdrop.classList.remove('open');
+    detail.classList.remove('open');
+    document.body.style.overflow = '';
+    try { history.replaceState(null, '', location.pathname); } catch(e){}
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  backdrop.addEventListener('click', closeDetail);
+  document.getElementById('tDetailClose').addEventListener('click', closeDetail);
+  document.getElementById('tDetailCloseBtn').addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && detail.classList.contains('open')) closeDetail();
+  });
+
+  /* ===== مشاركة الانتقال ===== */
+  document.getElementById('tDetailShare').addEventListener('click', function(){
+    var name = document.getElementById('tDetailName').textContent;
+    var club = document.getElementById('tDetailClubName').textContent;
+    var urlParams = new URLSearchParams(location.search);
+    var playerId = urlParams.get('player') || '';
+    var shareUrl = location.origin + location.pathname + '?player=' + playerId;
+    var shareText = 'انتقال ' + name + ' إلى ' + club + ' — أكاديمية ليبرو الرياضية ⚽';
+    var toast = document.getElementById('tDetailToast');
+
+    if (navigator.share){
+      navigator.share({ title: 'انتقالات لاعبين ليبرو', text: shareText, url: shareUrl }).catch(function(){});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(shareUrl).then(function(){
+        toast.classList.add('show');
+        setTimeout(function(){ toast.classList.remove('show'); }, 2600);
+      }).catch(function(){});
+    }
+  });
+
+  /* ===== الإقلاع ===== */
+  renderStats();
+  renderFilters();
+  renderGrid();
+
+  var initialPlayer = new URLSearchParams(location.search).get('player');
+  if (initialPlayer && findTransfer(initialPlayer)){
+    setTimeout(function(){ openDetail(initialPlayer, null); }, 50);
+  }
+})();
+</script>
+</body>
+</html>
