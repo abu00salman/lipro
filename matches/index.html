@@ -411,6 +411,55 @@
     z-index:1;
   }
 
+  /* ===== زر البث المباشر ===== */
+  .stream-row{grid-column:1 / -1;display:flex;justify-content:center;margin-top:10px}
+  .stream-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:linear-gradient(135deg,#e21c1c,#8a0d0d);
+    color:#fff;border:1px solid rgba(255,255,255,.3);
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;
+    border-radius:999px;padding:9px 18px;cursor:pointer;
+    box-shadow:0 6px 18px -6px rgba(180,20,20,.65);
+  }
+  .stream-btn__dot{
+    width:9px;height:9px;border-radius:50%;background:#fff;flex:none;
+    animation:streamPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes streamPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+
+  /* ===== تمويه المحتوى عند فتح البث ===== */
+  .frame{transition:filter .45s ease}
+  .frame.blurred{filter:blur(16px) brightness(.65) saturate(.8);pointer-events:none;user-select:none}
+
+  /* ===== لوحة البث السفلية (تفتح بأسلوب مجلدات iOS 6) ===== */
+  .live-sheet{
+    position:fixed;z-index:300;background:#05140f;overflow:hidden;display:none;
+    box-shadow:0 -24px 70px rgba(0,0,0,.55);
+    transition:left .5s cubic-bezier(.32,1.65,.5,1), top .5s cubic-bezier(.32,1.65,.5,1),
+               width .5s cubic-bezier(.32,1.65,.5,1), height .5s cubic-bezier(.32,1.65,.5,1),
+               border-radius .42s ease;
+  }
+  .live-sheet.show{display:block}
+  .live-sheet__grip{
+    position:absolute;top:8px;left:50%;transform:translateX(-50%);
+    width:40px;height:4px;border-radius:3px;background:rgba(255,255,255,.35);z-index:2;
+  }
+  .live-sheet__head{
+    position:absolute;top:0;left:0;right:0;height:42px;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+    background:linear-gradient(180deg,rgba(0,0,0,.6),transparent);
+    opacity:0;transition:opacity .3s ease;
+  }
+  .live-sheet.open .live-sheet__head{opacity:1}
+  .live-sheet__title{color:#fff;font-family:'Cairo',sans-serif;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:6px}
+  .live-sheet__close{
+    width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);
+    border:none;color:#fff;font-size:14px;font-weight:900;cursor:pointer;flex:none;
+  }
+  .live-sheet__body{position:absolute;inset:0;opacity:0;transition:opacity .35s ease}
+  .live-sheet.open .live-sheet__body{opacity:1}
+  .live-sheet iframe{width:100%;height:100%;border:0;display:block}
+
   .empty{
     text-align:center;
     background:#fff;
@@ -497,6 +546,18 @@
   <div class="video-lightbox__box">
     <button class="video-lightbox__close" id="videoLightboxClose" type="button" aria-label="إغلاق">✕</button>
     <video id="lightboxVideo" controls playsinline></video>
+  </div>
+</div>
+
+<!-- لوحة البث المباشر -->
+<div class="live-sheet" id="liveSheet">
+  <div class="live-sheet__grip"></div>
+  <div class="live-sheet__head">
+    <span class="live-sheet__title">🔴 بث مباشر الآن</span>
+    <button class="live-sheet__close" id="liveSheetClose" type="button" aria-label="إغلاق">✕</button>
+  </div>
+  <div class="live-sheet__body">
+    <iframe id="liveSheetFrame" src="" title="بث مباشر" allow="autoplay; fullscreen; encrypted-media" allowfullscreen loading="lazy"></iframe>
   </div>
 </div>
 
@@ -700,6 +761,7 @@ function mergeExtra(leagues, todayStr, liveMap){
     if (m.commentator) entry.commentator = m.commentator;
     if (m.channels) entry.channels = m.channels;
     if (m.goals) entry.goals = m.goals;
+    if (m.stream) entry.stream = m.stream;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
     else {
       /* نتيجة تلقائية (مباشرة أو نهائية) من المصدر إن وُجدت نفس المباراة */
@@ -985,7 +1047,8 @@ var EXTRA_MATCHES = [
     goals: [
       { label: '⚽ هدف الهمامي', video: 'goals/goal1-alhammami.mp4', poster: 'goals/goal1-poster.jpg' },
       { label: '⚽ هدف البريكان', video: 'goals/goal2-alburaykan.mp4', poster: 'goals/goal2-poster.jpg' }
-    ] },
+    ],
+    stream: { url: 'https://www.youtube.com/embed/TK1XWtPXj6w?autoplay=1', label: '🔴 شاهد البث المباشر الآن' } },
 
   { date: '2026-10-06', league: 'دوري الأمم الأوروبية — الجولة ٤', badge: 'UNL',
     time: '09:45 PM', home: 'إنجلترا', away: 'تشيكيا', channel: 'beIN SPORTS 1', commentator: 'حسن العيدروس' },
@@ -1101,6 +1164,12 @@ function render(){
               '</div>';
           }
         }
+        var streamRow = '';
+        if (m.stream) {
+          streamRow = '<div class="stream-row"><button class="stream-btn" type="button" data-stream-url="' + m.stream.url + '">' +
+            '<span class="stream-btn__dot"></span>' + (m.stream.label || '🔴 بث مباشر الآن') +
+            '</button></div>';
+        }
         var goalsRow = '';
         if (Array.isArray(m.goals) && m.goals.length) {
           goalsRow = '<div class="goals-wrap">' + m.goals.map(function(g){
@@ -1125,7 +1194,7 @@ function render(){
         }
         return '<div class="match">' + timeCell +
           '<div class="team">' + m.home + "</div>" + midCell +
-          '<div class="team">' + m.away + "</div>" + chanRow + goalsRow + watchBtn + "</div>";
+          '<div class="team">' + m.away + "</div>" + chanRow + streamRow + goalsRow + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
   });
@@ -1297,6 +1366,91 @@ function tick(){
   closeBtn.addEventListener("click", closeVideo);
   document.addEventListener("keydown", function(e){
     if (e.key === "Escape" && lightbox.classList.contains("open")) closeVideo();
+  });
+})();
+
+/* ===== البث المباشر — لوحة تتذيل في الصفحة بأسلوب مجلدات iOS 6 ===== */
+(function(){
+  var frameEl = document.querySelector(".frame");
+  var sheet = document.getElementById("liveSheet");
+  var frameIf = document.getElementById("liveSheetFrame");
+  var closeBtn = document.getElementById("liveSheetClose");
+  var originRect = null;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function finalRect(){
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var w = Math.min(vw, 480);
+    var h = Math.min(Math.round(vh * 0.58), 430);
+    return { left: Math.round((vw - w) / 2), top: vh - h, width: w, height: h };
+  }
+
+  function applyRect(r, radius){
+    sheet.style.left = r.left + "px";
+    sheet.style.top = r.top + "px";
+    sheet.style.width = r.width + "px";
+    sheet.style.height = r.height + "px";
+    sheet.style.borderRadius = radius;
+  }
+
+  function openStream(btn){
+    var url = btn.dataset.streamUrl;
+    if (!url || sheet.classList.contains("show")) return;
+    var r = btn.getBoundingClientRect();
+    originRect = r;
+
+    if (reduceMotion) {
+      var fr = finalRect();
+      applyRect(fr, "22px 22px 0 0");
+      sheet.classList.add("show");
+      requestAnimationFrame(function(){ sheet.classList.add("open"); });
+    } else {
+      sheet.style.transition = "none";
+      applyRect(r, "999px");
+      sheet.classList.add("show");
+      sheet.getBoundingClientRect(); /* إعادة تدفق لتثبيت الحالة الابتدائية */
+      requestAnimationFrame(function(){
+        sheet.style.transition = "";
+        applyRect(finalRect(), "22px 22px 0 0");
+        sheet.classList.add("open");
+      });
+    }
+
+    frameEl.classList.add("blurred");
+    document.body.style.overflow = "hidden";
+    frameIf.src = url;
+  }
+
+  function closeStream(){
+    if (!sheet.classList.contains("show")) return;
+    sheet.classList.remove("open");
+    frameEl.classList.remove("blurred");
+    document.body.style.overflow = "";
+
+    if (reduceMotion) {
+      sheet.classList.remove("show");
+      frameIf.src = "";
+      return;
+    }
+
+    var r = originRect || finalRect();
+    applyRect(r, "999px");
+    setTimeout(function(){
+      sheet.classList.remove("show");
+      frameIf.src = "";
+    }, 460);
+  }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".stream-btn");
+    if (btn) { openStream(btn); return; }
+  });
+  closeBtn.addEventListener("click", closeStream);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && sheet.classList.contains("show")) closeStream();
+  });
+  window.addEventListener("resize", function(){
+    if (sheet.classList.contains("open")) applyRect(finalRect(), "22px 22px 0 0");
   });
 })();
 </script>
