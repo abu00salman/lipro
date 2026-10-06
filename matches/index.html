@@ -367,6 +367,50 @@
   .soon-note{grid-column:1 / -1;text-align:center;margin-top:8px;font-size:12.5px;color:var(--green-700);font-weight:700}
   .vs.score{font-size:15px;letter-spacing:1px}
 
+  /* ===== أزرار مقاطع الأهداف ===== */
+  .goals-wrap{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+  .goal-btn{
+    display:inline-flex;align-items:center;gap:7px;
+    background:linear-gradient(135deg,var(--green-700),var(--green-900));
+    color:#fff;border:1px solid rgba(245,197,88,.35);
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;
+    border-radius:999px;padding:9px 16px;cursor:pointer;
+    box-shadow:0 6px 16px -8px rgba(18,63,53,.5);
+    transition:transform .15s ease;
+  }
+  .goal-btn:active{transform:scale(.96)}
+  .goal-btn__icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;background:var(--gold-500);
+    color:var(--green-900);font-size:9px;flex:none;
+  }
+
+  /* ===== نافذة تشغيل الفيديو ===== */
+  .video-lightbox{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(5,20,17,.92);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .video-lightbox.open{opacity:1;pointer-events:auto}
+  .video-lightbox__box{
+    position:relative;width:100%;max-width:420px;
+    border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+    background:#000;
+  }
+  .video-lightbox video{width:100%;max-height:82vh;display:block}
+  .video-lightbox__close{
+    position:absolute;top:-14px;inset-inline-end:-14px;
+    width:36px;height:36px;border-radius:50%;
+    background:var(--gold-500);color:var(--green-900);border:none;
+    font-size:17px;font-weight:900;cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.4);
+    z-index:1;
+  }
+
   .empty{
     text-align:center;
     background:#fff;
@@ -446,6 +490,14 @@
     <p class="tv-line">📺 شاهد الآن القنوات والمباريات على <a href="https://www.tv-pro.app" target="_blank" rel="noopener">www.tv-pro.app</a></p>
     <div class="site-pill">🌐 www.liproacademy.com</div>
   </footer>
+</div>
+
+<!-- نافذة تشغيل مقاطع الأهداف -->
+<div class="video-lightbox" id="videoLightbox">
+  <div class="video-lightbox__box">
+    <button class="video-lightbox__close" id="videoLightboxClose" type="button" aria-label="إغلاق">✕</button>
+    <video id="lightboxVideo" controls playsinline></video>
+  </div>
 </div>
 
 <script>
@@ -647,6 +699,7 @@ function mergeExtra(leagues, todayStr, liveMap){
     if (m.channel) entry.channel = m.channel;
     if (m.commentator) entry.commentator = m.commentator;
     if (m.channels) entry.channels = m.channels;
+    if (m.goals) entry.goals = m.goals;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
     else {
       /* نتيجة تلقائية (مباشرة أو نهائية) من المصدر إن وُجدت نفس المباراة */
@@ -928,6 +981,10 @@ var EXTRA_MATCHES = [
       { name: 'الكويت الرياضية', caster: 'علي الشمري' },
       { name: 'الشارقة الرياضية 1', caster: 'موسى عيد' },
       { name: 'شاشا', caster: 'مشاري القرني' }
+    ],
+    goals: [
+      { label: '⚽ هدف الهمامي', video: 'goals/goal1-alhammami.mp4', poster: 'goals/goal1-poster.jpg' },
+      { label: '⚽ هدف البريكان', video: 'goals/goal2-alburaykan.mp4', poster: 'goals/goal2-poster.jpg' }
     ] },
 
   { date: '2026-10-06', league: 'دوري الأمم الأوروبية — الجولة ٤', badge: 'UNL',
@@ -1044,6 +1101,14 @@ function render(){
               '</div>';
           }
         }
+        var goalsRow = '';
+        if (Array.isArray(m.goals) && m.goals.length) {
+          goalsRow = '<div class="goals-wrap">' + m.goals.map(function(g){
+            return '<button class="goal-btn" type="button" data-video="' + g.video + '" data-poster="' + (g.poster || '') + '">' +
+              '<span class="goal-btn__icon">▶</span>' + g.label +
+              '</button>';
+          }).join('') + '</div>';
+        }
         var watchBtn = '';
         if (m.watch) {
           var chans = Array.isArray(m.watch) ? m.watch : [m.watch];
@@ -1060,7 +1125,7 @@ function render(){
         }
         return '<div class="match">' + timeCell +
           '<div class="team">' + m.home + "</div>" + midCell +
-          '<div class="team">' + m.away + "</div>" + chanRow + watchBtn + "</div>";
+          '<div class="team">' + m.away + "</div>" + chanRow + goalsRow + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
   });
@@ -1198,6 +1263,40 @@ function tick(){
       setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
       restore();
     }).catch(function(){ failed(); });
+  });
+})();
+
+/* ===== تشغيل مقاطع الأهداف داخل الصفحة ===== */
+(function(){
+  var lightbox = document.getElementById("videoLightbox");
+  var videoEl = document.getElementById("lightboxVideo");
+  var closeBtn = document.getElementById("videoLightboxClose");
+
+  function openVideo(src, poster){
+    videoEl.poster = poster || "";
+    videoEl.src = src;
+    lightbox.classList.add("open");
+    document.body.style.overflow = "hidden";
+    videoEl.play().catch(function(){});
+  }
+
+  function closeVideo(){
+    lightbox.classList.remove("open");
+    document.body.style.overflow = "";
+    videoEl.pause();
+    videoEl.removeAttribute("src");
+    videoEl.load();
+  }
+
+  /* تفويض الأحداث — الأزرار تُعاد بناؤها مع كل render() */
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest(".goal-btn");
+    if (btn) { openVideo(btn.dataset.video, btn.dataset.poster); return; }
+    if (e.target === lightbox) closeVideo();
+  });
+  closeBtn.addEventListener("click", closeVideo);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && lightbox.classList.contains("open")) closeVideo();
   });
 })();
 </script>
