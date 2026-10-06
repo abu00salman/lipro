@@ -1380,9 +1380,18 @@ function tick(){
 
   function finalRect(){
     var vw = window.innerWidth, vh = window.innerHeight;
-    var w = Math.min(vw, 480);
-    var h = Math.min(Math.round(vh * 0.72), 560);
-    return { left: Math.round((vw - w) / 2), top: vh - h, width: w, height: h };
+    var margin = 14, headH = 42;
+    var w = Math.min(vw, 480) - margin * 2;
+    var videoH = Math.round(w * 9 / 16);
+    var h = headH + videoH;
+    var maxH = vh - 110;
+    if (h > maxH) {
+      h = maxH;
+      videoH = h - headH;
+      w = Math.round(videoH * 16 / 9);
+      if (w > vw - margin * 2) w = vw - margin * 2;
+    }
+    return { left: Math.round((vw - w) / 2), top: vh - h - margin, width: w, height: h };
   }
 
   function applyRect(r, radius){
@@ -1401,7 +1410,7 @@ function tick(){
 
     if (reduceMotion) {
       var fr = finalRect();
-      applyRect(fr, "22px 22px 0 0");
+      applyRect(fr, "20px");
       sheet.classList.add("show");
       requestAnimationFrame(function(){ sheet.classList.add("open"); });
     } else {
@@ -1411,7 +1420,7 @@ function tick(){
       sheet.getBoundingClientRect(); /* إعادة تدفق لتثبيت الحالة الابتدائية */
       requestAnimationFrame(function(){
         sheet.style.transition = "";
-        applyRect(finalRect(), "22px 22px 0 0");
+        applyRect(finalRect(), "20px");
         sheet.classList.add("open");
       });
     }
@@ -1450,7 +1459,7 @@ function tick(){
     if (e.key === "Escape" && sheet.classList.contains("show")) closeStream();
   });
   window.addEventListener("resize", function(){
-    if (sheet.classList.contains("open")) applyRect(finalRect(), "22px 22px 0 0");
+    if (sheet.classList.contains("open")) applyRect(finalRect(), "20px");
   });
 })();
 </script>
