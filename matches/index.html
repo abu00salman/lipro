@@ -460,6 +460,81 @@
   .live-sheet.open .live-sheet__body{opacity:1}
   .live-sheet iframe{width:100%;height:100%;border:0;display:block}
 
+  /* ===== زر الاحتفال بالفوز ===== */
+  .team--celebrate{cursor:pointer;position:relative;transition:transform .15s ease;user-select:none}
+  .team--celebrate:active{transform:scale(.93)}
+  .celebrate-badge{display:inline-block;animation:celebrateBounce 1.6s ease-in-out infinite}
+  @keyframes celebrateBounce{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-10deg)}}
+
+  /* ===== نافذة الاحتفال بالفوز ===== */
+  .celebrate-overlay{
+    position:fixed;inset:0;z-index:400;
+    background:radial-gradient(circle at 50% 18%, #0e4a3c 0%, #06261e 55%, #04140f 100%);
+    display:none;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .35s ease;overflow:hidden;padding:20px;
+  }
+  .celebrate-overlay.show{display:flex}
+  .celebrate-overlay.open{opacity:1}
+  #fireworksCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .celebrate-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .confetti-piece{position:absolute;top:-24px;width:9px;height:14px;opacity:.9;animation:confettiFall linear forwards}
+  @keyframes confettiFall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1}
+    100%{transform:translateY(112vh) rotate(540deg);opacity:.2}
+  }
+  .celebrate-close{
+    position:absolute;top:16px;inset-inline-end:16px;z-index:5;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+    color:#fff;font-size:16px;font-weight:900;cursor:pointer;
+  }
+  .celebrate-card{
+    position:relative;z-index:3;width:100%;max-width:420px;
+    background:rgba(8,38,30,.72);backdrop-filter:blur(10px);
+    border:1px solid rgba(245,197,88,.35);border-radius:26px;
+    padding:30px 22px 24px;text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+    transform:scale(.8);opacity:0;
+    transition:transform .5s cubic-bezier(.32,1.65,.5,1), opacity .4s ease;
+  }
+  .celebrate-overlay.open .celebrate-card{transform:scale(1);opacity:1}
+  .celebrate-trophy{font-size:62px;animation:trophyPop .9s cubic-bezier(.32,1.8,.5,1), trophySway 2.4s ease-in-out 1s infinite}
+  @keyframes trophyPop{0%{transform:scale(0) rotate(-20deg)}100%{transform:scale(1) rotate(0)}}
+  @keyframes trophySway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  .celebrate-flag{font-size:26px;margin-top:-6px}
+  .celebrate-title{
+    font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;margin:8px 0 2px;
+    background:linear-gradient(90deg,#f5c558,#fff,#f5c558);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    background-size:200% auto;animation:shine 2.5s linear infinite;
+  }
+  @keyframes shine{to{background-position:200% center}}
+  .celebrate-sub{color:#dff0e8;font-family:'Cairo',sans-serif;font-weight:700;font-size:13.5px;margin:0 0 16px}
+  .celebrate-wall{display:flex;flex-direction:column;gap:6px;max-height:120px;overflow:hidden;margin-bottom:14px}
+  .celebrate-wall:empty{display:none;margin-bottom:0}
+  .wall-chip{
+    background:rgba(245,197,88,.14);border:1px solid rgba(245,197,88,.3);
+    color:#fff;font-family:'Cairo',sans-serif;font-weight:700;font-size:12.5px;
+    border-radius:999px;padding:7px 14px;animation:chipIn .4s cubic-bezier(.32,1.6,.5,1);
+  }
+  @keyframes chipIn{from{transform:translateY(10px) scale(.9);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  .celebrate-form{display:flex;gap:7px;margin-bottom:12px}
+  .celebrate-input{
+    flex:1;min-width:0;border-radius:999px;border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.08);color:#fff;padding:10px 14px;
+    font-family:'Cairo',sans-serif;font-size:13px;outline:none;
+  }
+  .celebrate-input::placeholder{color:rgba(255,255,255,.5)}
+  .celebrate-add{
+    background:linear-gradient(135deg,var(--gold-500),#caa23d);
+    color:#1a3a2c;border:none;border-radius:999px;padding:10px 16px;
+    font-family:'Cairo',sans-serif;font-weight:900;font-size:12.5px;cursor:pointer;white-space:nowrap;flex:none;
+  }
+  .celebrate-share{
+    width:100%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
+    color:#fff;border-radius:999px;padding:10px;font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;cursor:pointer;
+  }
+
   .empty{
     text-align:center;
     background:#fff;
@@ -558,6 +633,25 @@
   </div>
   <div class="live-sheet__body">
     <iframe id="liveSheetFrame" src="" title="بث مباشر" allow="autoplay; fullscreen; encrypted-media" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
+<!-- نافذة الاحتفال بالفوز -->
+<div class="celebrate-overlay" id="celebrateOverlay">
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="celebrate-confetti" id="celebrateConfetti"></div>
+  <button class="celebrate-close" id="celebrateClose" type="button" aria-label="إغلاق">✕</button>
+  <div class="celebrate-card" id="celebrateCard">
+    <div class="celebrate-trophy">🏆</div>
+    <div class="celebrate-flag">🇸🇦</div>
+    <h2 class="celebrate-title">مبروك السعودية</h2>
+    <p class="celebrate-sub">بطلة كأس الخليج العربي «خليجي 27»</p>
+    <div class="celebrate-wall" id="celebrateWall"></div>
+    <form class="celebrate-form" id="celebrateForm">
+      <input id="celebrateInput" class="celebrate-input" type="text" maxlength="40" placeholder="اكتب تهنئتك…" autocomplete="off">
+      <button type="submit" class="celebrate-add">أضف 🎉</button>
+    </form>
+    <button class="celebrate-share" id="celebrateShare" type="button">📤 حفظ ومشاركة التهنئة</button>
   </div>
 </div>
 
@@ -762,6 +856,7 @@ function mergeExtra(leagues, todayStr, liveMap){
     if (m.channels) entry.channels = m.channels;
     if (m.goals) entry.goals = m.goals;
     if (m.stream) entry.stream = m.stream;
+    if (m.celebrate) entry.celebrate = true;
     if (m.score) { entry.score = m.score; if (m.live) entry.live = true; }
     else {
       /* نتيجة تلقائية (مباشرة أو نهائية) من المصدر إن وُجدت نفس المباراة */
@@ -1048,7 +1143,8 @@ var EXTRA_MATCHES = [
       { label: '⚽ هدف الهمامي', video: 'goals/goal1-alhammami.mp4', poster: 'goals/goal1-poster.jpg' },
       { label: '⚽ هدف البريكان', video: 'goals/goal2-alburaykan.mp4', poster: 'goals/goal2-poster.jpg' }
     ],
-    stream: { url: 'https://www.youtube.com/embed/TK1XWtPXj6w?autoplay=1&mute=1&playsinline=1', label: '🔴 شاهد البث المباشر الآن' } },
+    stream: { url: 'https://www.youtube.com/embed/TK1XWtPXj6w?autoplay=1&mute=1&playsinline=1', label: '🔴 شاهد البث المباشر الآن' },
+    celebrate: true },
 
   { date: '2026-10-06', league: 'دوري الأمم الأوروبية — الجولة ٤', badge: 'UNL',
     time: '09:45 PM', home: 'إنجلترا', away: 'تشيكيا', channel: 'beIN SPORTS 1', commentator: 'حسن العيدروس' },
@@ -1192,8 +1288,11 @@ function render(){
           }).join('') + '</div>' +
           (started ? '' : '<div class="soon-note" data-starts="' + m.time + '">تبدأ المباراة الساعة ' + m.time + '</div>');
         }
+        var homeTeamHtml = m.celebrate
+          ? '<div class="team team--celebrate" data-celebrate="1" role="button" tabindex="0">' + m.home + ' <span class="celebrate-badge">🏆</span></div>'
+          : '<div class="team">' + m.home + '</div>';
         return '<div class="match">' + timeCell +
-          '<div class="team">' + m.home + "</div>" + midCell +
+          homeTeamHtml + midCell +
           '<div class="team">' + m.away + "</div>" + chanRow + streamRow + goalsRow + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
@@ -1460,6 +1559,188 @@ function tick(){
   });
   window.addEventListener("resize", function(){
     if (sheet.classList.contains("open")) applyRect(finalRect(), "20px");
+  });
+})();
+
+/* ===== احتفال الفوز — ألعاب نارية + تهاني الزوار ===== */
+(function(){
+  var overlay = document.getElementById("celebrateOverlay");
+  if (!overlay) return;
+  var frameEl = document.querySelector(".frame");
+  var canvas = document.getElementById("fireworksCanvas");
+  var ctx = canvas.getContext("2d");
+  var confettiWrap = document.getElementById("celebrateConfetti");
+  var closeBtn = document.getElementById("celebrateClose");
+  var wall = document.getElementById("celebrateWall");
+  var form = document.getElementById("celebrateForm");
+  var input = document.getElementById("celebrateInput");
+  var shareBtn = document.getElementById("celebrateShare");
+  var card = document.getElementById("celebrateCard");
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var rafId = null, particles = [], dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var GOLD = ["#f5c558", "#ffffff", "#1f7a5c", "#2fae7f", "#d4af37"];
+
+  function resizeCanvas(){
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function spawnFirework(x, y){
+    var count = 46;
+    var color = GOLD[Math.floor(Math.random() * GOLD.length)];
+    for (var i = 0; i < count; i++){
+      var ang = (Math.PI * 2) * (i / count);
+      var speed = 2.4 + Math.random() * 3.2;
+      particles.push({
+        x: x, y: y, vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed,
+        life: 1, decay: 0.012 + Math.random() * 0.012, color: color, size: 2 + Math.random() * 2
+      });
+    }
+  }
+
+  function loop(){
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.globalCompositeOperation = "lighter";
+    particles.forEach(function(p){
+      p.x += p.vx; p.y += p.vy; p.vy += 0.045; p.life -= p.decay;
+      ctx.globalAlpha = Math.max(p.life, 0);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    particles = particles.filter(function(p){ return p.life > 0; });
+    rafId = requestAnimationFrame(loop);
+  }
+
+  var fireworkTimer = null;
+  function startFireworks(){
+    if (reduceMotion) return;
+    resizeCanvas();
+    if (!rafId) loop();
+    function burst(){
+      spawnFirework(window.innerWidth * (0.2 + Math.random() * 0.6), window.innerHeight * (0.18 + Math.random() * 0.32));
+    }
+    burst();
+    fireworkTimer = setInterval(burst, 650);
+  }
+  function stopFireworks(){
+    clearInterval(fireworkTimer);
+    cancelAnimationFrame(rafId);
+    rafId = null;
+    particles = [];
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function launchConfetti(){
+    confettiWrap.innerHTML = "";
+    if (reduceMotion) return;
+    var colors = ["#f5c558", "#2fae7f", "#ffffff", "#0e4a3c", "#d4af37"];
+    for (var i = 0; i < 70; i++){
+      var piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (2.6 + Math.random() * 2.4) + "s";
+      piece.style.animationDelay = (Math.random() * 1.2) + "s";
+      piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+      confettiWrap.appendChild(piece);
+    }
+  }
+
+  function addWallChip(text){
+    var chip = document.createElement("div");
+    chip.className = "wall-chip";
+    chip.textContent = "🎉 " + text;
+    wall.insertBefore(chip, wall.firstChild);
+    while (wall.children.length > 6) wall.removeChild(wall.lastChild);
+    if (!reduceMotion){
+      var r = chip.getBoundingClientRect();
+      spawnFirework(r.left + r.width / 2, r.top + r.height / 2);
+    }
+  }
+
+  function openCelebration(){
+    overlay.classList.add("show");
+    frameEl.classList.add("blurred");
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(function(){
+      overlay.classList.add("open");
+      startFireworks();
+      launchConfetti();
+    });
+  }
+
+  function closeCelebration(){
+    overlay.classList.remove("open");
+    frameEl.classList.remove("blurred");
+    document.body.style.overflow = "";
+    stopFireworks();
+    setTimeout(function(){ overlay.classList.remove("show"); }, 350);
+  }
+
+  document.addEventListener("click", function(e){
+    if (e.target.closest("[data-celebrate]")) openCelebration();
+  });
+  document.addEventListener("keydown", function(e){
+    var el = document.activeElement;
+    if (e.key === "Enter" && el && el.hasAttribute && el.hasAttribute("data-celebrate")) openCelebration();
+    if (e.key === "Escape" && overlay.classList.contains("show")) closeCelebration();
+  });
+  closeBtn.addEventListener("click", closeCelebration);
+  overlay.addEventListener("click", function(e){
+    if (e.target === overlay) closeCelebration();
+  });
+  window.addEventListener("resize", function(){
+    if (overlay.classList.contains("open")) resizeCanvas();
+  });
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var text = input.value.trim();
+    if (!text) { input.value = "مبروك السعودية كأس خليجي 27 🇸🇦🏆"; return; }
+    addWallChip(text);
+    input.value = "";
+  });
+
+  function ensureHtml2Canvas(then, fail){
+    if (window.html2canvas) { then(); return; }
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = then;
+    s.onerror = fail;
+    document.head.appendChild(s);
+  }
+
+  shareBtn.addEventListener("click", function(){
+    var old = shareBtn.textContent;
+    shareBtn.disabled = true;
+    shareBtn.textContent = "⏳ جاري التجهيز…";
+    function restore(){ shareBtn.disabled = false; shareBtn.textContent = old; }
+    ensureHtml2Canvas(function(){
+      html2canvas(card, { backgroundColor: "#0b3328", scale: 2.5, useCORS: true }).then(function(c){
+        c.toBlob(function(blob){
+          if (!blob) { restore(); return; }
+          var file = new File([blob], "mabrouk-ksa.png", { type: "image/png" });
+          var shareData = { files: [file], title: "مبروك السعودية 🇸🇦🏆", text: "مبروك السعودية بطلة كأس الخليج العربي «خليجي 27» 🏆🇸🇦" };
+          if (navigator.canShare && navigator.canShare(shareData)){
+            navigator.share(shareData).catch(function(){}).then(restore);
+            return;
+          }
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "mabrouk-ksa.png";
+          a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+          restore();
+        }, "image/png");
+      }).catch(restore);
+    }, restore);
   });
 })();
 </script>
