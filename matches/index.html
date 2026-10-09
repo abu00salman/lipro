@@ -991,7 +991,13 @@ var MATCH_INFO = {
   'شالكه|إلفرسبيرغ':                { d:'2026-09-20', ch:'شاهد', caster:'عبدالله الشهري' },
   'بادربورن|هوفنهايم':              { d:'2026-09-20', ch:'MBC Action', caster:'أحمد النفيسة' },
   /* كأس القارات */
-  'ماميلودي صن داونز|الأهلي':       { d:'2026-09-20', ch:'MBC Action' }
+  'ماميلودي صن داونز|الأهلي':       { d:'2026-09-20', ch:'MBC Action' },
+  /* ---- الجمعة ٩ أكتوبر ٢٠٢٦ — دوري روشن الجولة ٨ + أوروبا ---- */
+  'الخلود|القادسية':                { d:'2026-10-09', ch:'ثمانية', caster:'مشعل الشمري' },
+  'الفتح|الأهلي':                   { d:'2026-10-09', ch:'ثمانية', caster:'جعفر الصليح' },
+  'النصر|الدرعية':                  { d:'2026-10-09', ch:'ثمانية', caster:'فهد العتيبي' },
+  'لانس|ليون':                      { d:'2026-10-09', ch:'beIN SPORTS 4', caster:'جواد بدة' },
+  'بوروسيا دورتموند|فيردر بريمن':   { d:'2026-10-09', ch:'شاهد', caster:'محمد حسين' }
 };
 
 var CHANNELS = {
@@ -1165,7 +1171,21 @@ var EXTRA_MATCHES = [
       { label: 'MBC Action / شاهد — السعودية', url: 'https://shahid.mbc.net' },
       { label: 'DAZN — عالمياً', url: 'https://www.dazn.com' },
       { label: 'SuperSport — جنوب أفريقيا', url: 'https://supersport.com' }
-    ] }
+    ] },
+
+  /* ===== الجمعة ٩ أكتوبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL',
+    time: '04:50 PM', home: 'الخلود', away: 'القادسية', channel: 'ثمانية', commentator: 'مشعل الشمري' },
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL',
+    time: '05:55 PM', home: 'الفتح', away: 'الأهلي', channel: 'ثمانية', commentator: 'جعفر الصليح' },
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL',
+    time: '09:00 PM', home: 'النصر', away: 'الدرعية', channel: 'ثمانية', commentator: 'فهد العتيبي' },
+  { date: '2026-10-09', league: 'الدوري الإسباني', badge: 'LL',
+    time: '10:00 PM', home: 'مالقة', away: 'إسبانيول', channel: 'beIN SPORTS 2', commentator: 'عبدالله الغامدي' },
+  { date: '2026-10-09', league: 'الدوري الفرنسي', badge: 'L1',
+    time: '09:45 PM', home: 'لانس', away: 'ليون', channel: 'beIN SPORTS 4', commentator: 'جواد بدة' },
+  { date: '2026-10-09', league: 'الدوري الألماني', badge: 'BL',
+    time: '09:30 PM', home: 'بوروسيا دورتموند', away: 'فيردر بريمن', channel: 'شاهد', commentator: 'محمد حسين' }
 ];
 
 var LEAGUES = [];
