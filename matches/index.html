@@ -881,15 +881,26 @@ function mergeExtra(leagues, todayStr, liveMap){
   return leagues;
 }
 
+/* أزواج الفرق المضافة يدويًا لهذا اليوم — تُستبعد من نتائج المصدر التلقائي لتفادي التكرار */
+function manualPairsFor(todayStr){
+  var set = {};
+  EXTRA_MATCHES.filter(function(m){ return m.date === todayStr; }).forEach(function(m){
+    set[m.home + '|' + m.away] = true;
+    set[m.away + '|' + m.home] = true;
+  });
+  return set;
+}
+
 function buildFromEspn(results, todayStr){
   var leagues = [];
+  var skip = manualPairsFor(todayStr);
   MATCH_LEAGUES.forEach(function(lg, i){
     var res = results[i];
     if (!res || res.status !== 'fulfilled' || !res.value || !Array.isArray(res.value.events)) return;
     var matches = [];
     res.value.events.forEach(function(ev){
       var m = espnEventToMatch(ev, todayStr);
-      if (m) matches.push(m);
+      if (m && !skip[m.home + '|' + m.away]) matches.push(m);
     });
     matches.sort(function(a, b){ return a._ts - b._ts; });
     matches.forEach(function(m){ delete m._ts; });
