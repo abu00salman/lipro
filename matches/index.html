@@ -695,7 +695,6 @@ function isLiveNow(m){
    لو تعذّر الجلب لأي سبب: نرجع لملف matches-data.js اليدوي القديم.
    ===================================================================== */
 var MATCH_LEAGUES = [
-  { code: 'ksa.1',          name: 'دوري روشن السعودي',        badge: 'RSL' },
   { code: 'afc.champions',  name: 'دوري أبطال آسيا للنخبة',   badge: 'ACL' },
   { code: 'fifa.intercontinental', name: 'كأس القارات للأندية', badge: 'FIFA' },
   { code: 'afc.cup',        name: 'دوري أبطال آسيا 2',        badge: 'ACL2' },
@@ -872,6 +871,7 @@ function mergeExtra(leagues, todayStr, liveMap){
     if (same) {
       var dup = same.matches.some(function(x){ return x.home === entry.home && x.away === entry.away; });
       if (!dup) same.matches.push(entry);
+      if (m.featured) same.featured = true;
     } else {
       leagues.unshift({ name: m.league, badge: m.badge || '⚽', featured: !!m.featured, matches: [entry] });
     }
@@ -1211,70 +1211,70 @@ var EXTRA_MATCHES = [
     ] },
 
   /* ===== الجمعة ٩ أكتوبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
-  { date: '2026-10-09', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '04:50 PM', home: 'الخلود', away: 'القادسية', channel: 'ثمانية', commentator: 'مشعل الشمري' },
-  { date: '2026-10-09', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '05:55 PM', home: 'الفتح', away: 'الأهلي', channel: 'ثمانية', commentator: 'جعفر الصليح' },
-  { date: '2026-10-09', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-09', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '09:00 PM', home: 'النصر', away: 'الدرعية', channel: 'ثمانية', commentator: 'فهد العتيبي' },
-  { date: '2026-10-09', league: 'الدوري الإسباني — الجولة 8', badge: 'LL',
+  { date: '2026-10-09', league: 'الدوري الإسباني', badge: 'LL',
     time: '10:00 PM', home: 'مالقة', away: 'إسبانيول', channel: 'beIN SPORTS 2', commentator: 'عبدالله الغامدي' },
-  { date: '2026-10-09', league: 'الدوري الفرنسي — الجولة 5', badge: 'L1',
+  { date: '2026-10-09', league: 'الدوري الفرنسي', badge: 'L1',
     time: '09:45 PM', home: 'لانس', away: 'ليون', channel: 'beIN SPORTS 4', commentator: 'جواد بدة' },
-  { date: '2026-10-09', league: 'الدوري الألماني — الجولة 4', badge: 'BL',
+  { date: '2026-10-09', league: 'الدوري الألماني', badge: 'BL',
     time: '09:30 PM', home: 'بوروسيا دورتموند', away: 'فيردر بريمن', channel: 'شاهد', commentator: 'محمد حسين' },
 
   /* ===== السبت ١٠ أكتوبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
-  { date: '2026-10-10', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-10', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '04:50 PM', home: 'الحزم', away: 'نيوم', channel: 'ثمانية', commentator: 'سعد يحيى' },
-  { date: '2026-10-10', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-10', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '05:55 PM', home: 'الاتفاق', away: 'الخليج', channel: 'ثمانية', commentator: 'راشد الدوسري' },
-  { date: '2026-10-10', league: 'دوري روشن السعودي — الجولة 8', badge: 'RSL',
+  { date: '2026-10-10', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
     time: '09:00 PM', home: 'الهلال', away: 'الاتحاد', channel: 'ثمانية', commentator: 'فارس عوض' },
 
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '02:30 PM', home: 'آرسنال', away: 'ليدز يونايتد', channel: 'beIN SPORTS 1', commentator: 'حسن العيدروس' },
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '05:00 PM', home: 'تشيلسي', away: 'بورنموث', channel: 'beIN SPORTS 1', commentator: 'علي محمد علي' },
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '05:00 PM', home: 'أستون فيلا', away: 'برينتفورد', channel: 'beIN SPORTS 2', commentator: 'عبدالله الغامدي' },
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '05:00 PM', home: 'سندرلاند', away: 'برايتون', channel: 'beIN SPORTS 3', commentator: 'محمد السعدي' },
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '05:00 PM', home: 'إبسويتش', away: 'فولهام', channel: 'beIN SPORTS 4', commentator: 'محمد مبروكي' },
-  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز — الجولة 6', badge: 'PL',
+  { date: '2026-10-10', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
     time: '07:30 PM', home: 'مانشستر يونايتد', away: 'توتنهام', channel: 'beIN SPORTS 1', commentator: 'أحمد البلوشي' },
 
-  { date: '2026-10-10', league: 'الدوري الإسباني — الجولة 9', badge: 'LL',
+  { date: '2026-10-10', league: 'الدوري الإسباني', badge: 'LL',
     time: '05:15 PM', home: 'رايو فاليكانو', away: 'أتلتيك بلباو', channel: 'beIN SPORTS 5', commentator: 'بكر علوان' },
-  { date: '2026-10-10', league: 'الدوري الإسباني — الجولة 9', badge: 'LL',
+  { date: '2026-10-10', league: 'الدوري الإسباني', badge: 'LL',
     time: '07:30 PM', home: 'أتلتيكو مدريد', away: 'ألافيس', channel: 'beIN SPORTS 5', commentator: 'عصام الشوالي' },
-  { date: '2026-10-10', league: 'الدوري الإسباني — الجولة 9', badge: 'LL',
+  { date: '2026-10-10', league: 'الدوري الإسباني', badge: 'LL',
     time: '10:00 PM', home: 'برشلونة', away: 'خيتافي', channel: 'beIN SPORTS 2', commentator: 'خليل البلوشي' },
-  { date: '2026-10-10', league: 'الدوري الإسباني — الجولة 9', badge: 'LL',
+  { date: '2026-10-10', league: 'الدوري الإسباني', badge: 'LL',
     time: '10:00 PM', home: 'ريال مدريد', away: 'فياريال', channel: 'beIN SPORTS 2', commentator: 'حفيظ دراجي' },
 
-  { date: '2026-10-10', league: 'الدوري الإيطالي — الجولة 6', badge: 'SA',
+  { date: '2026-10-10', league: 'الدوري الإيطالي', badge: 'SA',
     time: '04:00 PM', home: 'جنوى', away: 'فيورنتينا', channel: 'STARZPLAY', commentator: 'أحمد الخير' },
-  { date: '2026-10-10', league: 'الدوري الإيطالي — الجولة 6', badge: 'SA',
+  { date: '2026-10-10', league: 'الدوري الإيطالي', badge: 'SA',
     time: '07:00 PM', home: 'إنتر ميلان', away: 'بارما', channel: 'STARZPLAY', commentator: 'محمد الشامسي' },
-  { date: '2026-10-10', league: 'الدوري الإيطالي — الجولة 6', badge: 'SA',
+  { date: '2026-10-10', league: 'الدوري الإيطالي', badge: 'SA',
     time: '09:45 PM', home: 'نابولي', away: 'فروسينوني', channel: 'STARZPLAY', commentator: 'حازم عبد السلام' },
 
-  { date: '2026-10-10', league: 'الدوري الألماني — الجولة 5', badge: 'BL',
+  { date: '2026-10-10', league: 'الدوري الألماني', badge: 'BL',
     time: '04:30 PM', home: 'أوغسبورغ', away: 'بايرن ميونخ', channel: 'شاهد', commentator: 'فهد عريشي' },
-  { date: '2026-10-10', league: 'الدوري الألماني — الجولة 5', badge: 'BL',
+  { date: '2026-10-10', league: 'الدوري الألماني', badge: 'BL',
     time: '04:30 PM', home: 'هوفنهايم', away: 'هامبورغ', channel: 'شاهد', commentator: 'عائد العصيمي' },
-  { date: '2026-10-10', league: 'الدوري الألماني — الجولة 5', badge: 'BL',
+  { date: '2026-10-10', league: 'الدوري الألماني', badge: 'BL',
     time: '04:30 PM', home: 'ماينتس', away: 'باير ليفركوزن', channel: 'MBC Action', commentator: 'أحمد النفيسة' },
-  { date: '2026-10-10', league: 'الدوري الألماني — الجولة 5', badge: 'BL',
+  { date: '2026-10-10', league: 'الدوري الألماني', badge: 'BL',
     time: '07:30 PM', home: 'لايبزيغ', away: 'فرانكفورت', channel: 'MBC Action', commentator: 'عبدالله الشهري' },
 
-  { date: '2026-10-10', league: 'الدوري الفرنسي — الجولة 6', badge: 'L1',
+  { date: '2026-10-10', league: 'الدوري الفرنسي', badge: 'L1',
     time: '06:15 PM', home: 'ليل', away: 'لوهافر', channel: 'beIN SPORTS 6', commentator: 'جواد بدة' },
-  { date: '2026-10-10', league: 'الدوري الفرنسي — الجولة 6', badge: 'L1',
+  { date: '2026-10-10', league: 'الدوري الفرنسي', badge: 'L1',
     time: '09:45 PM', home: 'باريس سان جيرمان', away: 'لومان', channel: 'beIN SPORTS 1', commentator: 'عامر الخوذيري' },
-  { date: '2026-10-10', league: 'الدوري الفرنسي — الجولة 6', badge: 'L1',
+  { date: '2026-10-10', league: 'الدوري الفرنسي', badge: 'L1',
     time: '09:45 PM', home: 'موناكو', away: 'تولوز', channel: 'beIN SPORTS 4', commentator: 'نوفل باشي' }
 ];
 
