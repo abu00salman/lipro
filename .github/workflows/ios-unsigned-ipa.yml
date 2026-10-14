@@ -11,6 +11,9 @@ concurrency:
   group: ios-ipa-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-15
@@ -48,8 +51,18 @@ jobs:
           mkdir -p "$RUNNER_TEMP/ipa/Payload"
           cp -R "$APP" "$RUNNER_TEMP/ipa/Payload/"
           cd "$RUNNER_TEMP/ipa"
-          zip -qr "$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa" Payload
-          ls -lh "$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa"
+          IPA="$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa"
+          zip -qr "$IPA" Payload
+          ls -lh "$IPA"
+
+      - name: Verify IPA
+        run: |
+          IPA="$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa"
+          unzip -tq "$IPA"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/LiproAcademy$"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/Info.plist"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/Assets.car"
+          file "$IPA"
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
@@ -58,3 +71,11 @@ jobs:
           path: ios/LiproAcademy-unsigned.ipa
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish IPA to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios-build-${{ github.run_number }}
+          name: LiproAcademy iOS build ${{ github.run_number }}
+          prerelease: true
+          files: ios/LiproAcademy-unsigned.ipa
