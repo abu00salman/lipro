@@ -1,0 +1,5 @@
+LiproAcademy.xcodeproj/
+build/
+*.ipa
+.DS_Store
+xcuserdata/
