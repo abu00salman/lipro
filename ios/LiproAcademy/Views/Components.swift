@@ -40,7 +40,7 @@ struct CardCaption: View {
             .labelStyle(.titleAndIcon)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
+        .padding(20)
     }
 }
 
@@ -52,7 +52,7 @@ struct BranchCard: View {
             Image(branch.photos[0])
                 .resizable()
                 .scaledToFill()
-                .frame(height: 210)
+                .frame(height: 150)
                 .frame(maxWidth: .infinity)
                 .clipped()
 
@@ -61,7 +61,7 @@ struct BranchCard: View {
             CardCaption(branch: branch)
         }
         .frame(maxWidth: .infinity)
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay(alignment: .topTrailing) {
             FavoriteButton(branch: branch)
                 .padding(12)
@@ -80,16 +80,16 @@ struct BranchHeroCard: View {
             Image(branch.photos[0])
                 .resizable()
                 .scaledToFill()
-                .containerRelativeFrame(.horizontal) { length, _ in length * 0.78 }
-                .frame(height: 330)
+                .containerRelativeFrame(.horizontal) { length, _ in length * 0.72 }
+                .frame(height: 270)
                 .clipped()
 
             LinearGradient(colors: [.clear, .black.opacity(0.85)], startPoint: .center, endPoint: .bottom)
 
             CardCaption(branch: branch)
         }
-        .frame(height: 330)
-        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .frame(height: 270)
+        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         .overlay(alignment: .topTrailing) {
             FavoriteButton(branch: branch)
                 .padding(14)

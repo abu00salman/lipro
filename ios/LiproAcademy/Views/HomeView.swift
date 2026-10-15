@@ -23,6 +23,21 @@ struct HomeView: View {
             }
             .ignoresSafeArea(edges: .top)
             .background(Theme.canvas)
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .glassCapsule()
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("settings.title"))
+                .padding(.top, 60)
+                .padding(.trailing, 24)
+            }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Branch.self) { branch in
                 BranchDetailView(branch: branch)
@@ -69,21 +84,6 @@ struct HomeView: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 84)
         .padding(.bottom, 40)
-        .overlay(alignment: .topTrailing) {
-            Button {
-                showSettings = true
-            } label: {
-                Image(systemName: "gearshape.fill")
-                    .font(.title3)
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .glassCapsule()
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("settings.title"))
-            .padding(.top, 58)
-            .padding(.trailing, 20)
-        }
         .background {
             UnevenRoundedRectangle(bottomLeadingRadius: 36, bottomTrailingRadius: 36)
                 .fill(Theme.heroGradient)
@@ -114,7 +114,7 @@ struct HomeView: View {
                 }
                 .scrollTargetLayout()
             }
-            .contentMargins(.horizontal, 24, for: .scrollContent)
+            .contentMargins(.horizontal, 28, for: .scrollContent)
             .scrollTargetBehavior(.viewAligned)
             .scrollIndicators(.hidden)
         }
@@ -126,7 +126,7 @@ struct HomeView: View {
             StatBox(value: "3", label: "home.stat.days")
             StatBox(value: "5–18", label: "home.stat.ages")
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 24)
         .modifier(Entrance(index: 1, visible: appeared))
     }
 
@@ -160,7 +160,7 @@ struct HomeView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 24)
         }
     }
 
@@ -186,7 +186,7 @@ struct HomeView: View {
         .padding(22)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.heroGradient, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 24)
         .modifier(Entrance(index: branchesCountIndex, visible: appeared))
     }
 

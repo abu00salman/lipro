@@ -7,11 +7,18 @@ struct Match: Identifiable, Hashable {
     /// الوقت كما يظهر على الموقع، مثل 04:40 PM
     let time: String
     let league: String
+    let badge: String?
     let home: String
     let away: String
     let channel: String?
     let commentator: String?
     let featured: Bool
+
+    var shareText: String {
+        var text = "\(home) × \(away) · \(time)"
+        if let channel { text += " · \(channel)" }
+        return text
+    }
 
     /// دقائق من منتصف الليل لترتيب المباريات حسب الوقت الفعلي
     var minutesSinceMidnight: Int {
@@ -68,7 +75,7 @@ final class MatchesStore {
         let fieldPattern = try! NSRegularExpression(pattern: #"(\w+)\s*:\s*('([^']*)'|true|false)"#)
 
         let objects = objectPattern.matches(in: block, range: NSRange(block.startIndex..., in: block))
-        return objects.enumerated().compactMap { index, object in
+        return objects.compactMap { object in
             guard let bodyRange = Range(object.range(at: 1), in: block) else { return nil }
             let body = String(block[bodyRange])
             var fields: [String: String] = [:]
@@ -81,10 +88,11 @@ final class MatchesStore {
             guard let date = fields["date"], let time = fields["time"],
                   let home = fields["home"], let away = fields["away"] else { return nil }
             return Match(
-                id: "\(index)-\(date)-\(time)-\(home)",
+                id: "\(date)|\(time)|\(home)|\(away)",
                 date: date,
                 time: time,
                 league: fields["league"] ?? "",
+                badge: fields["badge"],
                 home: home,
                 away: away,
                 channel: fields["channel"],
@@ -100,5 +108,30 @@ final class MatchesStore {
         formatter.timeZone = TimeZone(identifier: "Asia/Riyadh")
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: .now)
+    }
+}
+
+/// المباريات المحفوظة محليًا على الجهاز
+@MainActor
+@Observable
+final class SavedMatches {
+    private static let key = "savedMatches"
+    private(set) var ids: Set<String>
+
+    init() {
+        ids = Set(UserDefaults.standard.stringArray(forKey: Self.key) ?? [])
+    }
+
+    func contains(_ match: Match) -> Bool {
+        ids.contains(match.id)
+    }
+
+    func toggle(_ match: Match) {
+        if ids.contains(match.id) {
+            ids.remove(match.id)
+        } else {
+            ids.insert(match.id)
+        }
+        UserDefaults.standard.set(Array(ids), forKey: Self.key)
     }
 }

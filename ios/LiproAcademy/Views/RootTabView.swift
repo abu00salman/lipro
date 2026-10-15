@@ -3,6 +3,7 @@ import SwiftUI
 struct RootTabView: View {
     @State private var favorites = Favorites()
     @State private var settings = AppSettings()
+    @State private var savedMatches = SavedMatches()
 
     var body: some View {
         TabView {
@@ -30,6 +31,7 @@ struct RootTabView: View {
         .tint(Theme.teal)
         .environment(favorites)
         .environment(settings)
+        .environment(savedMatches)
         .environment(\.locale, L10n.locale)
         .environment(\.layoutDirection, L10n.isEnglish ? .leftToRight : .rightToLeft)
         .preferredColorScheme(settings.appearance.colorScheme)
