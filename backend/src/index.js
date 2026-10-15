@@ -2,6 +2,7 @@
 // Bindings expected: DB (D1). Secrets: MFA_ENCRYPTION_KEY, SESSION_SECRET, IP_HASH_SALT.
 // Plain vars: ALLOWED_ORIGINS (comma-separated).
 import { ApiError, json, SECURITY_HEADERS } from './util.js';
+import { handleCreateOrder, handleGetOrder, handleTapCharge, handleTapVerify, publicProducts } from './store.js';
 import {
   handleAddMember, handleAttendanceReport, handleCreateCoach, handleCreateSession, handleCreateTeam,
   handleGetSession, handleListTeams, handleMarkAttendance, handleRemoveMember,
@@ -43,11 +44,12 @@ async function publicConfig(env) {
       vat_included: !!p.vat_included,
     })),
     branches: branches.results || [],
+    products: publicProducts(),
   };
 }
 
 /** Endpoints kept reachable on the public site but not implemented by this Worker yet. */
-const NOT_IMPLEMENTED = [/^\/api\/orders(\/|$)/, /^\/api\/payments\//, /^\/api\/registrations\/tap\//];
+const NOT_IMPLEMENTED = [/^\/api\/registrations\/tap\//];
 /** Removed on purpose: lookup by phone number let anyone enumerate guardians' data. */
 const REMOVED = [/^\/api\/lookup\//];
 
@@ -57,6 +59,12 @@ async function route(request, env, url) {
 
   if (p === '/api/health' && m === 'GET') return json({ ok: true, time: new Date().toISOString() });
   if (p === '/api/config' && m === 'GET') return json(await publicConfig(env));
+
+  if (p === '/api/orders' && m === 'POST') return handleCreateOrder(request, env);
+  const order = /^\/api\/orders\/(LPS-[^/]+)$/.exec(p);
+  if (order && m === 'GET') return handleGetOrder(request, env, order[1]);
+  if (p === '/api/payments/tap/charge' && m === 'POST') return handleTapCharge(request, env);
+  if (p === '/api/payments/tap/verify' && m === 'GET') return handleTapVerify(request, env, url);
 
   if (p === '/api/registrations' && m === 'POST') return handleCreateRegistration(request, env);
   const reg = /^\/api\/registrations\/(LPA-[^/]+)$/.exec(p);

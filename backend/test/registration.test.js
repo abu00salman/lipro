@@ -121,11 +121,10 @@ test('status lookup exposes only non-personal fields and rejects malformed refer
   assert.equal((await call(env, 'GET', '/api/registrations/../../etc')).status, 404);
 });
 
-test('phone lookup endpoint is removed and unfinished payment endpoints are explicit', async () => {
+test('phone lookup endpoint is removed and card registration is explicitly not implemented', async () => {
   const env = makeEnv();
   assert.equal((await call(env, 'GET', '/api/lookup/0551234567')).status, 410);
-  assert.equal((await call(env, 'POST', '/api/orders', { body: {} })).status, 501);
-  assert.equal((await call(env, 'POST', '/api/payments/tap/charge', { body: {} })).status, 501);
+  assert.equal((await call(env, 'POST', '/api/registrations/tap/charge', { body: {} })).status, 501);
 });
 
 test('CORS allows only the configured origins', async () => {

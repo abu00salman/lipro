@@ -6,6 +6,7 @@
 backend/
   src/
     coaching.js        المدربون والفرق والحصص والحضور وتقرير الحضور
+    store.js           المنتجات والطلبات ودفع Tap للطلبات (التحقق من الخادم)
     index.js           توجيه الطلبات، CORS، تحويل الأخطاء
     registrations.js   تسجيل عام (Idempotency)، حالة، إشعار تحويل
     admin.js           دخول + MFA، قوائم بنطاق الفرع، مطابقة التحويلات، تقارير، CSV
@@ -17,9 +18,10 @@ backend/
     util.js            ردود JSON، ترويسات الأمان، أدوات التشفير
   migrations/0001_init.sql   المخطط الأساسي (المرحلة 0 و1)
   migrations/0002_coaching.sql  المدربون، الفرق، الفئات، الحصص، الحضور (المرحلة 2)
+  migrations/0003_store.sql  طلبات المتجر (نفس أعمدة جدول lipro-db الحي)
   seed/demo-data.sql         بيانات خيالية للتطوير المحلي فقط
   scripts/bootstrap-owner.mjs إنشاء أول حساب مالك دون حفظ كلمة المرور
-  test/                      51 اختبارًا (منطق + تكامل على SQLite حقيقي)
+  test/                      59 اختبارًا (منطق + تكامل على SQLite حقيقي)
   wrangler.toml
 ```
 
@@ -59,7 +61,14 @@ npm run bootstrap-owner  # يطبع SQL لإنشاء المالك (يقرأ كل
 | PUT | `/api/admin/sessions/:id/attendance` | تسجيل الحضور دفعة واحدة (present/absent/late/excused) |
 | GET | `/api/admin/attendance/report?team_id&from&to` | نسبة الحضور لكل لاعب (الأعذار لا تدخل في المقام) |
 
-مسارات متوقفة عمدًا: `/api/lookup/*` ← `410`، و`/api/orders`، `/api/payments/*`، `/api/registrations/tap/*` ← `501`.
+| GET | `/api/config` يشمل `products` | كتالوج المتجر من الخادم |
+| POST | `/api/orders` | طلب متجر. السعر من الكتالوج فقط. الدفع `bank_transfer` أو `tap` |
+| GET | `/api/orders/:number` | حالة الطلب بلا بيانات اتصال |
+| POST | `/api/payments/tap/charge` | إنشاء شحنة Tap للطلب (المبلغ من سجل الطلب) |
+| GET | `/api/payments/tap/verify?tap_id&order` | التحقق من Tap خادم لخادم، ولا يؤكد إلا عند تطابق الرقم والمبلغ والعملة |
+
+مسارات متوقفة عمدًا: `/api/lookup/*` ← `410`، و`/api/registrations/tap/*` ← `501` (الدفع بالبطاقة للتسجيل لم يُنقل بعد).
+مسارات ما زالت على الخادم الحي فقط: `/api/admin/daily`، `/api/daily`، `/api/admin/set`، `/api/admin/set-delivery`، `/api/admin/approve` (طلبات المتجر).
 
 ## الأدوار
 
