@@ -2,6 +2,10 @@
 // Bindings expected: DB (D1). Secrets: MFA_ENCRYPTION_KEY, SESSION_SECRET, IP_HASH_SALT.
 // Plain vars: ALLOWED_ORIGINS (comma-separated).
 import { ApiError, json, SECURITY_HEADERS } from './util.js';
+import {
+  handleAddMember, handleAttendanceReport, handleCreateCoach, handleCreateSession, handleCreateTeam,
+  handleGetSession, handleListTeams, handleMarkAttendance, handleRemoveMember,
+} from './coaching.js';
 import { handleCreateRegistration, handleGetRegistration, handleTransferClaim, halalaToSar } from './registrations.js';
 import {
   handleApprovePayment, handleAuditList, handleCreateUser, handleExportCsv, handleListRegistrations,
@@ -81,6 +85,22 @@ async function route(request, env, url) {
   }
 
   if (p === '/api/admin/reports/summary' && m === 'GET') return handleReportSummary(request, env, url);
+
+  // Phase 2: teams, coaches, sessions, attendance
+  if (p === '/api/admin/teams' && m === 'GET') return handleListTeams(request, env, url);
+  if (p === '/api/admin/teams' && m === 'POST') return handleCreateTeam(request, env);
+  if (p === '/api/admin/coaches' && m === 'POST') return handleCreateCoach(request, env);
+  const members = /^\/api\/admin\/teams\/(\d+)\/members$/.exec(p);
+  if (members && m === 'POST') return handleAddMember(request, env, Number(members[1]));
+  const member = /^\/api\/admin\/teams\/(\d+)\/members\/(\d+)$/.exec(p);
+  if (member && m === 'DELETE') return handleRemoveMember(request, env, Number(member[1]), Number(member[2]));
+  const teamSessions = /^\/api\/admin\/teams\/(\d+)\/sessions$/.exec(p);
+  if (teamSessions && m === 'POST') return handleCreateSession(request, env, Number(teamSessions[1]));
+  const session = /^\/api\/admin\/sessions\/(\d+)$/.exec(p);
+  if (session && m === 'GET') return handleGetSession(request, env, Number(session[1]));
+  const sessionAtt = /^\/api\/admin\/sessions\/(\d+)\/attendance$/.exec(p);
+  if (sessionAtt && m === 'PUT') return handleMarkAttendance(request, env, Number(sessionAtt[1]));
+  if (p === '/api/admin/attendance/report' && m === 'GET') return handleAttendanceReport(request, env, url);
   if (p === '/api/admin/audit' && m === 'GET') return handleAuditList(request, env, url);
 
   if (REMOVED.some((re) => re.test(p))) throw new ApiError(410, 'removed', 'هذه الخدمة أُوقفت لحماية بيانات أولياء الأمور.');

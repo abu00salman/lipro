@@ -5,6 +5,7 @@
 ```
 backend/
   src/
+    coaching.js        المدربون والفرق والحصص والحضور وتقرير الحضور
     index.js           توجيه الطلبات، CORS، تحويل الأخطاء
     registrations.js   تسجيل عام (Idempotency)، حالة، إشعار تحويل
     admin.js           دخول + MFA، قوائم بنطاق الفرع، مطابقة التحويلات، تقارير، CSV
@@ -14,10 +15,11 @@ backend/
     ratelimit.js       حدود المحاولات (D1)
     audit.js           سجل التدقيق
     util.js            ردود JSON، ترويسات الأمان، أدوات التشفير
-  migrations/0001_init.sql   المخطط الكامل (المرحلة 0 و1)
+  migrations/0001_init.sql   المخطط الأساسي (المرحلة 0 و1)
+  migrations/0002_coaching.sql  المدربون، الفرق، الفئات، الحصص، الحضور (المرحلة 2)
   seed/demo-data.sql         بيانات خيالية للتطوير المحلي فقط
   scripts/bootstrap-owner.mjs إنشاء أول حساب مالك دون حفظ كلمة المرور
-  test/                      44 اختبار (منطق + تكامل على SQLite حقيقي)
+  test/                      51 اختبارًا (منطق + تكامل على SQLite حقيقي)
   wrangler.toml
 ```
 
@@ -49,6 +51,13 @@ npm run bootstrap-owner  # يطبع SQL لإنشاء المالك (يقرأ كل
 | POST | `/api/admin/payments/:id/reject` | رفض مع سبب إلزامي |
 | GET | `/api/admin/reports/summary` | لوحة الأرقام حسب الفترة والفرع (من صفوف حقيقية فقط) |
 | GET | `/api/admin/audit` | سجل التدقيق (للمالك والمدقق) |
+| GET · POST | `/api/admin/teams` | الفرق (POST: الاسم والفرع والفئة والمدرب) |
+| POST | `/api/admin/coaches` | إنشاء مدرب (يُربط بحساب دور coach اختياريًا) |
+| POST · DELETE | `/api/admin/teams/:id/members[/:playerId]` | إضافة لاعب للفريق (يتحقق من الفرع والعمر والفريق الواحد) أو إزالته |
+| POST | `/api/admin/teams/:id/sessions` | إنشاء حصة تدريبية |
+| GET | `/api/admin/sessions/:id` | قائمة الحضور لكل لاعب في الحصة |
+| PUT | `/api/admin/sessions/:id/attendance` | تسجيل الحضور دفعة واحدة (present/absent/late/excused) |
+| GET | `/api/admin/attendance/report?team_id&from&to` | نسبة الحضور لكل لاعب (الأعذار لا تدخل في المقام) |
 
 مسارات متوقفة عمدًا: `/api/lookup/*` ← `410`، و`/api/orders`، `/api/payments/*`، `/api/registrations/tap/*` ← `501`.
 
@@ -61,7 +70,7 @@ npm run bootstrap-owner  # يطبع SQL لإنشاء المالك (يقرأ كل
 | accountant | كل الفروع | مطابقة التحويلات واعتمادها، التقارير، التصدير |
 | branch_manager | فرع واحد | التسجيلات واللاعبون والتصدير في فرعه |
 | registration | فرع واحد | التسجيلات واللاعبون في فرعه |
-| coach | فرع واحد | قراءة اللاعبين (الحضور في المرحلة 2) |
+| coach | فرعه وفريقه فقط | يسجّل الحضور لفريقه، ولا يصل لفرق المدربين الآخرين |
 | auditor | كل الفروع | قراءة فقط: التسجيلات والمدفوعات والتقارير والتدقيق |
 | guardian | — | بوابة ولي الأمر في المرحلة 4؛ لا وصول إداري حاليًا |
 

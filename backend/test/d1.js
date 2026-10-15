@@ -1,7 +1,7 @@
 // Test double for Cloudflare D1, backed by Node's built-in SQLite (node:sqlite).
 // It implements the subset of the D1 API this Worker uses: prepare/bind/first/all/run/batch.
 // batch() runs inside a transaction, like D1.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -52,9 +52,11 @@ export class D1Test {
       throw err;
     }
   }
+  /** Applies every migration in order, like `wrangler d1 migrations apply`. */
   migrate() {
-    const files = readFileSync(join(MIGRATIONS_DIR, '0001_init.sql'), 'utf8');
-    this.raw.exec(files);
+    for (const f of readdirSync(MIGRATIONS_DIR).filter((n) => n.endsWith('.sql')).sort()) {
+      this.raw.exec(readFileSync(join(MIGRATIONS_DIR, f), 'utf8'));
+    }
     return this;
   }
   /** Direct helper for tests only (never used by the Worker). */

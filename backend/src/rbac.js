@@ -10,13 +10,16 @@ const P = {
   admin: [
     'registrations.read', 'registrations.write', 'players.read', 'players.write',
     'payments.read', 'payments.review', 'reports.read', 'programs.write', 'audit.read',
+    'teams.read', 'teams.write', 'attendance.read', 'attendance.write',
   ],
   accountant: ['registrations.read', 'registrations.export', 'payments.read', 'payments.review', 'payments.approve', 'reports.read'],
-  branch_manager: ['registrations.read', 'registrations.write', 'registrations.export', 'players.read', 'players.write', 'reports.read'],
-  registration: ['registrations.read', 'registrations.write', 'players.read'],
-  coach: ['players.read'],
+  branch_manager: ['registrations.read', 'registrations.write', 'registrations.export', 'players.read', 'players.write', 'reports.read',
+    'teams.read', 'teams.write', 'attendance.read', 'attendance.write'],
+  registration: ['registrations.read', 'registrations.write', 'players.read', 'teams.read'],
+  // Coaches only act on teams they coach (checked in coaching.js).
+  coach: ['players.read', 'teams.read', 'attendance.read', 'attendance.write'],
   guardian: [], // parent portal arrives in Phase 4; no staff API access
-  auditor: ['registrations.read', 'registrations.export', 'payments.read', 'reports.read', 'audit.read'],
+  auditor: ['registrations.read', 'registrations.export', 'payments.read', 'reports.read', 'audit.read', 'teams.read', 'attendance.read'],
 };
 
 // Roles that are allowed to act on every branch (no branch_id on the account).

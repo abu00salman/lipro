@@ -36,7 +36,7 @@
 
 ## الخطوة ٢ — إنشاء الجداول
 
-من تبويب **Console** في `lipro-db` الصِق محتوى الملف `backend/migrations/0001_init.sql` كاملًا ثم **Execute**.
+من تبويب **Console** في `lipro-db` الصِق محتوى `backend/migrations/0001_init.sql` ثم `backend/migrations/0002_coaching.sql` (بالترتيب) ثم **Execute** لكل واحد.
 أو من سطر الأوامر: `cd backend && npx wrangler d1 migrations apply lipro-db --remote` (بعد تعديل `database_id` في `wrangler.toml`).
 
 تحقق: `SELECT name FROM sqlite_master WHERE type='table';` يجب أن تظهر جداول `registrations` و`payments` و`users` و`audit_log` وغيرها.
