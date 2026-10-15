@@ -3,6 +3,10 @@
 #   MFA_ENCRYPTION_KEY  (32 random bytes, base64)
 #   SESSION_SECRET      (>= 32 random characters)
 #   IP_HASH_SALT        (random string; used to hash client IPs)
+# Deploy credential (never commit its value):
+#   CLOUDFLARE_API_TOKEN  used by `wrangler deploy` / `wrangler d1 migrations apply` when run
+#                         outside `wrangler login`. Export it in your shell or store it as a
+#                         GitHub Actions secret; do not put it in this file.
 name = "lipro-backend"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
