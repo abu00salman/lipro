@@ -27,9 +27,6 @@ targets:
       - path: LiproAcademy
         excludes:
           - Info.plist
-          - AppIcon.icon
-      - path: LiproAcademy/AppIcon.icon
-        type: folder
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.liproacademy.app
