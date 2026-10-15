@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>موبايل — تطبيق أكاديمية ليبرو</title>
+<meta name="description" content="استعرض تطبيق أكاديمية ليبرو الرياضية داخل إطار الجهاز: iPhone 17 Pro Max أو Samsung Galaxy S26 Ultra.">
+<meta name="theme-color" content="#04322C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pitch: #04322C;
+    --teal: #0E7A6B;
+    --teal-lit: #17A88F;
+    --gold: #F5B325;
+    --chalk: #EFF4F1;
+    --ink: #ECF5F1;
+    --muted: #9FBDB4;
+    --line: rgba(255,255,255,.12);
+    --dev-w: min(360px, 82vw);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    background:
+      radial-gradient(1200px 700px at 20% -10%, #0E7A6B55, transparent 60%),
+      radial-gradient(900px 600px at 110% 110%, #F5B32522, transparent 60%),
+      linear-gradient(160deg, #03241F, #04322C 55%, #021A17);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 36px 20px 56px; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; }
+  .brand img { height: 46px; background: var(--chalk); border-radius: 12px; padding: 6px; }
+  .brand span { font-weight: 800; font-size: 18px; color: var(--gold); }
+  h1 { font-size: clamp(28px, 4.5vw, 44px); margin: 16px 0 6px; font-weight: 800; }
+  .sub { color: var(--muted); margin: 0; font-size: 16px; }
+
+  .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 22px 0 8px; }
+  .chip {
+    appearance: none; border: 1px solid var(--line); background: rgba(255,255,255,.06);
+    color: var(--ink); font: inherit; font-weight: 700; font-size: 15px;
+    padding: 10px 18px; border-radius: 999px; cursor: pointer; transition: .25s ease;
+  }
+  .chip:hover { background: rgba(255,255,255,.12); }
+  .chip[aria-pressed="true"] { background: var(--gold); color: var(--pitch); border-color: var(--gold); }
+  .chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+  .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px 0 30px; }
+  .tabs .chip { font-size: 14px; padding: 8px 14px; }
+
+  /* ---------- Stage ---------- */
+  .stage { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .arrows { display: flex; align-items: center; gap: 18px; }
+  .nav {
+    width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line);
+    background: rgba(255,255,255,.07); color: var(--ink); font-size: 22px; cursor: pointer;
+    display: grid; place-items: center; transition: .25s ease;
+  }
+  .nav:hover { background: var(--gold); color: var(--pitch); }
+  .nav:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .label { min-width: 150px; text-align: center; font-weight: 800; font-size: 20px; }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(255,255,255,.25); border: 0; padding: 0; cursor: pointer; transition: .3s ease; }
+  .dot[aria-current="true"] { width: 26px; background: var(--gold); }
+
+  /* ---------- Device frame ---------- */
+  .device {
+    position: relative;
+    width: var(--dev-w);
+    aspect-ratio: 430 / 932;
+    border-radius: calc(var(--dev-w) * 0.14);
+    padding: calc(var(--dev-w) * 0.03);
+    background: linear-gradient(145deg, #5a5f69, #1b1d22 40%, #3c4048 70%, #15171b);
+    box-shadow:
+      inset 0 0 0 1.5px #6d737e,
+      inset 0 0 0 4px #0d0e11,
+      0 50px 90px -30px rgba(0,0,0,.75),
+      0 0 0 1px rgba(0,0,0,.6);
+    transition: width .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .device::before, .device::after { /* side buttons */
+    content: ""; position: absolute; width: 4px; border-radius: 3px;
+    background: linear-gradient(#6d737e, #2a2d33); top: 22%; height: 7%;
+    inset-inline-end: -4px;
+  }
+  .device::after { top: 34%; height: 11%; }
+  .screen {
+    position: relative; width: 100%; height: 100%; overflow: hidden;
+    border-radius: calc(var(--dev-w) * 0.115); background: #000;
+  }
+  .screen img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .screen img.swap { opacity: 0; transform: scale(.985); }
+
+  /* iPhone 17 Pro Max: Dynamic Island */
+  .device.iphone .island {
+    position: absolute; z-index: 3; top: calc(var(--dev-w) * 0.052); left: 50%;
+    transform: translateX(-50%);
+    width: 31%; height: 3.4%; min-height: 22px; max-height: 30px;
+    background: #000; border-radius: 999px;
+    box-shadow: inset 0 0 0 1px #111;
+  }
+  /* Samsung Galaxy S26 Ultra: centered punch-hole camera */
+  .device.samsung .punch {
+    position: absolute; z-index: 3; top: calc(var(--dev-w) * 0.05); left: 50%;
+    transform: translateX(-50%);
+    width: 3.6%; aspect-ratio: 1; min-width: 12px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #2a3140, #000 60%);
+    box-shadow: 0 0 0 1px #0a0a0a;
+  }
+  .device.samsung {
+    border-radius: calc(var(--dev-w) * 0.085);
+    padding: calc(var(--dev-w) * 0.018);
+    background: linear-gradient(145deg, #d9dde3, #8c929b 35%, #3b4048 70%, #b9bec6);
+    box-shadow:
+      inset 0 0 0 1px #f2f4f7,
+      inset 0 0 0 3px #0c0d10,
+      0 50px 90px -30px rgba(0,0,0,.75);
+  }
+  .device.samsung .screen { border-radius: calc(var(--dev-w) * 0.07); }
+  .device.samsung::before, .device.samsung::after { display: none; }
+  .device.iphone .punch, .device.samsung .island { display: none; }
+
+  .caption { color: var(--muted); font-size: 14px; margin: 0; text-align: center; }
+
+  /* ---------- Full-app view ---------- */
+  .all { display: none; width: 100%; overflow-x: auto; padding: 10px 4px 28px; scroll-snap-type: x mandatory; }
+  .all-inner { display: flex; gap: 34px; justify-content: flex-start; min-width: min-content; padding: 0 10px; }
+  .all .device { --dev-w: 230px; scroll-snap-align: center; flex: 0 0 auto; }
+  .all-label { display: block; text-align: center; margin-top: 14px; font-weight: 700; color: var(--gold); font-size: 15px; }
+  .stage.show-all .single { display: none; }
+  .stage.show-all .all { display: block; }
+
+  .download {
+    margin-top: 34px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  }
+  .download a {
+    text-decoration: none; color: var(--pitch); background: var(--gold);
+    font-weight: 800; padding: 13px 22px; border-radius: 999px; font-size: 16px;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .download a:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -10px #F5B325aa; }
+  .download a.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 40px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 520px) {
+    .label { min-width: 110px; font-size: 17px; }
+    .arrows { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="brand">
+      <img src="../logo-lipro.png" alt="شعار أكاديمية ليبرو">
+      <span>LIPRO ACADEMY</span>
+    </div>
+    <h1>تطبيق أكاديمية ليبرو على الموبايل</h1>
+    <p class="sub">استعرض الشاشات داخل إطار الجهاز الذي تختاره</p>
+
+    <div class="controls" role="group" aria-label="اختيار الجهاز">
+      <button class="chip" data-device="iphone" aria-pressed="true">iPhone 17 Pro Max</button>
+      <button class="chip" data-device="samsung" aria-pressed="false">Samsung Galaxy S26 Ultra</button>
+    </div>
+  </header>
+
+  <section class="stage" id="stage" aria-live="polite">
+    <div class="tabs" id="tabs" role="tablist" aria-label="الشاشات"></div>
+
+    <div class="single">
+      <div class="arrows">
+        <button class="nav" id="prev" aria-label="الشاشة السابقة">›</button>
+        <div class="label" id="label"></div>
+        <button class="nav" id="next" aria-label="الشاشة التالية">‹</button>
+      </div>
+
+      <div class="device iphone" id="device">
+        <div class="screen">
+          <div class="island" aria-hidden="true"></div>
+          <div class="punch" aria-hidden="true"></div>
+          <img id="shot" alt="" src="">
+        </div>
+      </div>
+
+      <div class="dots" id="dots" role="tablist" aria-label="اختيار الشاشة"></div>
+      <p class="caption" id="caption"></p>
+    </div>
+
+    <div class="all" id="all">
+      <div class="all-inner" id="allInner"></div>
+    </div>
+
+    <div class="controls">
+      <button class="chip" id="toggleAll" aria-pressed="false">عرض كامل التطبيق</button>
+    </div>
+  </section>
+
+  <div class="download">
+    <a href="https://github.com/abu00salman/lipro/releases" target="_blank" rel="noopener">تحميل ملف التطبيق (IPA)</a>
+    <a class="ghost" href="../index.html">العودة للموقع</a>
+  </div>
+
+  <footer>أكاديمية ليبرو الرياضية · لقطات تجريبية من التطبيق</footer>
+</main>
+
+<script>
+  const SCREENS = [
+    { id: 'home',     label: 'الرئيسية',  src: 'shots/home.jpg',      caption: 'الرئيسية: فروعنا والتدريب اليوم' },
+    { id: 'branches', label: 'الفروع',    src: 'shots/branches.jpg',  caption: 'الفروع: بطاقات بالصور وأوقات التدريب' },
+    { id: 'schedule', label: 'الجدول',    src: 'shots/schedule.jpg',  caption: 'الجدول: أيام التدريب والملاعب' },
+    { id: 'matches',  label: 'المباريات', src: 'shots/matches.jpg',   caption: 'المباريات: مباريات اليوم مع القنوات والمعلقين' },
+    { id: 'contact',  label: 'تواصل',     src: 'shots/contact.jpg',   caption: 'تواصل: واتساب والهاتف ووسائل التواصل' },
+    { id: 'home2',    label: 'الرئيسية ٢', src: 'shots/home-list.jpg', caption: 'الرئيسية: التدريب اليوم وتسجيل الأبناء' }
+  ];
+
+  const DEVICES = {
+    iphone:  { cls: 'iphone',  name: 'iPhone 17 Pro Max' },
+    samsung: { cls: 'samsung', name: 'Samsung Galaxy S26 Ultra' }
+  };
+
+  let current = 0;
+  let device = 'iphone';
+
+  const $ = (id) => document.getElementById(id);
+  const shot = $('shot');
+  const label = $('label');
+  const caption = $('caption');
+  const tabs = $('tabs');
+  const dots = $('dots');
+  const deviceEl = $('device');
+
+  function renderNav() {
+    tabs.innerHTML = '';
+    dots.innerHTML = '';
+    SCREENS.forEach((s, i) => {
+      const t = document.createElement('button');
+      t.className = 'chip';
+      t.textContent = s.label;
+      t.setAttribute('role', 'tab');
+      t.setAttribute('aria-pressed', String(i === current));
+      t.addEventListener('click', () => show(i));
+      tabs.appendChild(t);
+
+      const d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', s.label);
+      d.setAttribute('aria-current', String(i === current));
+      d.addEventListener('click', () => show(i));
+      dots.appendChild(d);
+    });
+  }
+
+  function show(i) {
+    current = (i + SCREENS.length) % SCREENS.length;
+    const s = SCREENS[current];
+    shot.classList.add('swap');
+    setTimeout(() => {
+      shot.src = s.src;
+      shot.alt = 'لقطة شاشة: ' + s.label;
+      shot.classList.remove('swap');
+    }, 180);
+    label.textContent = s.label;
+    caption.textContent = s.caption;
+    [...tabs.children].forEach((b, k) => b.setAttribute('aria-pressed', String(k === current)));
+    [...dots.children].forEach((b, k) => b.setAttribute('aria-current', String(k === current)));
+  }
+
+  function setDevice(name) {
+    device = name;
+    deviceEl.className = 'device ' + DEVICES[name].cls;
+    document.querySelectorAll('[data-device]').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.device === name)));
+    buildAll();
+  }
+
+  function buildAll() {
+    const inner = $('allInner');
+    inner.innerHTML = '';
+    SCREENS.forEach((s) => {
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      wrap.innerHTML =
+        '<div class="device ' + DEVICES[device].cls + '"><div class="screen">' +
+        (device === 'iphone' ? '<div class="island"></div>' : '<div class="punch"></div>') +
+        '<img src="' + s.src + '" alt="لقطة شاشة: ' + s.label + '" loading="lazy"></div></div>' +
+        '<span class="all-label">' + s.label + '</span>';
+      inner.appendChild(wrap);
+    });
+  }
+
+  document.querySelectorAll('[data-device]').forEach((b) =>
+    b.addEventListener('click', () => setDevice(b.dataset.device)));
+
+  $('next').addEventListener('click', () => show(current + 1));
+  $('prev').addEventListener('click', () => show(current - 1));
+
+  $('toggleAll').addEventListener('click', (e) => {
+    const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+    e.currentTarget.setAttribute('aria-pressed', String(on));
+    e.currentTarget.textContent = on ? 'عرض شاشة واحدة' : 'عرض كامل التطبيق';
+    $('stage').classList.toggle('show-all', on);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ($('stage').classList.contains('show-all')) return;
+    if (e.key === 'ArrowLeft') show(current + 1);
+    if (e.key === 'ArrowRight') show(current - 1);
+  });
+
+  renderNav();
+  buildAll();
+  show(0);
+</script>
+</body>
+</html>
