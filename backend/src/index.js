@@ -2,7 +2,7 @@
 // Bindings expected: DB (D1). Secrets: MFA_ENCRYPTION_KEY, SESSION_SECRET, IP_HASH_SALT.
 // Plain vars: ALLOWED_ORIGINS (comma-separated).
 import { ApiError, json, SECURITY_HEADERS } from './util.js';
-import { handleCreateOrder, handleGetOrder, handleTapCharge, handleTapVerify, publicProducts } from './store.js';
+import { handleCreateOrder, handleGetOrder, publicProducts } from './store.js';
 import {
   handleAddMember, handleAttendanceReport, handleCreateCoach, handleCreateSession, handleCreateTeam,
   handleGetSession, handleListTeams, handleMarkAttendance, handleRemoveMember,
@@ -48,8 +48,6 @@ async function publicConfig(env) {
   };
 }
 
-/** Endpoints kept reachable on the public site but not implemented by this Worker yet. */
-const NOT_IMPLEMENTED = [/^\/api\/registrations\/tap\//];
 /** Removed on purpose: lookup by phone number let anyone enumerate guardians' data. */
 const REMOVED = [/^\/api\/lookup\//];
 
@@ -63,8 +61,6 @@ async function route(request, env, url) {
   if (p === '/api/orders' && m === 'POST') return handleCreateOrder(request, env);
   const order = /^\/api\/orders\/(LPS-[^/]+)$/.exec(p);
   if (order && m === 'GET') return handleGetOrder(request, env, order[1]);
-  if (p === '/api/payments/tap/charge' && m === 'POST') return handleTapCharge(request, env);
-  if (p === '/api/payments/tap/verify' && m === 'GET') return handleTapVerify(request, env, url);
 
   if (p === '/api/registrations' && m === 'POST') return handleCreateRegistration(request, env);
   const reg = /^\/api\/registrations\/(LPA-[^/]+)$/.exec(p);
@@ -112,7 +108,6 @@ async function route(request, env, url) {
   if (p === '/api/admin/audit' && m === 'GET') return handleAuditList(request, env, url);
 
   if (REMOVED.some((re) => re.test(p))) throw new ApiError(410, 'removed', 'هذه الخدمة أُوقفت لحماية بيانات أولياء الأمور.');
-  if (NOT_IMPLEMENTED.some((re) => re.test(p))) throw new ApiError(501, 'not_implemented', 'هذه الخدمة غير متاحة في هذا الإصدار.');
 
   throw new ApiError(404, 'not_found', 'المسار غير موجود.');
 }

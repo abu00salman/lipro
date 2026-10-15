@@ -124,15 +124,11 @@ window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.work
         body: JSON.stringify(b)
       });
     },
-    createRegTapCharge(regNumber) { return this.req('/api/registrations/tap/charge', { method: 'POST', body: JSON.stringify({ registration_number: regNumber }) }); },
-    verifyRegTapCharge(tapId, regNumber) { return this.req('/api/registrations/tap/verify?tap_id=' + encodeURIComponent(tapId) + '&ref=' + encodeURIComponent(regNumber)); },
     verify(b)              { return this.req('/api/payments/verify', { method: 'POST', body: JSON.stringify(b) }); },
     registration(n)        { return this.req('/api/registrations/' + encodeURIComponent(n)); },
     // lookup(mobile) أُزيل: البحث برقم الجوال كان يكشف بيانات أولياء الأمور.
     createOrder(b)          { return this.req('/api/orders', { method: 'POST', body: JSON.stringify(b) }); },
     order(n)                { return this.req('/api/orders/' + encodeURIComponent(n)); },
-    createTapCharge(orderNumber) { return this.req('/api/payments/tap/charge', { method: 'POST', body: JSON.stringify({ order_number: orderNumber }) }); },
-    verifyTapCharge(tapId, orderNumber) { return this.req('/api/payments/tap/verify?tap_id=' + encodeURIComponent(tapId) + '&order=' + encodeURIComponent(orderNumber)); }
   };
 
   /* ---------------- حفظ المسودة مؤقتًا ---------------- */

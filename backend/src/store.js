@@ -1,16 +1,13 @@
-// Store: products, orders and Tap card payments for orders.
-// Rules kept from the live Worker:
+// Store: products and orders. Payment is by bank transfer only (no card gateway).
 // - Prices come from the server catalog only. The browser never sends a price.
-// - Money is stored in halalas. A Tap payment counts only after the server
-//   re-reads the charge from Tap and matches order number, amount and currency.
-// - Orders paid by bank transfer start as 'new' (admin confirms the transfer).
+// - Money is stored in halalas.
+// - Orders start as 'new'; the academy confirms the transfer manually.
 import { ApiError, json, nowIso, readJson, toAsciiDigits } from './util.js';
 import { hit } from './ratelimit.js';
 import { ipHash } from './registrations.js';
 import { writeAudit } from './audit.js';
 import { normalizeMobile } from './validate.js';
 
-export const TAP_API_BASE = 'https://api.tap.company/v2';
 const ORDER_NUMBER_RE = /^LPS-\d{4}-[A-Z0-9]{5,10}$/;
 const MAX_ITEMS = 20;
 
@@ -93,9 +90,8 @@ export async function handleCreateOrder(request, env) {
   const website = String(body.website || '').trim().slice(0, 200);
   const notes = String(body.notes || '').trim().slice(0, 400);
 
-  const method = body.payment_method === 'tap' ? 'tap' : 'bank_transfer';
-  if (method === 'bank_transfer' && body.transfer_confirmed !== true) {
-    errors.transfer_confirmed = 'يجب تأكيد إتمام التحويل البنكي.';
+  if (body.payment_method && body.payment_method !== 'bank_transfer') {
+    errors.payment_method = 'طريقة الدفع المتاحة: التحويل البنكي فقط.';
   }
   if (body.terms_accepted !== true) errors.terms_accepted = 'يجب الموافقة على الشروط والأحكام.';
   if (Object.keys(errors).length) throw new ApiError(422, 'validation_failed', 'بعض البيانات غير مكتملة.', errors);
@@ -112,15 +108,15 @@ export async function handleCreateOrder(request, env) {
     .bind(
       crypto.randomUUID(), orderNumber, JSON.stringify(lines), `${totalHalala}.0`, totalHalala,
       name, mobile, city, district, address, website, notes,
-      method, method === 'tap' ? 'payment_pending' : 'new', t, t
+      'bank_transfer', 'new', t, t
     )
     .run();
-  await writeAudit(env.DB, { action: 'order.created', entity: 'order', entityId: orderNumber, meta: { method, total_halala: totalHalala }, ipHash: ip });
+  await writeAudit(env.DB, { action: 'order.created', entity: 'order', entityId: orderNumber, meta: { total_halala: totalHalala }, ipHash: ip });
 
   return json({
     ok: true, order_number: orderNumber,
     subtotal_sar: totalHalala / 100, delivery_fee_sar: 0, amount_sar: totalHalala / 100,
-    currency: 'SAR', payment_method: method, items: lines,
+    currency: 'SAR', payment_method: 'bank_transfer', items: lines,
   }, 201);
 }
 
@@ -148,108 +144,3 @@ export async function handleGetOrder(request, env, orderNumber) {
   });
 }
 
-function requireTap(env) {
-  if (!env.TAP_SECRET_KEY) throw new ApiError(500, 'tap_not_configured', 'بوابة الدفع الإلكتروني غير مُفعَّلة بعد.');
-}
-
-export async function handleTapCharge(request, env) {
-  requireTap(env);
-  const body = await readJson(request);
-  const order = await loadOrder(env.DB, String(body.order_number || ''));
-  if (order.order_status === 'confirmed' || order.order_status === 'paid') {
-    throw new ApiError(409, 'already_paid', 'هذا الطلب مدفوع بالفعل.');
-  }
-  if (order.tap_charge_id) {
-    throw new ApiError(409, 'charge_exists', 'يوجد عملية دفع سابقة لهذا الطلب.');
-  }
-  const amountSar = order.total_price / 100; // from our record, never from the browser
-  const origin = request.headers.get('Origin') || 'https://liproacademy.com';
-  const returnUrl = origin.replace(/\/+$/, '') + '/store/payment-return/?order=' + encodeURIComponent(order.order_number);
-  const parts = String(order.customer_name || '').trim().split(/\s+/);
-  const payload = {
-    amount: amountSar, currency: 'SAR', customer_initiated: true, threeDSecure: true, save_card: false,
-    description: 'طلب من متجر أكاديمية ليبرو — ' + order.order_number,
-    metadata: { order_number: order.order_number, source: 'lipro_store' },
-    reference: { order: order.order_number },
-    receipt: { email: false, sms: false },
-    customer: {
-      first_name: parts[0] || 'عميل', last_name: parts.slice(1).join(' ') || 'ليبرو',
-      phone: { country_code: '966', number: String(order.customer_mobile).replace(/^0/, '') },
-    },
-    source: { id: 'src_all' },
-    post: { url: returnUrl }, redirect: { url: returnUrl },
-  };
-
-  let res, data;
-  try {
-    res = await fetch(TAP_API_BASE + '/charges', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + env.TAP_SECRET_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    data = await res.json();
-  } catch {
-    throw new ApiError(502, 'tap_unreachable', 'تعذّر الاتصال ببوابة الدفع، حاول مرة أخرى.');
-  }
-  if (!res.ok || !data || !data.id || !data.transaction || !data.transaction.url) {
-    // Log the status only: the response body can echo customer data.
-    console.log('TAP_CHARGE_FAILED status=' + res.status);
-    throw new ApiError(502, 'tap_charge_failed', 'تعذّر إنشاء عملية الدفع.');
-  }
-  await env.DB.prepare('UPDATE orders SET tap_charge_id = ?, updated_at = ? WHERE order_number = ?')
-    .bind(data.id, nowIso(), order.order_number).run();
-  return json({ ok: true, order_number: order.order_number, transaction_url: data.transaction.url });
-}
-
-export async function handleTapVerify(request, env, url) {
-  requireTap(env);
-  const tapId = url.searchParams.get('tap_id') || '';
-  const orderNumber = url.searchParams.get('order') || '';
-  if (!tapId || !ORDER_NUMBER_RE.test(orderNumber)) throw new ApiError(400, 'bad_reference', 'بيانات التحقق غير مكتملة.');
-  const order = await loadOrder(env.DB, orderNumber);
-
-  // Idempotent: a confirmed order re-verified with the same charge changes nothing.
-  if (order.order_status === 'confirmed' && order.tap_charge_id === tapId) {
-    return json({ ok: true, order_number: orderNumber, order_status: 'confirmed', already_verified: true });
-  }
-  if (order.tap_charge_id && order.tap_charge_id !== tapId) {
-    throw new ApiError(409, 'charge_mismatch', 'رقم عملية الدفع لا يطابق سجلّ هذا الطلب.');
-  }
-
-  let res, charge;
-  try {
-    res = await fetch(TAP_API_BASE + '/charges/' + encodeURIComponent(tapId), {
-      headers: { Authorization: 'Bearer ' + env.TAP_SECRET_KEY },
-    });
-    charge = await res.json();
-  } catch {
-    throw new ApiError(502, 'tap_unreachable', 'تعذّر التحقق من حالة الدفع الآن، حاول تحديث الصفحة.');
-  }
-  if (!res.ok || !charge || !charge.id) {
-    console.log('TAP_VERIFY_FAILED status=' + res.status);
-    throw new ApiError(502, 'tap_verify_failed', 'تعذّر التحقق من حالة الدفع.');
-  }
-
-  // Full match before any write: order reference, amount and currency.
-  const expected = order.total_price / 100;
-  const matches =
-    charge.metadata && charge.metadata.order_number === orderNumber &&
-    Math.abs(Number(charge.amount) - expected) < 0.01 &&
-    charge.currency === 'SAR';
-  if (!matches) throw new ApiError(409, 'verification_mismatch', 'تعذّر التحقق من مطابقة بيانات الدفع لهذا الطلب.');
-
-  const status = String(charge.status || '').toUpperCase();
-  const t = nowIso();
-  if (status === 'CAPTURED') {
-    await env.DB.prepare("UPDATE orders SET order_status = 'confirmed', tap_charge_id = ?, updated_at = ? WHERE order_number = ?")
-      .bind(tapId, t, orderNumber).run();
-    await writeAudit(env.DB, { action: 'order.paid', entity: 'order', entityId: orderNumber, meta: { total_halala: order.total_price } });
-    return json({ ok: true, order_number: orderNumber, order_status: 'confirmed' });
-  }
-  if (status === 'FAILED' || status === 'DECLINED' || status === 'CANCELLED') {
-    await env.DB.prepare("UPDATE orders SET order_status = 'payment_failed', tap_charge_id = ?, updated_at = ? WHERE order_number = ?")
-      .bind(tapId, t, orderNumber).run();
-    return json({ ok: true, order_number: orderNumber, order_status: 'payment_failed' });
-  }
-  return json({ ok: true, order_number: orderNumber, order_status: 'payment_pending' });
-}
