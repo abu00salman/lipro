@@ -10,7 +10,7 @@ import {
 import { handleCreateRegistration, handleGetRegistration, handleTransferClaim, halalaToSar } from './registrations.js';
 import {
   handleApprovePayment, handleAuditList, handleCreateUser, handleExportCsv, handleListRegistrations,
-  handleLogin, handleLogout, handleMe, handleMfaConfirm, handleMfaEnroll, handleMfaVerify,
+  handleEmailCodeRequest, handleLogin, handleLogout, handleMe, handleMfaConfirm, handleMfaEnroll, handleMfaVerify,
   handleRegistrationDetail, handleRejectPayment, handleReportSummary,
 } from './admin.js';
 
@@ -71,6 +71,7 @@ async function route(request, env, url) {
 
   if (p === '/api/admin/login' && m === 'POST') return handleLogin(request, env);
   if (p === '/api/admin/mfa/verify' && m === 'POST') return handleMfaVerify(request, env);
+  if (p === '/api/admin/mfa/email-code' && m === 'POST') return handleEmailCodeRequest(request, env);
   if (p === '/api/admin/mfa/enroll' && m === 'POST') return handleMfaEnroll(request, env);
   if (p === '/api/admin/mfa/confirm' && m === 'POST') return handleMfaConfirm(request, env);
   if (p === '/api/admin/logout' && m === 'POST') return handleLogout(request, env);

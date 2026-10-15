@@ -55,6 +55,8 @@
 | Secret | `MFA_ENCRYPTION_KEY` | 32 بايت عشوائية بصيغة base64 — مثال توليد: `openssl rand -base64 32` |
 | Secret | `SESSION_SECRET` | 32 حرفًا عشوائيًا على الأقل — `openssl rand -base64 48` |
 | Secret | `IP_HASH_SALT` | نص عشوائي — `openssl rand -hex 16` |
+| Secret | `RESEND_API_KEY` | (اختياري) مفتاح Resend لإرسال رموز الدخول بالبريد |
+| Variable | `MAIL_FROM` | (اختياري) مرسل من نطاق تحققت منه في Resend، مثل `Lipro <no-reply@liproacademy.com>` |
 
 > القيم تُولَّد **على جهازك** ولا تُكتب في المستودع ولا في المحادثات. عند تغيير `MFA_ENCRYPTION_KEY` تصبح أسرار MFA الحالية غير قابلة للفك، لذا لا تغيّره بعد التفعيل.
 

@@ -12,6 +12,7 @@ import { GLOBAL_ROLES, ROLES, assertBranchAccess, requirePermission, resolveBran
 import { hit } from './ratelimit.js';
 import { writeAudit } from './audit.js';
 import { halalaToSar, ipHash, sarToHalala } from './registrations.js';
+import { codeHash, consumeEmailCode, emailConfigured, newEmailCode, sendEmail, EMAIL_CODE_TTL_MS } from './email.js';
 
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
 const MIN_PASSWORD = 12;
@@ -72,16 +73,48 @@ export async function handleMfaVerify(request, env) {
     .first();
   if (!user || !user.active) throw INVALID_LOGIN;
 
+  // Either the authenticator app code or the one-time email code is accepted.
   const secret = base32Decode(await decryptSecret(env, user.totp_secret_enc));
   const step = await verifyTotp(secret, body.code, user.last_totp_step);
-  if (step === null) {
+  if (step !== null) {
+    await env.DB.prepare('UPDATE users SET last_totp_step = ? WHERE id = ?').bind(step, user.id).run();
+  } else if (!(await consumeEmailCode(env.DB, env, user.id, String(body.code || '')))) {
     await writeAudit(env.DB, { actorId: user.id, action: 'auth.mfa_failed', entity: 'user', entityId: user.id, ipHash: ip });
     throw new ApiError(401, 'invalid_code', 'رمز التحقق غير صحيح أو مستخدم سابقًا.');
   }
-  await env.DB.prepare('UPDATE users SET last_totp_step = ? WHERE id = ?').bind(step, user.id).run();
   const token = await createSession(env.DB, user.id);
   await writeAudit(env.DB, { actorId: user.id, action: 'auth.login', entity: 'user', entityId: user.id, ipHash: ip });
   return json({ token, expires_in: 8 * 3600 });
+}
+
+/** Sends a one-time code to the account's email. Needs a valid MFA challenge, so it cannot be used to probe accounts. */
+export async function handleEmailCodeRequest(request, env) {
+  if (!emailConfigured(env)) throw new ApiError(503, 'email_not_configured', 'خدمة البريد غير مفعّلة بعد.');
+  const body = await readJson(request);
+  const userId = await readMfaChallenge(env, body.challenge);
+  if (!userId) throw new ApiError(401, 'challenge_expired', 'انتهت صلاحية التحقق، سجّل الدخول من جديد.');
+  await hit(env.DB, `mailcode:${userId}`, 3, 900);
+
+  const user = await env.DB
+    .prepare('SELECT id, email, active FROM users WHERE id = ? AND mfa_enabled = 1')
+    .bind(userId)
+    .first();
+  if (!user || !user.active) throw INVALID_LOGIN;
+
+  const code = newEmailCode();
+  const expires = nowIso(new Date(Date.now() + EMAIL_CODE_TTL_MS));
+  await env.DB
+    .prepare(`INSERT INTO email_login_codes (user_id, code_hash, expires_at, attempts) VALUES (?, ?, ?, 0)
+              ON CONFLICT (user_id) DO UPDATE SET code_hash = excluded.code_hash, expires_at = excluded.expires_at, attempts = 0`)
+    .bind(user.id, await codeHash(env, user.id, code), expires)
+    .run();
+  await sendEmail(env, {
+    to: user.email,
+    subject: 'رمز الدخول إلى لوحة ليبرو',
+    text: `رمز الدخول: ${code}\nصالح لمدة 10 دقائق. إذا لم تطلب هذا الرمز، تجاهل الرسالة.`,
+  });
+  await writeAudit(env.DB, { actorId: user.id, action: 'auth.email_code_sent', entity: 'user', entityId: user.id });
+  return json({ ok: true });
 }
 
 export async function handleMfaEnroll(request, env) {

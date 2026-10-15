@@ -19,9 +19,10 @@ backend/
   migrations/0001_init.sql   المخطط الأساسي (المرحلة 0 و1)
   migrations/0002_coaching.sql  المدربون، الفرق، الفئات، الحصص، الحضور (المرحلة 2)
   migrations/0003_store.sql  طلبات المتجر (نفس أعمدة جدول lipro-db الحي)
+  migrations/0004_email_codes.sql  رموز الدخول عبر البريد (تخزن الهاش فقط)
   seed/demo-data.sql         بيانات خيالية للتطوير المحلي فقط
   scripts/bootstrap-owner.mjs إنشاء أول حساب مالك دون حفظ كلمة المرور
-  test/                      57 اختبارًا (منطق + تكامل على SQLite حقيقي)
+  test/                      61 اختبارًا (منطق + تكامل على SQLite حقيقي)
   wrangler.toml
 ```
 
@@ -42,8 +43,9 @@ npm run bootstrap-owner  # يطبع SQL لإنشاء المالك (يقرأ كل
 | GET | `/api/registrations/:no` | حالة عامة بلا بيانات شخصية |
 | POST | `/api/registrations/:no/transfer-claim` | إشعار تحويل بنكي (لا يعتمد الدفع) |
 | POST | `/api/admin/login` | كلمة المرور. يُرجع تحدي MFA |
-| POST | `/api/admin/mfa/verify` | يُرجع توكن الجلسة (Bearer) |
+| POST | `/api/admin/mfa/verify` | يقبل رمز التطبيق أو رمز البريد. يُرجع توكن الجلسة (Bearer) |
 | POST | `/api/admin/mfa/enroll` · `/confirm` | إعداد MFA |
+| POST | `/api/admin/mfa/email-code` | يرسل رمزًا لمرة واحدة إلى إيميل الحساب (يحتاج تحدي MFA). يتطلب `RESEND_API_KEY` و`MAIL_FROM`، وإلا يرجع 503 |
 | GET | `/api/admin/me` · POST `/logout` | الجلسة |
 | POST | `/api/admin/users` | المالك فقط: إنشاء حساب موظف |
 | GET | `/api/admin/registrations` | قائمة مُرقّمة مع فلاتر (`status`, `branch_id`, `from`, `to`, `q`) |
