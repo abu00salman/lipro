@@ -55,22 +55,14 @@ private struct MatchCard: View {
                 Text(match.league)
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
                 Spacer()
-                if match.isLive == true {
-                    Label("matches.live", systemImage: "dot.radiowaves.left.and.right")
-                        .font(.caption.bold())
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.red, in: Capsule())
-                } else {
-                    Text(match.time)
-                        .font(.caption.bold())
-                        .foregroundStyle(Theme.pitch)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Theme.gold, in: Capsule())
-                }
+                Text(match.time)
+                    .font(.caption.bold())
+                    .foregroundStyle(Theme.pitch)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Theme.gold, in: Capsule())
             }
 
             HStack(alignment: .center) {
@@ -79,16 +71,9 @@ private struct MatchCard: View {
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
 
-                Group {
-                    if let home = match.homeScore, let away = match.awayScore, match.hasScore {
-                        Text("\(home) – \(away)")
-                    } else {
-                        Text("matches.vs")
-                    }
-                }
-                .font(.title2.bold())
-                .foregroundStyle(Theme.tealText)
-                .contentTransition(.numericText())
+                Text("matches.vs")
+                    .font(.title3.bold())
+                    .foregroundStyle(Theme.tealText)
 
                 Text(match.away)
                     .font(.headline)
@@ -121,5 +106,11 @@ private struct MatchCard: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay {
+            if match.featured {
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .strokeBorder(Theme.gold, lineWidth: 1.5)
+            }
+        }
     }
 }
