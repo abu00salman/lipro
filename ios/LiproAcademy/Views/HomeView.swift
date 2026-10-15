@@ -6,24 +6,22 @@ struct HomeView: View {
     @State private var logoVisible = false
 
     private let today = Weekday.riyadhToday
-    private var branches: [Branch] { Branch.training(on: today) }
+    private var todayBranches: [Branch] { Branch.training(on: today) }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 28) {
+                VStack(alignment: .leading, spacing: 32) {
                     hero
-                    VStack(spacing: 28) {
-                        stats
-                        todaySection
-                        registerCard
-                    }
-                    .padding(.horizontal, 16)
+                    carousel
+                    stats
+                    todaySection
+                    registerCard
                 }
                 .padding(.bottom, 40)
             }
             .ignoresSafeArea(edges: .top)
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(Theme.canvas)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Branch.self) { branch in
                 BranchDetailView(branch: branch)
@@ -47,17 +45,17 @@ struct HomeView: View {
                 .scaledToFit()
                 .frame(height: 118)
                 .padding(16)
-                .background(Theme.chalkCard, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .background(Theme.chalk, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
                 .shadow(color: Theme.gold.opacity(0.35), radius: 26, y: 12)
                 .scaleEffect(logoVisible ? 1 : 0.55)
                 .opacity(logoVisible ? 1 : 0)
 
             VStack(spacing: 8) {
-                Text("أكاديمية ليبرو الرياضية")
-                    .font(.title2.bold())
+                Text("home.title")
+                    .font(.title.bold())
                     .foregroundStyle(.white)
 
-                Text("كرة قدم للناشئين · مرخصة من وزارة الرياضة")
+                Text("home.subtitle")
                     .font(.subheadline)
                     .foregroundStyle(Theme.gold)
                     .multilineTextAlignment(.center)
@@ -73,58 +71,91 @@ struct HomeView: View {
         }
     }
 
+    private var carousel: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionHeader(title: "home.branches.title")
+                .padding(.horizontal, 24)
+                .modifier(Entrance(index: 0, visible: appeared))
+
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 14) {
+                    ForEach(Branch.all) { branch in
+                        NavigationLink(value: branch) {
+                            BranchHeroCard(branch: branch)
+                        }
+                        .buttonStyle(.plain)
+                        .matchedTransitionSource(id: branch.id, in: zoom)
+                        .scrollTransition(axis: .horizontal) { content, phase in
+                            content
+                                .scaleEffect(phase.isIdentity ? 1 : 0.9)
+                                .opacity(phase.isIdentity ? 1 : 0.55)
+                        }
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .contentMargins(.horizontal, 24, for: .scrollContent)
+            .scrollTargetBehavior(.viewAligned)
+            .scrollIndicators(.hidden)
+        }
+    }
+
     private var stats: some View {
         HStack(spacing: 12) {
-            StatBox(value: "٧", label: "فروع")
-            StatBox(value: "٣", label: "أيام أسبوعيًا")
-            StatBox(value: "٥–١٨", label: "سنة عمر اللاعب")
+            StatBox(value: "7", label: "home.stat.branches")
+            StatBox(value: "3", label: "home.stat.days")
+            StatBox(value: "5–18", label: "home.stat.ages")
         }
-        .modifier(Entrance(index: 0, visible: appeared))
+        .padding(.horizontal, 16)
+        .modifier(Entrance(index: 1, visible: appeared))
     }
 
     private var todaySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("التدريب اليوم")
-                    .font(.title3.bold())
-                Text("\(today.title) · بتوقيت الرياض")
+                SectionHeader(title: "home.today.title")
+                (Text(today.title) + Text(" · ") + Text("home.riyadhTime"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            .modifier(Entrance(index: 1, visible: appeared))
+            .padding(.horizontal, 24)
+            .modifier(Entrance(index: 2, visible: appeared))
 
-            if branches.isEmpty {
-                Text("لا يوجد تدريب اليوم، راجع الجدول الأسبوعي.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(20)
-                    .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            } else {
-                ForEach(Array(branches.enumerated()), id: \.element.id) { index, branch in
-                    NavigationLink(value: branch) {
-                        BranchCard(branch: branch)
+            VStack(spacing: 16) {
+                if todayBranches.isEmpty {
+                    Text("home.today.empty")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20)
+                        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                } else {
+                    ForEach(Array(todayBranches.enumerated()), id: \.element.id) { index, branch in
+                        NavigationLink(value: branch) {
+                            BranchCard(branch: branch)
+                        }
+                        .buttonStyle(.plain)
+                        .matchedTransitionSource(id: branch.id, in: zoom)
+                        .modifier(Entrance(index: index + 3, visible: appeared))
                     }
-                    .buttonStyle(.plain)
-                    .matchedTransitionSource(id: branch.id, in: zoom)
-                    .modifier(Entrance(index: index + 2, visible: appeared))
                 }
             }
+            .padding(.horizontal, 16)
         }
     }
 
     private var registerCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("سجّل ابنك الآن")
+            Text("home.register.title")
                 .font(.title3.bold())
                 .foregroundStyle(.white)
 
-            Text("أرسل لنا رسالة على واتساب وسنرد عليك بالتفاصيل وأقرب فرع لك.")
+            Text("home.register.body")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.85))
 
-            Link(destination: Links.whatsapp("مرحبًا، أبغى أستفسر عن التسجيل في الأكاديمية")) {
-                Label("تواصل عبر واتساب", systemImage: "message.fill")
+            Link(destination: Links.whatsapp(L10n.pick("مرحبًا، أبغى أستفسر عن التسجيل في الأكاديمية", "Hello, I'd like to ask about registering at the academy"))) {
+                Label("home.register.button", systemImage: "message.fill")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
@@ -135,19 +166,22 @@ struct HomeView: View {
         .padding(22)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.heroGradient, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .modifier(Entrance(index: branches.count + 2, visible: appeared))
+        .padding(.horizontal, 16)
+        .modifier(Entrance(index: branchesCountIndex, visible: appeared))
     }
+
+    private var branchesCountIndex: Int { todayBranches.count + 4 }
 }
 
 private struct StatBox: View {
     let value: String
-    let label: String
+    let label: LocalizedStringKey
 
     var body: some View {
         VStack(spacing: 4) {
             Text(value)
                 .font(.title2.bold())
-                .foregroundStyle(Theme.teal)
+                .foregroundStyle(Theme.tealText)
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -155,6 +189,6 @@ private struct StatBox: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }

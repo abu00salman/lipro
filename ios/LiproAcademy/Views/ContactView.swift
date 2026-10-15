@@ -6,7 +6,7 @@ struct ContactView: View {
             List {
                 Section {
                     Link(destination: Links.whatsapp()) {
-                        Label("واتساب الأكاديمية", systemImage: "message.fill")
+                        Label("contact.whatsapp", systemImage: "message.fill")
                     }
                     Link(destination: Links.phone("0530634750")) {
                         Label("0530634750", systemImage: "phone.fill")
@@ -15,29 +15,29 @@ struct ContactView: View {
                         Label("0554527275", systemImage: "phone.fill")
                     }
                 } header: {
-                    Text("للتسجيل والاستفسار")
+                    Text("contact.section.inquiries")
                 }
 
                 Section {
                     Link(destination: Links.instagram) {
-                        Label("إنستغرام", systemImage: "camera.fill")
+                        Label("contact.instagram", systemImage: "camera.fill")
                     }
                     Link(destination: Links.website) {
-                        Label("الموقع الرسمي", systemImage: "globe")
+                        Label("contact.website", systemImage: "globe")
                     }
                 } header: {
-                    Text("تابعنا")
+                    Text("contact.section.follow")
                 }
 
                 Section {
-                    Text("أكاديمية كرة قدم مرخصة من وزارة الرياضة، تدرّب الناشئين من عمر ٥ إلى ١٨ سنة في ٧ فروع بمنطقة جازان وخميس مشيط والباحة.")
+                    Text("contact.about")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.vertical, 4)
                 }
             }
             .tint(Theme.teal)
-            .navigationTitle("تواصل معنا")
+            .navigationTitle("contact.title")
         }
     }
 }

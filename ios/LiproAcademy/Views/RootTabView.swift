@@ -1,24 +1,39 @@
 import SwiftUI
 
 struct RootTabView: View {
+    @State private var favorites = Favorites()
+
     var body: some View {
         TabView {
-            Tab("الرئيسية", systemImage: "house.fill") {
+            Tab("tab.home", systemImage: "house.fill") {
                 HomeView()
             }
 
-            Tab("الفروع", systemImage: "building.2.fill") {
+            Tab("tab.branches", systemImage: "building.2.fill") {
                 BranchesView()
             }
 
-            Tab("الجدول", systemImage: "calendar") {
+            Tab("tab.schedule", systemImage: "calendar") {
                 ScheduleView()
             }
 
-            Tab("تواصل", systemImage: "bubble.left.and.bubble.right.fill") {
+            Tab("tab.contact", systemImage: "bubble.left.and.bubble.right.fill") {
                 ContactView()
             }
         }
         .tint(Theme.teal)
+        .environment(favorites)
+        .modifier(TabMinimizeModifier())
+    }
+}
+
+/// يصغّر شريط التبويب الزجاجي عند التمرير على iOS 26 وما بعده
+private struct TabMinimizeModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.tabBarMinimizeBehavior(.onScrollDown)
+        } else {
+            content
+        }
     }
 }

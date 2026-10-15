@@ -33,13 +33,13 @@ struct ScheduleView: View {
                 }
                 .padding(16)
             }
-            .background(Color(uiColor: .systemGroupedBackground))
-            .navigationTitle("الجدول")
+            .background(Theme.canvas)
+            .navigationTitle("schedule.title")
         }
     }
 
     private var dayPicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(Weekday.trainingDays) { day in
                     Button {
@@ -54,6 +54,7 @@ struct ScheduleView: View {
             }
             .padding(.horizontal, 2)
         }
+        .scrollIndicators(.hidden)
         .sensoryFeedback(.selection, trigger: selected)
     }
 }
@@ -63,7 +64,7 @@ private struct ScheduleRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(branch.photo)
+            Image(branch.photos[0])
                 .resizable()
                 .scaledToFill()
                 .frame(width: 64, height: 64)
@@ -80,7 +81,7 @@ private struct ScheduleRow: View {
 
             Spacer(minLength: 8)
 
-            Text(branch.time)
+            Text(branch.timeText)
                 .font(.caption.weight(.bold))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -88,6 +89,6 @@ private struct ScheduleRow: View {
                 .background(Theme.gold, in: Capsule())
         }
         .padding(12)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }

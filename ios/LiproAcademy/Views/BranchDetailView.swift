@@ -3,18 +3,10 @@ import SwiftUI
 struct BranchDetailView: View {
     let branch: Branch
 
-    private let weekOrder = Weekday.trainingDays
-
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                Image(branch.photo)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 280)
-                    .frame(maxWidth: .infinity)
-                    .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            VStack(alignment: .leading, spacing: 24) {
+                gallery
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(branch.name)
@@ -25,26 +17,27 @@ struct BranchDetailView: View {
                 }
 
                 VStack(spacing: 12) {
-                    InfoRow(icon: "clock.fill", title: "موعد التدريب", value: branch.time)
-                    InfoRow(icon: "sportscourt.fill", title: "الملعب", value: branch.venue)
+                    InfoRow(icon: "clock.fill", title: "detail.time", value: branch.timeText)
+                    InfoRow(icon: "sportscourt.fill", title: "detail.venue", value: branch.venue)
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("أيام التدريب")
+                    Text("detail.days")
                         .font(.headline)
 
-                    ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollView(.horizontal) {
                         HStack(spacing: 8) {
-                            ForEach(weekOrder) { day in
+                            ForEach(Weekday.trainingDays) { day in
                                 DayChip(title: day.short, isSelected: branch.trains(on: day))
                             }
                         }
                     }
+                    .scrollIndicators(.hidden)
                 }
 
                 VStack(spacing: 12) {
                     Link(destination: Links.whatsapp(branch.registerMessage)) {
-                        Label("سجّل في هذا الفرع", systemImage: "message.fill")
+                        Label("detail.register", systemImage: "message.fill")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 15)
@@ -53,18 +46,47 @@ struct BranchDetailView: View {
                     }
 
                     Link(destination: branch.mapURL) {
-                        Label("الموقع على الخريطة", systemImage: "map.fill")
+                        Label("detail.map", systemImage: "map.fill")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 15)
-                            .foregroundStyle(Theme.teal)
-                            .background(Theme.teal.opacity(0.12), in: Capsule())
+                            .foregroundStyle(Theme.tealText)
+                            .glassCapsule()
                     }
                 }
             }
-            .padding(20)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 32)
         }
-        .background(Color(uiColor: .systemGroupedBackground))
+        .ignoresSafeArea(edges: .top)
+        .background(Theme.canvas)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                FavoriteButton(branch: branch)
+                ShareLink(item: branch.mapURL, subject: Text(branch.name)) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+        }
+    }
+
+    private var gallery: some View {
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(branch.photos, id: \.self) { photo in
+                    Image(photo)
+                        .resizable()
+                        .scaledToFill()
+                        .containerRelativeFrame(.horizontal)
+                        .frame(height: 340)
+                        .clipped()
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .scrollIndicators(.hidden)
+        .frame(height: 340)
     }
 }

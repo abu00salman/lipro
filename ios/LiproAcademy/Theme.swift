@@ -1,11 +1,17 @@
 import SwiftUI
+import UIKit
 
 enum Theme {
     static let pitch = Color(hex: 0x04322C)
     static let teal = Color(hex: 0x0E7A6B)
-    static let tealLit = Color(hex: 0x17A88F)
     static let gold = Color(hex: 0xF5B325)
-    static let chalkCard = Color(hex: 0xEFF4F1)
+    static let chalk = Color(hex: 0xEFF4F1)
+
+    /// نص بلون ليبرو يتكيّف مع الوضع الفاتح والداكن
+    static let tealText = Color(light: 0x0E7A6B, dark: 0x4CC9B0)
+
+    static let canvas = Color(uiColor: .systemGroupedBackground)
+    static let surface = Color(uiColor: .secondarySystemGroupedBackground)
 
     static let heroGradient = LinearGradient(
         colors: [teal, pitch],
@@ -16,11 +22,35 @@ enum Theme {
 
 extension Color {
     init(hex: UInt32) {
+        self.init(uiColor: UIColor(hex: hex))
+    }
+
+    init(light: UInt32, dark: UInt32) {
+        self.init(uiColor: UIColor { traits in
+            UIColor(hex: traits.userInterfaceStyle == .dark ? dark : light)
+        })
+    }
+}
+
+extension UIColor {
+    convenience init(hex: UInt32) {
         self.init(
-            red: Double((hex >> 16) & 0xFF) / 255,
-            green: Double((hex >> 8) & 0xFF) / 255,
-            blue: Double(hex & 0xFF) / 255
+            red: CGFloat((hex >> 16) & 0xFF) / 255,
+            green: CGFloat((hex >> 8) & 0xFF) / 255,
+            blue: CGFloat(hex & 0xFF) / 255,
+            alpha: 1
         )
+    }
+}
+
+/// اختيار النص حسب لغة الجهاز: العربية افتراضيًا، والإنجليزية عند اختيارها
+enum L10n {
+    static var isEnglish: Bool {
+        Locale.current.language.languageCode?.identifier == "en"
+    }
+
+    static func pick(_ arabic: String, _ english: String) -> String {
+        isEnglish ? english : arabic
     }
 }
 
