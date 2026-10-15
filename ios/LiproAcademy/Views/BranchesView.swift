@@ -10,7 +10,6 @@ struct BranchesView: View {
     @Environment(Favorites.self) private var favorites
     @State private var query = ""
     @State private var filter: Filter = .all
-    @State private var appeared = false
 
     private var branches: [Branch] {
         let term = query.trimmingCharacters(in: .whitespaces)
@@ -28,7 +27,7 @@ struct BranchesView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 18) {
-                    Picker("branches.filter", selection: $filter.animation(.snappy)) {
+                    Picker("branches.filter", selection: $filter) {
                         Text("branches.filter.all").tag(Filter.all)
                         Text("branches.filter.favorites").tag(Filter.favorites)
                     }
@@ -42,24 +41,19 @@ struct BranchesView: View {
                         .padding(.top, 40)
                     } else {
                         LazyVStack(spacing: 18) {
-                            ForEach(Array(branches.enumerated()), id: \.element.id) { index, branch in
+                            ForEach(branches) { branch in
                                 NavigationLink(value: branch) {
                                     BranchCard(branch: branch)
                                 }
                                 .buttonStyle(.plain)
                                 .matchedTransitionSource(id: branch.id, in: zoom)
-                                .scrollTransition { content, phase in
-                                    content
-                                        .scaleEffect(phase.isIdentity ? 1 : 0.94)
-                                        .opacity(phase.isIdentity ? 1 : 0.6)
-                                }
-                                .modifier(Entrance(index: index, visible: appeared))
                             }
                         }
-                        .animation(.snappy, value: branches)
                     }
                 }
-                .padding(16)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
+                .padding(.bottom, 24)
             }
             .background(Theme.canvas)
             .navigationTitle("branches.title")
@@ -68,7 +62,6 @@ struct BranchesView: View {
                 BranchDetailView(branch: branch)
                     .navigationTransition(.zoom(sourceID: branch.id, in: zoom))
             }
-            .onAppear { appeared = true }
         }
     }
 }

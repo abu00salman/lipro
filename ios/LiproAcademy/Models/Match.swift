@@ -135,3 +135,24 @@ final class SavedMatches {
         UserDefaults.standard.set(Array(ids), forKey: Self.key)
     }
 }
+
+/// مباريات الدوري الواحد مجمّعة معًا، بالترتيب الذي تظهر به في الموقع
+struct MatchGroup: Identifiable {
+    let league: String
+    let badge: String?
+    let matches: [Match]
+
+    var id: String { league }
+
+    static func make(from matches: [Match]) -> [MatchGroup] {
+        var order: [String] = []
+        var byLeague: [String: [Match]] = [:]
+        for match in matches {
+            if byLeague[match.league] == nil { order.append(match.league) }
+            byLeague[match.league, default: []].append(match)
+        }
+        return order.map { league in
+            MatchGroup(league: league, badge: byLeague[league]?.first?.badge, matches: byLeague[league] ?? [])
+        }
+    }
+}

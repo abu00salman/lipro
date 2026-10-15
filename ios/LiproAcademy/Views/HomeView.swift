@@ -23,22 +23,18 @@ struct HomeView: View {
             }
             .ignoresSafeArea(edges: .top)
             .background(Theme.canvas)
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    showSettings = true
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                        .font(.title3)
-                        .foregroundStyle(.white)
-                        .frame(width: 44, height: 44)
-                        .glassCapsule()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundStyle(.white)
+                    }
+                    .accessibilityLabel(Text("settings.title"))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("settings.title"))
-                .padding(.top, 60)
-                .padding(.trailing, 24)
             }
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .navigationDestination(for: Branch.self) { branch in
                 BranchDetailView(branch: branch)
                     .navigationTransition(.zoom(sourceID: branch.id, in: zoom))

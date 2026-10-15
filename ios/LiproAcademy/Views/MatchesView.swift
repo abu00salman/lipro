@@ -8,10 +8,15 @@ struct MatchesView: View {
 
     @State private var store = MatchesStore()
     @State private var filter: Filter = .all
+    @State private var shareImage: URL?
     @Environment(SavedMatches.self) private var saved
 
     private var visible: [Match] {
         store.today.filter { filter == .all || saved.contains($0) }
+    }
+
+    private var groups: [MatchGroup] {
+        MatchGroup.make(from: visible)
     }
 
     private var dayShareText: String {
@@ -42,7 +47,16 @@ struct MatchesView: View {
             .toolbar {
                 if !store.today.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
-                        ShareLink(item: dayShareText) {
+                        Menu {
+                            ShareLink(item: dayShareText) {
+                                Label("matches.share.text", systemImage: "text.alignleft")
+                            }
+                            if let shareImage {
+                                ShareLink(item: shareImage) {
+                                    Label("matches.share.image", systemImage: "photo")
+                                }
+                            }
+                        } label: {
                             Image(systemName: "square.and.arrow.up")
                         }
                     }
@@ -50,7 +64,14 @@ struct MatchesView: View {
             }
             .refreshable { await store.load() }
             .task { await store.load() }
+            .task(id: store.today.map(\.id)) {
+                shareImage = MatchShare.imageURL(groups: MatchGroup.make(from: store.today), dateText: dateText)
+            }
         }
+    }
+
+    private var dateText: String {
+        Date.now.formatted(Date.FormatStyle(date: .complete, time: .omitted).locale(L10n.locale))
     }
 
     private var header: some View {
@@ -59,7 +80,7 @@ struct MatchesView: View {
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.75))
 
-            Text(Date.now.formatted(Date.FormatStyle(date: .complete, time: .omitted).locale(L10n.locale)))
+            Text(dateText)
                 .font(.title2.bold())
                 .foregroundStyle(.white)
 
@@ -86,14 +107,46 @@ struct MatchesView: View {
             )
             .padding(.top, 30)
         } else {
-            LazyVStack(spacing: 14) {
-                ForEach(visible) { match in
-                    MatchCard(match: match)
-                        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+            VStack(alignment: .leading, spacing: 26) {
+                ForEach(groups) { group in
+                    VStack(alignment: .leading, spacing: 14) {
+                        LeagueHeader(group: group)
+                        ForEach(group.matches) { match in
+                            MatchCard(match: match)
+                        }
+                    }
                 }
             }
             .animation(.snappy, value: visible)
         }
+    }
+}
+
+private struct LeagueHeader: View {
+    let group: MatchGroup
+
+    var body: some View {
+        HStack(spacing: 10) {
+            if let badge = group.badge {
+                Text(badge)
+                    .font(.caption2.bold())
+                    .foregroundStyle(Theme.pitch)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Theme.gold, in: Capsule())
+            }
+            Text(group.league)
+                .font(.headline)
+                .lineLimit(1)
+            Spacer(minLength: 0)
+            Text("\(group.matches.count)")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(Theme.surface, in: Capsule())
+        }
+        .padding(.top, 4)
     }
 }
 
@@ -106,23 +159,14 @@ private struct MatchCard: View {
         let saveLabel: LocalizedStringKey = isSaved ? "matches.saved" : "matches.save"
 
         VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 8) {
-                if let badge = match.badge {
-                    Text(badge)
-                        .font(.caption2.bold())
-                        .foregroundStyle(Theme.pitch)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Theme.gold, in: Capsule())
-                }
-                Text(match.league)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                Spacer(minLength: 8)
+            HStack {
+                Spacer(minLength: 0)
                 Text(match.time)
                     .font(.footnote.bold().monospacedDigit())
-                    .foregroundStyle(Theme.tealText)
+                    .foregroundStyle(Theme.pitch)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Theme.gold, in: Capsule())
             }
 
             HStack(spacing: 12) {

@@ -1120,6 +1120,38 @@
           }
         }
       }
+    },
+    "matches.share.text": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share as text"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشاركة كنص"
+          }
+        }
+      }
+    },
+    "matches.share.image": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share as image"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشاركة كصورة"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
