@@ -1,0 +1,87 @@
+name: iOS unsigned IPA
+
+on:
+  push:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-unsigned-ipa.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ios-ipa-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -n "$XCODE" ]; then sudo xcode-select -s "$XCODE"; fi
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate --spec project.yml
+
+      - name: Archive (unsigned)
+        run: |
+          xcodebuild archive \
+            -project LiproAcademy.xcodeproj \
+            -scheme LiproAcademy \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/LiproAcademy.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+          test -d "$RUNNER_TEMP/LiproAcademy.xcarchive/Products/Applications/LiproAcademy.app"
+
+      - name: Package IPA
+        run: |
+          APP="$RUNNER_TEMP/LiproAcademy.xcarchive/Products/Applications/LiproAcademy.app"
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          cp -R "$APP" "$RUNNER_TEMP/ipa/Payload/"
+          cd "$RUNNER_TEMP/ipa"
+          IPA="$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa"
+          zip -qr "$IPA" Payload
+          ls -lh "$IPA"
+
+      - name: Verify IPA
+        run: |
+          IPA="$GITHUB_WORKSPACE/ios/LiproAcademy-unsigned.ipa"
+          unzip -tq "$IPA"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/LiproAcademy$"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/Info.plist"
+          unzip -l "$IPA" | grep -q "Payload/LiproAcademy.app/Assets.car"
+          file "$IPA"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiproAcademy-unsigned-ipa
+          path: ios/LiproAcademy-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish IPA to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios-build-${{ github.run_number }}
+          name: LiproAcademy iOS build ${{ github.run_number }}
+          prerelease: true
+          files: ios/LiproAcademy-unsigned.ipa
