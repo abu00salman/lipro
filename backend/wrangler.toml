@@ -1,0 +1,17 @@
+# Lipro backend (Cloudflare Worker + D1).
+# Secrets are NOT stored here. Set them with `wrangler secret put <NAME>` or in the dashboard:
+#   MFA_ENCRYPTION_KEY  (32 random bytes, base64)
+#   SESSION_SECRET      (>= 32 random characters)
+#   IP_HASH_SALT        (random string; used to hash client IPs)
+name = "lipro-backend"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lipro-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"   # from the D1 dashboard, not a secret
+migrations_dir = "migrations"
+
+[vars]
+ALLOWED_ORIGINS = "https://liproacademy.com,https://www.liproacademy.com"

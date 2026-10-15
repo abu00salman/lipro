@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة إدارة ليبرو</title>
+<style>
+  :root {
+    --bg: #F4F7F6; --card: #FFFFFF; --ink: #0E2A26; --mut: #5B7A74; --line: #D7E3DF;
+    --brand: #04322C; --teal: #17A88F; --gold: #F5B325; --err: #B42318; --ok: #067647; --warn: #B54708;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #03201C; --card: #0A2F28; --ink: #E8F3F0; --mut: #9FC0B8; --line: #1B4D44;
+      --brand: #0A3F37; --teal: #22C3A8; --gold: #F5B325; --err: #F97066; --ok: #47CD89; --warn: #FDB022;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #03201C; --card: #0A2F28; --ink: #E8F3F0; --mut: #9FC0B8; --line: #1B4D44;
+    --brand: #0A3F37; --teal: #22C3A8; --gold: #F5B325; --err: #F97066; --ok: #47CD89; --warn: #FDB022;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 "IBM Plex Sans Arabic", Tahoma, sans-serif; }
+  header { background: var(--brand); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  header h1 { font: 700 18px "Changa", sans-serif; margin: 0; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .stat b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--mut); font-size: 13px; }
+  label { display: block; font-size: 13px; color: var(--mut); margin-bottom: 4px; }
+  input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font: inherit; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+  .row > div { flex: 1 1 160px; }
+  button { font: inherit; padding: 10px 16px; border-radius: 10px; border: 0; cursor: pointer; background: var(--teal); color: #fff; font-weight: 600; }
+  button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.danger { background: var(--err); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  th { color: var(--mut); font-weight: 600; font-size: 13px; }
+  .table-wrap { overflow-x: auto; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); }
+  .pill.paid { color: var(--ok); } .pill.payment_claimed { color: var(--warn); } .pill.awaiting_payment { color: var(--mut); }
+  .msg { padding: 10px 12px; border-radius: 10px; margin: 10px 0; border: 1px solid var(--line); }
+  .msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
+  .muted { color: var(--mut); font-size: 13px; }
+  .hidden { display: none !important; }
+  .ltr { direction: ltr; unicode-bidi: plaintext; text-align: right; }
+  @media (max-width: 640px) { th:nth-child(n+5), td:nth-child(n+5) { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>لوحة إدارة أكاديمية ليبرو</h1>
+  <div class="row" style="justify-content:flex-end">
+    <span id="who" class="muted" style="color:#dfeee9"></span>
+    <button class="ghost hidden" id="logoutBtn" type="button" style="color:#fff;border-color:rgba(255,255,255,.4)">خروج</button>
+  </div>
+</header>
+
+<main>
+  <!-- تسجيل الدخول -->
+  <section id="loginView" class="card">
+    <h2 style="margin-top:0">تسجيل الدخول</h2>
+    <form id="loginForm" class="row">
+      <div><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" required></div>
+      <div><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required></div>
+      <div><button type="submit">التالي</button></div>
+    </form>
+    <form id="mfaForm" class="row hidden" style="margin-top:12px">
+      <div><label for="code">رمز التحقق (6 أرقام)</label><input id="code" class="ltr" inputmode="numeric" pattern="\d{6}" autocomplete="one-time-code" required></div>
+      <div><button type="submit">دخول</button></div>
+    </form>
+    <div id="enrolBox" class="hidden" style="margin-top:12px">
+      <p>فعّل التحقق بخطوتين قبل المتابعة. أضف هذا المفتاح في تطبيق المصادقة (Google Authenticator أو ما شابه):</p>
+      <p class="ltr" id="enrolSecret" style="font-weight:700;word-break:break-all"></p>
+      <form id="confirmForm" class="row">
+        <div><label for="enrolCode">الرمز من التطبيق</label><input id="enrolCode" class="ltr" inputmode="numeric" pattern="\d{6}" required></div>
+        <div><button type="submit">تفعيل</button></div>
+      </form>
+    </div>
+    <div id="loginMsg" class="msg err hidden"></div>
+  </section>
+
+  <!-- الإدارة -->
+  <section id="appView" class="hidden">
+    <div class="card">
+      <div class="row">
+        <div><label for="from">من</label><input id="from" type="date"></div>
+        <div><label for="to">إلى</label><input id="to" type="date"></div>
+        <div><label for="branch">الفرع</label><select id="branch"><option value="">كل الفروع</option></select></div>
+        <div><button type="button" id="refreshBtn">تحديث</button></div>
+      </div>
+    </div>
+
+    <div class="grid" id="stats">
+      <div class="card stat"><b id="sTotal">—</b><span>تسجيلات في الفترة</span></div>
+      <div class="card stat"><b id="sPaid">—</b><span>مدفوعة ومعتمدة</span></div>
+      <div class="card stat"><b id="sPending">—</b><span>إشعارات تحويل بانتظار المطابقة</span></div>
+      <div class="card stat"><b id="sRevenue">—</b><span>المعتمد (ريال)</span></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div><label for="status">الحالة</label>
+          <select id="status">
+            <option value="">الكل</option>
+            <option value="awaiting_payment">بانتظار الدفع</option>
+            <option value="payment_claimed">بانتظار المطابقة</option>
+            <option value="paid">مدفوع</option>
+            <option value="cancelled">ملغي</option>
+          </select></div>
+        <div><label for="q">بحث (اسم، جوال ولي الأمر، رقم التسجيل)</label><input id="q" type="search"></div>
+        <div><button type="button" class="ghost" id="csvBtn">تصدير CSV</button></div>
+      </div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table>
+          <thead><tr><th>رقم التسجيل</th><th>اللاعب</th><th>ولي الأمر</th><th>الفرع</th><th>البرنامج</th><th>الحالة</th><th>المبلغ</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-top:12px">
+        <button type="button" class="ghost" id="prevBtn">السابق</button>
+        <span class="muted" id="pageInfo"></span>
+        <button type="button" class="ghost" id="nextBtn">التالي</button>
+      </div>
+      <div id="appMsg" class="msg hidden"></div>
+    </div>
+
+    <div class="card hidden" id="detail">
+      <h2 style="margin-top:0" id="dRef"></h2>
+      <div class="grid">
+        <div><span class="muted">اللاعب</span><br><b id="dPlayer"></b></div>
+        <div><span class="muted">تاريخ الميلاد</span><br><b id="dDob" class="ltr"></b></div>
+        <div><span class="muted">ولي الأمر</span><br><b id="dGuardian"></b></div>
+        <div><span class="muted">الجوال</span><br><b id="dMobile" class="ltr"></b></div>
+      </div>
+      <h3>التحويلات</h3>
+      <div class="table-wrap"><table><thead><tr><th>المرجع المُدخل</th><th>المبلغ</th><th>التاريخ</th><th>الحالة</th><th>ملاحظة</th></tr></thead><tbody id="dPayments"></tbody></table></div>
+
+      <div id="reviewBox" class="hidden" style="margin-top:14px">
+        <p class="muted">لا يُعتمد التحويل من صورة الإيصال. طابق الرقم والمبلغ مع كشف البنك كما هو.</p>
+        <form id="approveForm" class="row">
+          <div><label for="stRef">رقم العملية في كشف البنك</label><input id="stRef" class="ltr" required></div>
+          <div><label for="stAmt">المبلغ في الكشف (ريال)</label><input id="stAmt" class="ltr" inputmode="decimal" required></div>
+          <div><label for="apNote">ملاحظة (اختياري)</label><input id="apNote" maxlength="300"></div>
+          <div><button type="submit">اعتماد الدفع</button></div>
+        </form>
+        <form id="rejectForm" class="row" style="margin-top:10px">
+          <div><label for="rjNote">سبب الرفض</label><input id="rjNote" minlength="3" maxlength="300" required></div>
+          <div><button type="submit" class="danger">رفض الإشعار</button></div>
+        </form>
+      </div>
+      <div id="detailMsg" class="msg hidden"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  // Backend Worker. Change only when the Worker's URL changes. This is not a secret.
+  var API = 'https://lipro-backend.abu00salman-r.workers.dev';
+  var TOKEN_KEY = 'lipro_staff_token';
+  var state = { token: null, page: 1, pageSize: 25, total: 0, role: null, mfaSetup: false, challenge: null, current: null, enrolSecret: null };
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function store(t) { try { if (t) sessionStorage.setItem(TOKEN_KEY, t); else sessionStorage.removeItem(TOKEN_KEY); } catch (e) {} }
+  function loadStored() { try { return sessionStorage.getItem(TOKEN_KEY); } catch (e) { return null; } }
+
+  function show(el, on) { el.classList.toggle('hidden', !on); }
+  function msg(el, text, kind) { el.textContent = text; el.className = 'msg ' + (kind || 'err'); show(el, !!text); }
+
+  /** Every request goes through here. The token is sent only in the Authorization header. */
+  async function api(path, opts) {
+    opts = opts || {};
+    var headers = { 'Content-Type': 'application/json' };
+    if (state.token) headers.Authorization = 'Bearer ' + state.token;
+    var res = await fetch(API + path, { method: opts.method || 'GET', headers: headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+    if (opts.raw) { if (!res.ok) throw new Error('export'); return res; }
+    var data = null;
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      var err = new Error((data && data.message) || 'تعذّر إتمام الطلب.');
+      err.status = res.status; err.code = data && data.code; err.errors = data && data.errors;
+      if (res.status === 401 && state.token) signOut('انتهت الجلسة، سجّل الدخول من جديد.');
+      throw err;
+    }
+    return data;
+  }
+
+  function fmtSar(n) { return Number(n || 0).toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  var STATUS = { awaiting_payment: 'بانتظار الدفع', payment_claimed: 'بانتظار المطابقة', paid: 'مدفوع', cancelled: 'ملغي' };
+  var METHOD_LABEL = { bank_transfer: 'تحويل بنكي' };
+  var PAY_STATUS = { claimed: 'بانتظار المطابقة', approved: 'معتمد', rejected: 'مرفوض' };
+
+  /** Builds nodes with textContent only, so no data from the API is ever parsed as HTML. */
+  function cell(text, cls) {
+    var td = document.createElement('td');
+    if (cls) { var s = document.createElement('span'); s.className = cls; s.textContent = text; td.appendChild(s); }
+    else td.textContent = text == null ? '—' : String(text);
+    return td;
+  }
+
+  function setDefaultDates() {
+    var now = new Date();
+    var first = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    $('from').value = first.toISOString().slice(0, 10);
+    $('to').value = now.toISOString().slice(0, 10);
+  }
+
+  function filters() {
+    var p = new URLSearchParams();
+    if ($('from').value) p.set('from', $('from').value);
+    if ($('to').value) p.set('to', $('to').value);
+    if ($('branch').value) p.set('branch_id', $('branch').value);
+    if ($('status').value) p.set('status', $('status').value);
+    if ($('q').value.trim()) p.set('q', $('q').value.trim());
+    return p;
+  }
+
+  async function loadSummary() {
+    var p = filters(); p.delete('status'); p.delete('q');
+    var s = await api('/api/admin/reports/summary?' + p.toString());
+    $('sTotal').textContent = s.registrations.total;
+    $('sPaid').textContent = s.registrations.by_status.paid;
+    $('sPending').textContent = s.pending_claims;
+    $('sRevenue').textContent = fmtSar(s.approved_payments.total_sar);
+  }
+
+  async function loadList() {
+    var p = filters();
+    p.set('page', state.page); p.set('page_size', state.pageSize);
+    var data = await api('/api/admin/registrations?' + p.toString());
+    state.total = data.total;
+    var body = $('rows');
+    body.textContent = '';
+    if (!data.items.length) {
+      var tr = document.createElement('tr'); var td = cell('لا توجد تسجيلات مطابقة لهذه الفلاتر.'); td.colSpan = 7; tr.appendChild(td); body.appendChild(tr);
+    }
+    data.items.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.tabIndex = 0;
+      tr.addEventListener('click', function () { openDetail(r.registration_number); });
+      tr.addEventListener('keydown', function (e) { if (e.key === 'Enter') openDetail(r.registration_number); });
+      tr.appendChild(cell(r.registration_number, 'ltr'));
+      tr.appendChild(cell(r.player_name));
+      tr.appendChild(cell(r.guardian_name + ' · ' + r.guardian_mobile));
+      tr.appendChild(cell(r.branch_name));
+      tr.appendChild(cell(r.program_name));
+      tr.appendChild(cell(STATUS[r.status] || r.status, 'pill ' + r.status));
+      tr.appendChild(cell(fmtSar(r.amount_sar) + ' ر.س'));
+      body.appendChild(tr);
+    });
+    var pages = Math.max(1, Math.ceil(state.total / state.pageSize));
+    $('pageInfo').textContent = 'صفحة ' + state.page + ' من ' + pages + ' — ' + state.total + ' تسجيل';
+    $('prevBtn').disabled = state.page <= 1;
+    $('nextBtn').disabled = state.page >= pages;
+  }
+
+  async function refresh() {
+    msg($('appMsg'), '', 'ok'); show($('appMsg'), false);
+    try { await Promise.all([loadSummary(), loadList()]); }
+    catch (e) { msg($('appMsg'), e.message, 'err'); }
+  }
+
+  async function openDetail(regNo) {
+    try {
+      var d = await api('/api/admin/registrations/' + encodeURIComponent(regNo));
+      state.current = d;
+      show($('detail'), true);
+      $('dRef').textContent = d.registration_number + ' — ' + (STATUS[d.status] || d.status);
+      $('dPlayer').textContent = d.player_name;
+      $('dDob').textContent = d.player_dob;
+      $('dGuardian').textContent = d.guardian_name;
+      $('dMobile').textContent = d.guardian_mobile;
+      var pb = $('dPayments'); pb.textContent = '';
+      if (!d.payments.length) { var tr0 = document.createElement('tr'); var c0 = cell('لا توجد تحويلات مسجّلة بعد.'); c0.colSpan = 5; tr0.appendChild(c0); pb.appendChild(tr0); }
+      d.payments.forEach(function (p) {
+        var tr = document.createElement('tr');
+        tr.appendChild(cell(p.bank_reference, 'ltr'));
+        tr.appendChild(cell(fmtSar(p.amount_sar) + ' ر.س'));
+        tr.appendChild(cell(p.transfer_date));
+        tr.appendChild(cell(PAY_STATUS[p.status] || p.status));
+        tr.appendChild(cell(p.review_note));
+        pb.appendChild(tr);
+      });
+      var waiting = d.payments.find(function (p) { return p.status === 'claimed'; });
+      state.current.waitingPayment = waiting ? waiting.id : null;
+      show($('reviewBox'), !!waiting && state.role && ['owner', 'admin', 'accountant'].indexOf(state.role) >= 0);
+      $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) { msg($('appMsg'), e.message, 'err'); }
+  }
+
+  function enterApp(me) {
+    state.role = me.role;
+    $('who').textContent = me.full_name + ' · ' + me.role;
+    show($('logoutBtn'), true);
+    show($('loginView'), false);
+    show($('appView'), true);
+    setDefaultDates();
+    api('/api/config').then(function (cfg) {
+      var sel = $('branch');
+      cfg.branches.forEach(function (b) { var o = document.createElement('option'); o.value = b.id; o.textContent = b.name; sel.appendChild(o); });
+    }).catch(function () {});
+    refresh();
+  }
+
+  async function bootstrap() {
+    var t = loadStored();
+    if (!t) return;
+    state.token = t;
+    try { var me = await api('/api/admin/me'); enterApp(me); }
+    catch (e) { store(null); state.token = null; }
+  }
+
+  function signOut(reason) {
+    if (state.token) { api('/api/admin/logout', { method: 'POST' }).catch(function () {}); }
+    store(null); state.token = null; state.role = null;
+    show($('appView'), false); show($('loginView'), true); show($('logoutBtn'), false); $('who').textContent = '';
+    show($('detail'), false);
+    if (reason) msg($('loginMsg'), reason, 'err');
+  }
+
+  $('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    msg($('loginMsg'), '', 'err');
+    try {
+      var r = await api('/api/admin/login', { method: 'POST', body: { email: $('email').value, password: $('password').value } });
+      $('password').value = '';
+      if (r.mfa_required) { state.challenge = r.challenge; show($('mfaForm'), true); $('code').focus(); return; }
+      state.token = r.token; store(r.token);
+      if (r.mfa_setup_required) {
+        var en = await api('/api/admin/mfa/enroll', { method: 'POST' });
+        $('enrolSecret').textContent = en.secret;
+        show($('enrolBox'), true);
+        return;
+      }
+    } catch (err) { msg($('loginMsg'), err.message, 'err'); }
+  });
+
+  $('mfaForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    try {
+      var r = await api('/api/admin/mfa/verify', { method: 'POST', body: { challenge: state.challenge, code: $('code').value } });
+      state.token = r.token; store(r.token);
+      $('code').value = '';
+      var me = await api('/api/admin/me');
+      enterApp(me);
+    } catch (err) { msg($('loginMsg'), err.message, 'err'); }
+  });
+
+  $('confirmForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    try {
+      await api('/api/admin/mfa/confirm', { method: 'POST', body: { code: $('enrolCode').value } });
+      signOut('تم تفعيل التحقق بخطوتين. سجّل الدخول مرة أخرى.');
+      msg($('loginMsg'), 'تم تفعيل التحقق بخطوتين. سجّل الدخول مرة أخرى.', 'ok');
+    } catch (err) { msg($('loginMsg'), err.message, 'err'); }
+  });
+
+  $('logoutBtn').addEventListener('click', function () { signOut(); });
+  $('refreshBtn').addEventListener('click', function () { state.page = 1; refresh(); });
+  $('status').addEventListener('change', function () { state.page = 1; refresh(); });
+  $('branch').addEventListener('change', function () { state.page = 1; refresh(); });
+  $('from').addEventListener('change', function () { state.page = 1; refresh(); });
+  $('to').addEventListener('change', function () { state.page = 1; refresh(); });
+  var qTimer = null;
+  $('q').addEventListener('input', function () { clearTimeout(qTimer); qTimer = setTimeout(function () { state.page = 1; refresh(); }, 350); });
+  $('prevBtn').addEventListener('click', function () { state.page--; loadList().catch(function (e) { msg($('appMsg'), e.message, 'err'); }); });
+  $('nextBtn').addEventListener('click', function () { state.page++; loadList().catch(function (e) { msg($('appMsg'), e.message, 'err'); }); });
+
+  $('csvBtn').addEventListener('click', async function () {
+    try {
+      var res = await api('/api/admin/registrations.csv?' + filters().toString(), { raw: true });
+      var blob = await res.blob();
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'registrations.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    } catch (e) { msg($('appMsg'), 'تعذّر التصدير. تحقق من صلاحياتك.', 'err'); }
+  });
+
+  $('approveForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!state.current || !state.current.waitingPayment) return;
+    try {
+      await api('/api/admin/payments/' + state.current.waitingPayment + '/approve', { method: 'POST',
+        body: { reconciled_ref: $('stRef').value, reconciled_amount_sar: $('stAmt').value, note: $('apNote').value } });
+      msg($('detailMsg'), 'تم اعتماد الدفع وتحديث حالة التسجيل.', 'ok');
+      $('stRef').value = ''; $('stAmt').value = ''; $('apNote').value = '';
+      await refresh(); openDetail(state.current.registration_number);
+    } catch (err) { msg($('detailMsg'), err.message, 'err'); }
+  });
+
+  $('rejectForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!state.current || !state.current.waitingPayment) return;
+    try {
+      await api('/api/admin/payments/' + state.current.waitingPayment + '/reject', { method: 'POST', body: { note: $('rjNote').value } });
+      $('rjNote').value = '';
+      msg($('detailMsg'), 'تم رفض الإشعار وأُعيد التسجيل لحالة بانتظار الدفع.', 'ok');
+      await refresh(); openDetail(state.current.registration_number);
+    } catch (err) { msg($('detailMsg'), err.message, 'err'); }
+  });
+
+  bootstrap();
+})();
+</script>
+</body>
+</html>

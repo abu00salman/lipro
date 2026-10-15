@@ -124,7 +124,7 @@
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8v.01"/></svg>
           <span>
             التسجيل يتم عبر <b>التحويل البنكي</b> وستصلك تعليماته في الخطوة الأخيرة —
-            والتسجيل يُعتمد فور إرسال صورة الإيصال على واتساب.
+            ويُعتمد التسجيل بعد مطابقة التحويل مع كشف البنك من الإدارة، وليس بمجرد إرسال صورة الإيصال.
           </span>
         </div>
 
@@ -870,24 +870,21 @@
     try {
       track('checkout_started', { program_id: selectedProgram.id });
 
-      if (CONFIG.hasBackend) {
-        // خادم حقيقي متاح — نحفظ التسجيل فعليًا في قاعدة البيانات
-        const payload = collect();
-        payload.payment_method = 'bank_transfer';
-        registration = await Api.createRegistration(payload);
-      } else {
-        // لا خادم بعد: مرجع محلي مؤقت فقط، بلا أي حفظ دائم
-        registration = {
-          registration_number: localRef(),
-          amount_sar: selectedProgram.price_sar,
-          currency: 'SAR'
-        };
+      if (!CONFIG.hasBackend) {
+        throw new Error('التسجيل الإلكتروني غير متاح الآن. سجّل عبر واتساب.');
       }
+      // مفتاح ثابت لكل محاولة: إعادة الإرسال لا تُنشئ تسجيلًا مكررًا
+      if (!regKey) regKey = newIdempotencyKey();
+      const payload = collect();
+      payload.payment_method = 'bank_transfer';
+      registration = await createWithRetry(payload, regKey);
 
       // التحويل البنكي هو المسار الوحيد — نعرض تعليماته مباشرة
       goto(5, true);
       showOfflinePayment();
     } catch (e) {
+      // المفتاح مرتبط ببيانات بعينها: إن تغيّرت البيانات نبدأ مفتاحًا جديدًا
+      if (e.code === 'idempotency_conflict') regKey = null;
       // نعرض أخطاء الحقول إن أعادها الخادم
       if (e.errors) {
         Object.keys(e.errors).forEach((k) => {
@@ -910,15 +907,27 @@
 
   /* ================= الوضع الاحتياطي (بلا خادم) ================= */
 
-  /* مرجع محلي بنفس صيغة الخادم — يساعد الإدارة على ربط الإيصال بالطلب */
-  function localRef() {
-    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-    let out = '';
-    const rnd = (window.crypto && crypto.getRandomValues)
-      ? crypto.getRandomValues(new Uint8Array(5))
-      : Array.from({ length: 5 }, () => Math.floor(Math.random() * 256));
-    for (const b of rnd) out += A[b % A.length];
-    return 'LPA-' + new Date().getFullYear() + '-' + out;
+  /* مفتاح الطلب: يُرسل مع كل محاولة، فيعيد الخادم نفس الرقم بدل إنشاء تسجيل جديد */
+  let regKey = null;
+  function newIdempotencyKey() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  /* إعادة المحاولة للأخطاء المؤقتة فقط (شبكة / 5xx)، بنفس المفتاح */
+  async function createWithRetry(payload, key) {
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await Api.createRegistration(payload, key);
+      } catch (e) {
+        lastErr = e;
+        const transient = !e.status || e.status >= 500;
+        if (!transient) throw e;
+        await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+      }
+    }
+    throw lastErr;
   }
 
   function showOfflinePayment() {
@@ -1194,10 +1203,17 @@
     // التحويل البنكي هو مسار الدفع الوحيد دائمًا
     $('#toPayment').innerHTML = 'أكمل التسجيل';
 
-    if (CONFIG.hasBackend) {
-      $('#returningBox').hidden = false;
-      wireLookup();
+    // لا يوجد خادم متاح: لا نُصدر رقم تسجيل محليًا، ونوضح للزائر البديل مباشرة.
+    if (!CONFIG.hasBackend) {
+      $('#toPayment').disabled = true;
+      $('#toPayment').innerHTML = 'التسجيل الإلكتروني غير متاح الآن';
+      $('#offlineNote').className = 'alert alert--err';
+      $('#offlineNote').querySelector('span').textContent =
+        'خدمة التسجيل الإلكتروني غير متاحة حاليًا، ولم يُحفظ أي طلب. سجّل عبر واتساب أو الاتصال بنا وسنكمل التسجيل معك.';
     }
+
+    // البحث عن التسجيل السابق برقم الجوال أُوقف: كان يكشف بيانات أولياء الأمور لأي شخص.
+    $('#returningBox').hidden = true;
 
     $('#bootLoading').classList.remove('is-shown');
     $('#flow').hidden = false;
