@@ -14,7 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- أنماط نموذج ميسر الرسمي -->
-<link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.7.3/moyasar.css">
 <link rel="stylesheet" href="../assets/lipro-checkout.css?v=6">
 
 <script>
@@ -124,7 +123,7 @@
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8v.01"/></svg>
           <span>
             التسجيل يتم عبر <b>التحويل البنكي</b> وستصلك تعليماته في الخطوة الأخيرة —
-            والتسجيل يُعتمد فور إرسال صورة الإيصال على واتساب.
+            ويُعتمد التسجيل بعد مطابقة التحويل مع كشف البنك من الإدارة، وليس بمجرد إرسال صورة الإيصال.
           </span>
         </div>
 
@@ -407,9 +406,6 @@
 
         <div class="pay" id="payGrid" hidden>
           <div class="pay__box">
-            <!-- نموذج ميسر (غير مستخدم حاليًا — التحويل البنكي هو المسار الوحيد) -->
-            <div class="mysr-form" id="moyasarForm" hidden></div>
-
             <div id="offlinePay">
               <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:18px">
                 سُجّلت بياناتك برقم طلب خاص. لإتمام التسجيل، حوّل المبلغ على حساب
@@ -507,7 +503,6 @@
     </div>
   </div>
 </footer>
-<script src="https://cdn.moyasar.com/mpf/1.7.3/moyasar.js"></script>
 <script src="../assets/lipro-checkout.js?v=6"></script>
 <script>
 (function () {
@@ -870,24 +865,22 @@
     try {
       track('checkout_started', { program_id: selectedProgram.id });
 
-      if (CONFIG.hasBackend) {
-        // خادم حقيقي متاح — نحفظ التسجيل فعليًا في قاعدة البيانات
-        const payload = collect();
-        payload.payment_method = 'bank_transfer';
-        registration = await Api.createRegistration(payload);
-      } else {
-        // لا خادم بعد: مرجع محلي مؤقت فقط، بلا أي حفظ دائم
-        registration = {
-          registration_number: localRef(),
-          amount_sar: selectedProgram.price_sar,
-          currency: 'SAR'
-        };
+      if (!CONFIG.hasBackend) {
+        throw new Error('التسجيل الإلكتروني غير متاح الآن. سجّل عبر واتساب.');
       }
+      // مفتاح ثابت لكل محاولة: إعادة الإرسال لا تُنشئ تسجيلًا مكررًا
+      // المفتاح يُرسل فقط إذا أعلن الخادم دعمه، حتى لا يفشل الطلب على خادم قديم يرفض الترويسة
+      regKey = CONFIG.idempotency ? (regKey || newIdempotencyKey()) : null;
+      const payload = collect();
+      payload.payment_method = 'bank_transfer';
+      registration = await createWithRetry(payload, regKey);
 
       // التحويل البنكي هو المسار الوحيد — نعرض تعليماته مباشرة
       goto(5, true);
       showOfflinePayment();
     } catch (e) {
+      // المفتاح مرتبط ببيانات بعينها: إن تغيّرت البيانات نبدأ مفتاحًا جديدًا
+      if (e.code === 'idempotency_conflict') regKey = null;
       // نعرض أخطاء الحقول إن أعادها الخادم
       if (e.errors) {
         Object.keys(e.errors).forEach((k) => {
@@ -910,15 +903,27 @@
 
   /* ================= الوضع الاحتياطي (بلا خادم) ================= */
 
-  /* مرجع محلي بنفس صيغة الخادم — يساعد الإدارة على ربط الإيصال بالطلب */
-  function localRef() {
-    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-    let out = '';
-    const rnd = (window.crypto && crypto.getRandomValues)
-      ? crypto.getRandomValues(new Uint8Array(5))
-      : Array.from({ length: 5 }, () => Math.floor(Math.random() * 256));
-    for (const b of rnd) out += A[b % A.length];
-    return 'LPA-' + new Date().getFullYear() + '-' + out;
+  /* مفتاح الطلب: يُرسل مع كل محاولة، فيعيد الخادم نفس الرقم بدل إنشاء تسجيل جديد */
+  let regKey = null;
+  function newIdempotencyKey() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  /* إعادة المحاولة للأخطاء المؤقتة فقط (شبكة / 5xx)، بنفس المفتاح */
+  async function createWithRetry(payload, key) {
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await Api.createRegistration(payload, key);
+      } catch (e) {
+        lastErr = e;
+        const transient = !e.status || e.status >= 500;
+        if (!transient) throw e;
+        await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+      }
+    }
+    throw lastErr;
   }
 
   function showOfflinePayment() {
@@ -935,7 +940,6 @@
     if (stLink) stLink.href = '../status/?ref=' + encodeURIComponent(registration.registration_number);
 
     // نخفي نموذج البطاقة ونُظهر تعليمات التحويل
-    $('#moyasarForm').hidden = true;
     $('#offlinePay').hidden = false;
     $('#payLoading').classList.remove('is-shown');
     $('#payGrid').hidden = false;
@@ -988,94 +992,6 @@
     };
 
     track('registration_ready_offline', { program_id: selectedProgram.id });
-  }
-
-  /* ================= تركيب نموذج ميسر ================= */
-  function mountMoyasar() {
-    $('#payRef').textContent = registration.registration_number;
-    $('#payPlayer').textContent = $('#playerName').value.trim();
-    $('#payProgram').textContent = selectedProgram.name;
-    $('#payTotal').textContent = arNum(registration.amount_sar);
-    if (CONFIG.test_mode) $('#payTestNote').hidden = false;
-
-    if (CONFIG.hasBackend) {
-      $('#step5Actions').hidden = true;
-      $('#lockedHint').hidden = false;
-    }
-
-    // رسالة واتساب لإيصال التحويل تحمل رقم التسجيل والمبلغ
-    var wa = $('#waReceipt');
-    if (wa) {
-      var msg = 'السلام عليكم، أرفق إيصال التحويل البنكي لتسجيل ابني.'
-              + '\nرقم التسجيل: ' + registration.registration_number
-              + '\nاللاعب: ' + $('#playerName').value.trim()
-              + '\nالبرنامج: ' + selectedProgram.name
-              + '\nالمبلغ: ' + registration.amount_sar + ' ريال';
-      wa.href = 'https://wa.me/966530634750?text=' + encodeURIComponent(msg);
-    }
-
-    if (formMounted) { $('#payLoading').classList.remove('is-shown'); $('#payGrid').hidden = false; return; }
-
-    if (!window.Moyasar) {
-      $('#payLoadingText').textContent = '';
-      $('#payLoading').classList.remove('is-shown');
-      $('#err5Text').textContent = 'تعذّر تحميل نظام الدفع. تحقق من الاتصال بالإنترنت وأعد تحميل الصفحة.';
-      $('#err5').classList.add('is-shown');
-      return;
-    }
-
-    // طرق الدفع تأتي من الخادم — إضافة طريقة جديدة لاحقًا لا تتطلب تعديل هذه الصفحة
-    const methods = CONFIG.methods.slice();
-
-    const cfg = {
-      element: '#moyasarForm',
-      language: 'ar',
-      amount: registration.amount,                 // بالهللات — من الخادم
-      currency: registration.currency,
-      description: registration.description,
-      publishable_api_key: CONFIG.publishable_key,
-      callback_url: registration.callback_url,
-      metadata: registration.metadata,
-      methods: methods,
-      supported_networks: CONFIG.supported_networks,
-      fixed_width: false,
-
-      on_completed: async function (payment) {
-        // نحفظ المعرّف محليًا احتياطًا لو انقطع الاتصال أثناء إعادة التوجيه
-        try {
-          sessionStorage.setItem('lipro_last_payment', JSON.stringify({
-            id: payment.id, ref: registration.registration_number
-          }));
-        } catch (e) {}
-        // لا نعتبر الدفع ناجحًا هنا — التأكيد يتم على الخادم في صفحة النتيجة
-      },
-
-      on_failure: function (err) {
-        $('#err5Text').textContent = typeof err === 'string'
-          ? err : 'تعذّر إتمام الدفع. تأكد من بيانات البطاقة وحاول مجددًا.';
-        $('#err5').classList.add('is-shown');
-        track('payment_failed', { program_id: selectedProgram.id });
-      }
-    };
-
-    if (methods.indexOf('applepay') > -1) {
-      cfg.apple_pay = {
-        country: CONFIG.apple_pay.country,
-        label: CONFIG.apple_pay.label,
-        validate_merchant_url: CONFIG.apple_pay.validate_merchant_url
-      };
-    }
-
-    try {
-      window.Moyasar.init(cfg);
-      formMounted = true;
-      $('#payLoading').classList.remove('is-shown');
-      $('#payGrid').hidden = false;
-    } catch (e) {
-      $('#payLoading').classList.remove('is-shown');
-      $('#err5Text').textContent = 'تعذّر تجهيز صفحة الدفع. حاول إعادة تحميل الصفحة.';
-      $('#err5').classList.add('is-shown');
-    }
   }
 
   /* ================= ربط الأزرار ================= */
@@ -1194,10 +1110,17 @@
     // التحويل البنكي هو مسار الدفع الوحيد دائمًا
     $('#toPayment').innerHTML = 'أكمل التسجيل';
 
-    if (CONFIG.hasBackend) {
-      $('#returningBox').hidden = false;
-      wireLookup();
+    // لا يوجد خادم متاح: لا نُصدر رقم تسجيل محليًا، ونوضح للزائر البديل مباشرة.
+    if (!CONFIG.hasBackend) {
+      $('#toPayment').disabled = true;
+      $('#toPayment').innerHTML = 'التسجيل الإلكتروني غير متاح الآن';
+      $('#offlineNote').className = 'alert alert--err';
+      $('#offlineNote').querySelector('span').textContent =
+        'خدمة التسجيل الإلكتروني غير متاحة حاليًا، ولم يُحفظ أي طلب. سجّل عبر واتساب أو الاتصال بنا وسنكمل التسجيل معك.';
     }
+
+    // البحث عن التسجيل السابق برقم الجوال أُوقف: كان يكشف بيانات أولياء الأمور لأي شخص.
+    $('#returningBox').hidden = true;
 
     $('#bootLoading').classList.remove('is-shown');
     $('#flow').hidden = false;

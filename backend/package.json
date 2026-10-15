@@ -1,0 +1,12 @@
+{
+  "name": "lipro-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lipro Academy Manager API (Cloudflare Worker + D1)",
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "bootstrap-owner": "node scripts/bootstrap-owner.mjs"
+  }
+}
