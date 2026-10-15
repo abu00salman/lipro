@@ -4,6 +4,7 @@ struct HomeView: View {
     @Namespace private var zoom
     @State private var appeared = false
     @State private var logoVisible = false
+    @State private var showSettings = false
 
     private let today = Weekday.riyadhToday
     private var todayBranches: [Branch] { Branch.training(on: today) }
@@ -26,6 +27,10 @@ struct HomeView: View {
             .navigationDestination(for: Branch.self) { branch in
                 BranchDetailView(branch: branch)
                     .navigationTransition(.zoom(sourceID: branch.id, in: zoom))
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+                    .presentationDetents([.medium, .large])
             }
             .onAppear {
                 withAnimation(.spring(response: 0.7, dampingFraction: 0.75).delay(0.1)) {
@@ -64,6 +69,21 @@ struct HomeView: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 84)
         .padding(.bottom, 40)
+        .overlay(alignment: .topTrailing) {
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.title3)
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .glassCapsule()
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("settings.title"))
+            .padding(.top, 58)
+            .padding(.trailing, 20)
+        }
         .background {
             UnevenRoundedRectangle(bottomLeadingRadius: 36, bottomTrailingRadius: 36)
                 .fill(Theme.heroGradient)

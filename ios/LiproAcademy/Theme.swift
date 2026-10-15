@@ -43,21 +43,12 @@ extension UIColor {
     }
 }
 
-/// اختيار النص حسب لغة الجهاز: العربية افتراضيًا، والإنجليزية عند اختيارها
-enum L10n {
-    static var isEnglish: Bool {
-        Locale.current.language.languageCode?.identifier == "en"
-    }
-
-    static func pick(_ arabic: String, _ english: String) -> String {
-        isEnglish ? english : arabic
-    }
-}
-
 enum Links {
     static let whatsappNumber = "966530634750"
     static let instagram = URL(string: "https://www.instagram.com/liproacademy")!
     static let website = URL(string: "https://liproacademy.com")!
+    static let primaryPhone = "0530634750"
+    static let primaryPhoneDisplay = "0530634750"
 
     static func whatsapp(_ message: String? = nil) -> URL {
         var components = URLComponents(string: "https://wa.me/\(whatsappNumber)")!

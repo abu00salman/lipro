@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootTabView: View {
     @State private var favorites = Favorites()
+    @State private var settings = AppSettings()
 
     var body: some View {
         TabView {
@@ -17,12 +18,21 @@ struct RootTabView: View {
                 ScheduleView()
             }
 
+            Tab("tab.matches", systemImage: "sportscourt.fill") {
+                MatchesView()
+            }
+
             Tab("tab.contact", systemImage: "bubble.left.and.bubble.right.fill") {
                 ContactView()
             }
         }
+        .id(settings.language)
         .tint(Theme.teal)
         .environment(favorites)
+        .environment(settings)
+        .environment(\.locale, L10n.locale)
+        .environment(\.layoutDirection, L10n.isEnglish ? .leftToRight : .rightToLeft)
+        .preferredColorScheme(settings.appearance.colorScheme)
         .modifier(TabMinimizeModifier())
     }
 }

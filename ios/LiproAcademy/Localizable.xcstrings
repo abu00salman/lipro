@@ -561,23 +561,359 @@
         }
       }
     },
-    "contact.section.inquiries": {
+    "contact.about": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Registration & inquiries"
+            "value": "A football academy licensed by the Ministry of Sport, training youth players aged 5 to 18 across 7 branches in Jizan, Khamis Mushait and Al-Baha."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "للتسجيل والاستفسار"
+            "value": "أكاديمية كرة قدم مرخصة من وزارة الرياضة، تدرّب الناشئين من عمر ٥ إلى ١٨ سنة في ٧ فروع بمنطقة جازان وخميس مشيط والباحة."
           }
         }
       }
     },
-    "contact.section.follow": {
+    "tab.matches": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المباريات"
+          }
+        }
+      }
+    },
+    "matches.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's matches"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مباريات اليوم"
+          }
+        }
+      }
+    },
+    "matches.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riyadh time"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بتوقيت الرياض"
+          }
+        }
+      }
+    },
+    "matches.empty.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matches today"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد مباريات اليوم"
+          }
+        }
+      }
+    },
+    "matches.empty.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's fixtures will appear here as soon as they're announced."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ستظهر مباريات اليوم هنا فور الإعلان عنها."
+          }
+        }
+      }
+    },
+    "matches.error.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load matches"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعذّر تحميل المباريات"
+          }
+        }
+      }
+    },
+    "matches.error.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your connection and pull down to refresh."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحقق من اتصالك واسحب للأسفل للتحديث."
+          }
+        }
+      }
+    },
+    "matches.live": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مباشر"
+          }
+        }
+      }
+    },
+    "matches.channel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Channel"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "القناة"
+          }
+        }
+      }
+    },
+    "matches.commentator": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commentator"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المعلق"
+          }
+        }
+      }
+    },
+    "matches.vs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضد"
+          }
+        }
+      }
+    },
+    "settings.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإعدادات"
+          }
+        }
+      }
+    },
+    "settings.language": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللغة"
+          }
+        }
+      }
+    },
+    "settings.appearance": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المظهر"
+          }
+        }
+      }
+    },
+    "lang.system": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حسب الجهاز"
+          }
+        }
+      }
+    },
+    "appearance.system": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حسب الجهاز"
+          }
+        }
+      }
+    },
+    "appearance.light": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فاتح"
+          }
+        }
+      }
+    },
+    "appearance.dark": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داكن"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم"
+          }
+        }
+      }
+    },
+    "contact.lead": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questions, registration, or a visit to a branch? We're happy to help."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استفسار، تسجيل، أو زيارة لأحد الفروع؟ نسعد بمساعدتك."
+          }
+        }
+      }
+    },
+    "contact.call": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call us"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اتصل بنا"
+          }
+        }
+      }
+    },
+    "contact.social": {
       "localizations": {
         "en": {
           "stringUnit": {
@@ -593,18 +929,50 @@
         }
       }
     },
-    "contact.about": {
+    "contact.phone.sub": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A football academy licensed by the Ministry of Sport, training youth players aged 5 to 18 across 7 branches in Jizan, Khamis Mushait and Al-Baha."
+            "value": "Registration & inquiries"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "أكاديمية كرة قدم مرخصة من وزارة الرياضة، تدرّب الناشئين من عمر ٥ إلى ١٨ سنة في ٧ فروع بمنطقة جازان وخميس مشيط والباحة."
+            "value": "للتسجيل والاستفسار"
+          }
+        }
+      }
+    },
+    "contact.instagram.sub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@liproacademy"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@liproacademy"
+          }
+        }
+      }
+    },
+    "contact.website.sub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "liproacademy.com"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "liproacademy.com"
           }
         }
       }

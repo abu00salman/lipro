@@ -38,8 +38,10 @@ struct Branch: Identifiable, Hashable {
         var components = DateComponents()
         components.hour = hour
         components.minute = minute
-        let date = Calendar.current.date(from: components) ?? .now
-        return date.formatted(date: .omitted, time: .shortened)
+        var calendar = Calendar.current
+        calendar.locale = L10n.locale
+        let date = calendar.date(from: components) ?? .now
+        return date.formatted(Date.FormatStyle(date: .omitted, time: .shortened).locale(L10n.locale))
     }
 }
 
@@ -51,7 +53,7 @@ enum Weekday: Int, CaseIterable, Identifiable {
     /// أسماء الأيام من نظام اللغة نفسه، فتظهر بالعربية أو الإنجليزية تلقائيًا
     private static var calendar: Calendar {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = .current
+        calendar.locale = L10n.locale
         return calendar
     }
 
