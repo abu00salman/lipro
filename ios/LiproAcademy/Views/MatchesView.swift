@@ -7,7 +7,10 @@ struct MatchesView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    SectionHeader(title: "matches.title", subtitle: "matches.subtitle")
+                    Text("matches.disclaimer")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 4)
 
                     content
@@ -28,13 +31,6 @@ struct MatchesView: View {
             ProgressView()
                 .frame(maxWidth: .infinity)
                 .padding(.top, 60)
-        } else if store.failed && store.matches.isEmpty {
-            ContentUnavailableView(
-                "matches.error.title",
-                systemImage: "wifi.exclamationmark",
-                description: Text("matches.error.body")
-            )
-            .padding(.top, 40)
         } else if store.today.isEmpty {
             ContentUnavailableView(
                 "matches.empty.title",

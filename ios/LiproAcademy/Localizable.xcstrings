@@ -976,6 +976,22 @@
           }
         }
       }
+    },
+    "matches.disclaimer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local and international matches. Not related to the academy."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مباريات محلية وعالمية، وليست لها علاقة بالأكاديمية."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
