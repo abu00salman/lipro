@@ -36,6 +36,7 @@ async function publicConfig(env) {
     ok: true,
     currency: 'SAR',
     vat_included: true,
+    idempotency: true,
     publishable_key: '',
     payment_methods: ['bank_transfer'],
     programs: (programs.results || []).map((p) => ({

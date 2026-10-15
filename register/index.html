@@ -869,7 +869,8 @@
         throw new Error('التسجيل الإلكتروني غير متاح الآن. سجّل عبر واتساب.');
       }
       // مفتاح ثابت لكل محاولة: إعادة الإرسال لا تُنشئ تسجيلًا مكررًا
-      if (!regKey) regKey = newIdempotencyKey();
+      // المفتاح يُرسل فقط إذا أعلن الخادم دعمه، حتى لا يفشل الطلب على خادم قديم يرفض الترويسة
+      regKey = CONFIG.idempotency ? (regKey || newIdempotencyKey()) : null;
       const payload = collect();
       payload.payment_method = 'bank_transfer';
       registration = await createWithRetry(payload, regKey);

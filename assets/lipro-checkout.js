@@ -120,7 +120,7 @@ window.LIPRO_API = window.LIPRO_API || 'https://lipro-backend.abu00salman-r.work
     createRegistration(b, idempotencyKey) {
       return this.req('/api/registrations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey || '' },
+        headers: idempotencyKey ? { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } : { 'Content-Type': 'application/json' },
         body: JSON.stringify(b)
       });
     },
