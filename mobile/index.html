@@ -100,6 +100,11 @@
     transition: opacity .45s ease, transform .45s ease;
   }
   .screen img.swap { opacity: 0; transform: scale(.985); }
+  .screen video {
+    width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;
+    background: #000;
+  }
+  [hidden] { display: none !important; }
 
   /* iPhone 17 Pro Max: Dynamic Island */
   .device.iphone .island {
@@ -193,6 +198,7 @@
           <div class="island" aria-hidden="true"></div>
           <div class="punch" aria-hidden="true"></div>
           <img id="shot" alt="" src="">
+          <video id="demo" muted playsinline loop preload="metadata" poster="shots/app-demo-poster.jpg" hidden></video>
         </div>
       </div>
 
@@ -219,6 +225,7 @@
 
 <script>
   const SCREENS = [
+    { id: 'demo', label: 'تشغيل حقيقي', type: 'video', src: 'shots/app-demo.mp4', caption: 'تشغيل حقيقي للتطبيق من الجهاز' },
     { id: 'home',     label: 'الرئيسية',  src: 'shots/home.jpg',      caption: 'الرئيسية: فروعنا والتدريب اليوم' },
     { id: 'branches', label: 'الفروع',    src: 'shots/branches.jpg',  caption: 'الفروع: بطاقات بالصور وأوقات التدريب' },
     { id: 'schedule', label: 'الجدول',    src: 'shots/schedule.jpg',  caption: 'الجدول: أيام التدريب والملاعب' },
@@ -237,6 +244,7 @@
 
   const $ = (id) => document.getElementById(id);
   const shot = $('shot');
+  const demo = $('demo');
   const label = $('label');
   const caption = $('caption');
   const tabs = $('tabs');
@@ -267,6 +275,23 @@
   function show(i) {
     current = (i + SCREENS.length) % SCREENS.length;
     const s = SCREENS[current];
+    if (s.type === 'video') {
+      shot.hidden = true;
+      demo.hidden = false;
+      demo.currentTime = 0;
+      demo.play().catch(() => {});
+    } else {
+      demo.pause();
+      demo.hidden = true;
+      shot.hidden = false;
+    }
+    if (s.type === 'video') {
+      label.textContent = s.label;
+      caption.textContent = s.caption;
+      [...tabs.children].forEach((b, k) => b.setAttribute('aria-pressed', String(k === current)));
+      [...dots.children].forEach((b, k) => b.setAttribute('aria-current', String(k === current)));
+      return;
+    }
     shot.classList.add('swap');
     setTimeout(() => {
       shot.src = s.src;
@@ -291,6 +316,7 @@
     const inner = $('allInner');
     inner.innerHTML = '';
     SCREENS.forEach((s) => {
+      if (s.type === 'video') return;
       const wrap = document.createElement('div');
       wrap.style.textAlign = 'center';
       wrap.innerHTML =
