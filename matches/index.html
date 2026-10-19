@@ -461,6 +461,22 @@
   .live-sheet.open .live-sheet__body{opacity:1}
   .live-sheet iframe{width:100%;height:100%;border:0;display:block}
 
+  /* ===== تمييز الفريق المفضل ===== */
+  .match--fav{
+    position:relative;overflow:hidden;
+    background:linear-gradient(100deg,#eef6ff,#fff 55%);
+    border:1px solid rgba(30,64,175,.35)!important;
+    box-shadow:0 0 0 1px rgba(30,64,175,.12) inset;
+  }
+  .match--fav::before{
+    content:"";position:absolute;top:0;right:0;bottom:0;width:4px;
+    background:linear-gradient(180deg,#1e40af,#2563eb);
+    border-radius:0 11px 11px 0;
+  }
+  .team--fav{color:#1e40af}
+  .fav-star{display:inline-block;animation:favPulse 1.8s ease-in-out infinite}
+  @keyframes favPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+
   /* ===== زر الاحتفال بالفوز ===== */
   .team--celebrate{cursor:pointer;position:relative;transition:transform .15s ease;user-select:none}
   .team--celebrate:active{transform:scale(.93)}
@@ -1353,10 +1369,30 @@ var EXTRA_MATCHES = [
   { date: '2026-10-15', league: 'دوري المؤتمر الأوروبي', badge: 'UECL',
     time: '07:45 PM', home: 'سسكا صوفيا', away: 'موناكو', channel: 'beIN SPORTS 5', commentator: 'محمد مبروكي' },
   { date: '2026-10-15', league: 'دوري المؤتمر الأوروبي', badge: 'UECL',
-    time: '10:00 PM', home: 'أتالانتا', away: 'بافوس', channel: 'beIN SPORTS 6', commentator: 'نوفل باشي' }
+    time: '10:00 PM', home: 'أتالانتا', away: 'بافوس', channel: 'beIN SPORTS 6', commentator: 'نوفل باشي' },
+
+  /* ===== الاثنين ١٩ أكتوبر ٢٠٢٦ (المصدر: عالم كورة) ===== */
+  { date: '2026-10-19', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
+    time: '06:05 PM', home: 'الفيحاء', away: 'الأهلي', channel: 'ثمانية', commentator: 'مشاري القرني' },
+  { date: '2026-10-19', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
+    time: '09:00 PM', home: 'الهلال', away: 'الحزم', channel: 'ثمانية', commentator: 'عبدالله الحربي' },
+  { date: '2026-10-19', league: 'دوري روشن السعودي', badge: 'RSL', featured: true,
+    time: '09:00 PM', home: 'الشباب', away: 'الفيصلي', channel: 'ثمانية', commentator: 'خالد المديفر' },
+
+  { date: '2026-10-19', league: 'الدوري الإنجليزي الممتاز', badge: 'PL',
+    time: '10:00 PM', home: 'توتنهام', away: 'كوفنتري', channel: 'beIN SPORTS 1', commentator: 'حسن العيدروس' },
+
+  { date: '2026-10-19', league: 'الدوري الإيطالي', badge: 'SA',
+    time: '07:30 PM', home: 'مونزا', away: 'كالياري', channel: 'STARZPLAY', commentator: 'أحمد الحامد' },
+  { date: '2026-10-19', league: 'الدوري الإيطالي', badge: 'SA',
+    time: '09:45 PM', home: 'بارما', away: 'تورينو', channel: 'STARZPLAY', commentator: 'حازم عبد السلام' },
+
+  { date: '2026-10-19', league: 'الدوري الإسباني', badge: 'LL',
+    time: '10:00 PM', home: 'خيتافي', away: 'رايو فاليكانو', channel: 'beIN SPORTS 3', commentator: 'باسم الزير' }
 ];
 
 var LEAGUES = [];
+var FAV_TEAM = 'الهلال'; /* الفريق المفضل — يبرز بإطار ونجمة أينما ظهر */
 var collapsedLeagues = {};
 var collapsedChannels = {};
 var DATA_SOURCE = "";
@@ -1478,10 +1514,12 @@ function render(){
         }
         var homeTeamHtml = m.celebrate
           ? '<div class="team team--celebrate" data-celebrate="1" role="button" tabindex="0">' + m.home + ' <span class="celebrate-badge">🏆</span></div>'
-          : '<div class="team">' + m.home + '</div>';
-        return '<div class="match">' + timeCell +
+          : '<div class="team' + (m.home === FAV_TEAM ? ' team--fav' : '') + '">' + m.home + (m.home === FAV_TEAM ? ' <span class="fav-star">⭐</span>' : '') + '</div>';
+        var awayTeamHtml = '<div class="team' + (m.away === FAV_TEAM ? ' team--fav' : '') + '">' + m.away + (m.away === FAV_TEAM ? ' <span class="fav-star">⭐</span>' : '') + '</div>';
+        var isFavMatch = m.home === FAV_TEAM || m.away === FAV_TEAM;
+        return '<div class="match' + (isFavMatch ? ' match--fav' : '') + '">' + timeCell +
           homeTeamHtml + midCell +
-          '<div class="team">' + m.away + "</div>" + chanRow + streamRow + goalsRow + watchBtn + "</div>";
+          awayTeamHtml + chanRow + streamRow + goalsRow + watchBtn + "</div>";
       }).join("");
     root.appendChild(sec);
   });
