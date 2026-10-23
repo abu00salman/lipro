@@ -111,25 +111,6 @@
     transition:transform .15s ease;
   }
   .theme-btn:active{transform:scale(.88) rotate(25deg)}
-  .skin-row{
-    display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
-    margin:4px 0 2px;
-  }
-  .skin-btn{
-    display:inline-flex;align-items:center;gap:7px;
-    background:#fff;border:1px solid rgba(27,94,75,.2);
-    border-radius:999px;padding:6px 14px;cursor:pointer;
-    font-family:'Cairo',sans-serif;font-weight:800;font-size:12px;color:#444;
-    box-shadow:0 2px 6px rgba(18,63,53,.08);
-    transition:transform .15s ease;
-  }
-  .skin-btn:active{transform:scale(.94)}
-  .skin-btn__dot{width:9px;height:9px;border-radius:50%;flex:none}
-  .skin-btn--apple .skin-btn__dot{background:linear-gradient(135deg,#0071e3,#1d1d1f)}
-  .skin-btn--samsung .skin-btn__dot{background:linear-gradient(135deg,#1428a0,#00aef0)}
-  .skin-btn.active{color:#fff}
-  .skin-btn--apple.active{background:linear-gradient(135deg,#1d1d1f,#0071e3);border-color:#0071e3}
-  .skin-btn--samsung.active{background:linear-gradient(135deg,#0a0a0a,#1428a0);border-color:#1428a0}
   .share-toast{
     position:absolute;
     top:calc(100% + 8px);
@@ -632,24 +613,6 @@
     .team{font-size:15px}
     .time{font-size:13px}
   }
-
-  /* ===== هوية Apple — زوايا ناعمة جدًا، تباعد مريح، تباين هادئ ===== */
-  body.skin-apple .frame{border-radius:26px}
-  body.skin-apple .match{border-radius:20px;border-color:rgba(0,113,227,.18);background:#fbfbfd}
-  body.skin-apple .league{border-radius:24px;box-shadow:0 10px 28px -16px rgba(0,0,0,.18)}
-  body.skin-apple .league-head{border-radius:16px}
-  body.skin-apple .time{border-radius:999px;font-weight:700}
-  body.skin-apple .watch, body.skin-apple .share-btn{border-radius:999px}
-  body.skin-apple .date-pill{border-radius:999px;letter-spacing:.3px}
-
-  /* ===== هوية Samsung (One UI) — بطاقات مربعة الزوايا، تلوين جانبي جريء ===== */
-  body.skin-samsung .frame{border-radius:14px}
-  body.skin-samsung .match{border-radius:10px;border-inline-start:4px solid var(--green-700)}
-  body.skin-samsung .league{border-radius:12px}
-  body.skin-samsung .league-head{border-radius:4px;font-weight:900}
-  body.skin-samsung .time{border-radius:8px;font-weight:900}
-  body.skin-samsung .watch, body.skin-samsung .share-btn{border-radius:10px}
-  body.skin-samsung .date-pill{border-radius:8px}
 </style>
 </head>
 <body>
@@ -664,11 +627,6 @@
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
-  </div>
-
-  <div class="skin-row">
-    <button class="skin-btn skin-btn--apple" id="skinApple" type="button"><span class="skin-btn__dot"></span>تصميم Apple</button>
-    <button class="skin-btn skin-btn--samsung" id="skinSamsung" type="button"><span class="skin-btn__dot"></span>تصميم Samsung</button>
   </div>
 
   <header>
@@ -2049,69 +2007,36 @@ function tick(){
   });
 })();
 
-/* ===== أزرار تغيير الألوان والهوية (Apple / Samsung) ===== */
+/* ===== زر تغيير الألوان ===== */
 (function(){
   var btn = document.getElementById("themeBtn");
-  var appleBtn = document.getElementById("skinApple");
-  var samsungBtn = document.getElementById("skinSamsung");
   if (!btn) return;
-
-  var CYCLE = [
-    { key: "c0", label: "أخضر وذهبي", icon: "🎨", vars: { "--green-900":"#123f35", "--green-700":"#1b5e4b", "--green-600":"#20705a", "--gold-500":"#c39a2f", "--gold-400":"#d4ad45" } },
-    { key: "c1", label: "كحلي وذهبي", icon: "💙", vars: { "--green-900":"#0b2a4a", "--green-700":"#14406e", "--green-600":"#1a5290", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
-    { key: "c2", label: "عنابي وذهبي", icon: "❤️", vars: { "--green-900":"#4a0e14", "--green-700":"#6e171f", "--green-600":"#8a1e27", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
-    { key: "c3", label: "بنفسجي وذهبي", icon: "💜", vars: { "--green-900":"#2a1045", "--green-700":"#3f1968", "--green-600":"#512186", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } }
+  var THEMES = [
+    { label: "أخضر وذهبي", icon: "🎨", vars: { "--green-900":"#123f35", "--green-700":"#1b5e4b", "--green-600":"#20705a", "--gold-500":"#c39a2f", "--gold-400":"#d4ad45" } },
+    { label: "كحلي وذهبي", icon: "💙", vars: { "--green-900":"#0b2a4a", "--green-700":"#14406e", "--green-600":"#1a5290", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
+    { label: "عنابي وذهبي", icon: "❤️", vars: { "--green-900":"#4a0e14", "--green-700":"#6e171f", "--green-600":"#8a1e27", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
+    { label: "بنفسجي وذهبي", icon: "💜", vars: { "--green-900":"#2a1045", "--green-700":"#3f1968", "--green-600":"#512186", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } }
   ];
-  var SKINS = {
-    apple:   { icon: "🎨", label: "أخضر وذهبي", vars: { "--green-900":"#1d1d1f", "--green-700":"#0071e3", "--green-600":"#147ce5", "--gold-500":"#86868b", "--gold-400":"#a1a1a6" } },
-    samsung: { icon: "🎨", label: "أخضر وذهبي", vars: { "--green-900":"#0a0a0a", "--green-700":"#1428a0", "--green-600":"#1e3fc4", "--gold-500":"#00aef0", "--gold-400":"#39c3f5" } }
-  };
+  var KEY = "lipro_matches_theme";
+  var idx = 0;
+  try { idx = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) {}
+  if (!THEMES[idx]) idx = 0;
 
-  var KEY = "lipro_matches_style";
-  var cycleIdx = 0;
-
-  function applyVars(vars){
-    Object.keys(vars).forEach(function(k){ document.documentElement.style.setProperty(k, vars[k]); });
-  }
-  function clearSkinClasses(){
-    document.body.classList.remove("skin-apple", "skin-samsung");
-  }
-  function updateSkinButtons(active){
-    if (appleBtn) appleBtn.classList.toggle("active", active === "apple");
-    if (samsungBtn) samsungBtn.classList.toggle("active", active === "samsung");
+  function applyTheme(i){
+    var theme = THEMES[i];
+    Object.keys(theme.vars).forEach(function(k){
+      document.documentElement.style.setProperty(k, theme.vars[k]);
+    });
+    btn.textContent = theme.icon;
+    btn.title = theme.label;
   }
 
-  function applyStyle(value, save){
-    if (value === "apple" || value === "samsung") {
-      clearSkinClasses();
-      document.body.classList.add("skin-" + value);
-      applyVars(SKINS[value].vars);
-      btn.textContent = SKINS[value].icon;
-      btn.title = SKINS[value].label;
-      updateSkinButtons(value);
-    } else {
-      var i = CYCLE.findIndex(function(t){ return t.key === value; });
-      if (i < 0) i = 0;
-      cycleIdx = i;
-      clearSkinClasses();
-      applyVars(CYCLE[i].vars);
-      btn.textContent = CYCLE[i].icon;
-      btn.title = CYCLE[i].label;
-      updateSkinButtons(null);
-    }
-    if (save) { try { localStorage.setItem(KEY, value); } catch (e) {} }
-  }
-
-  var saved = "c0";
-  try { saved = localStorage.getItem(KEY) || "c0"; } catch (e) {}
-  applyStyle(saved, false);
-
+  applyTheme(idx);
   btn.addEventListener("click", function(){
-    cycleIdx = (cycleIdx + 1) % CYCLE.length;
-    applyStyle(CYCLE[cycleIdx].key, true);
+    idx = (idx + 1) % THEMES.length;
+    applyTheme(idx);
+    try { localStorage.setItem(KEY, String(idx)); } catch (e) {}
   });
-  if (appleBtn) appleBtn.addEventListener("click", function(){ applyStyle("apple", true); });
-  if (samsungBtn) samsungBtn.addEventListener("click", function(){ applyStyle("samsung", true); });
 })();
 </script>
 
