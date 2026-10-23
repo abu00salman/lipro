@@ -2291,7 +2291,7 @@ function tick(){
     updateScoreUI();
     playGoalSound();
     var label = document.getElementById("goalScorerLabel");
-    if (label) label.textContent = scorer === "blue" ? "🔵 الفريق الأزرق يسجّل!" : "🔴 الفريق البرتقالي يسجّل!";
+    if (label) label.textContent = scorer === "blue" ? "🔵 الفريق الأزرق يسجّل!" : "🔴 الفريق الأحمر يسجّل!";
     spawnGoalSparks();
     goalFlash.classList.add("show");
     canvas.classList.add("celebrating");
