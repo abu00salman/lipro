@@ -111,6 +111,27 @@
     transition:transform .15s ease;
   }
   .theme-btn:active{transform:scale(.88) rotate(25deg)}
+  .game-btn{
+    display:inline-flex;align-items:center;gap:7px;
+    background:linear-gradient(135deg,#0b3c8a,#1456c7 55%,#0b3c8a);
+    border:1px solid var(--gold-500);
+    border-radius:999px;padding:6px 14px 6px 8px;cursor:pointer;
+    box-shadow:0 4px 14px -6px rgba(11,60,138,.6);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .game-btn:active{transform:scale(.95)}
+  .game-btn.is-on{box-shadow:0 0 0 2px rgba(195,154,47,.5), 0 4px 18px -4px rgba(11,60,138,.8)}
+  .game-btn__icon{width:22px;height:22px;object-fit:contain;flex:none}
+  .game-btn__label{color:#fff;font-family:'Cairo',sans-serif;font-weight:800;font-size:11.5px;white-space:nowrap}
+  .game-btn:disabled{opacity:.55;cursor:not-allowed}
+
+  .rocket-canvas{
+    position:fixed;inset:0;z-index:150;
+    width:100%;height:100%;
+    pointer-events:none;
+    display:none;
+  }
+  .rocket-canvas.show{display:block}
   .share-toast{
     position:absolute;
     top:calc(100% + 8px);
@@ -624,6 +645,10 @@
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
       <button class="theme-btn" id="themeBtn" type="button" aria-label="تغيير الألوان">🎨</button>
+      <button class="game-btn" id="gameToggle" type="button" aria-pressed="false">
+        <img src="game-assets/icon.png" alt="" class="game-btn__icon">
+        <span class="game-btn__label">🚗⚽ لعبة السيارات</span>
+      </button>
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
@@ -644,6 +669,9 @@
     <div class="site-pill">🌐 www.liproacademy.com</div>
   </footer>
 </div>
+
+<!-- لعبة السيارات والكرة — طبقة عائمة فوق الصفحة، لا تعترض اللمس -->
+<canvas id="rocketCanvas" class="rocket-canvas" aria-hidden="true"></canvas>
 
 <!-- نافذة تشغيل مقاطع الأهداف -->
 <div class="video-lightbox" id="videoLightbox">
@@ -2036,6 +2064,231 @@ function tick(){
     idx = (idx + 1) % THEMES.length;
     applyTheme(idx);
     try { localStorage.setItem(KEY, String(idx)); } catch (e) {}
+  });
+})();
+
+/* ===================================================================
+   لعبة السيارات والكرة — طبقة Canvas عائمة، بدون أي تعارض مع الصفحة
+   =================================================================== */
+(function(){
+  var btn = document.getElementById("gameToggle");
+  var canvas = document.getElementById("rocketCanvas");
+  if (!btn || !canvas || !canvas.getContext) return;
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    btn.disabled = true;
+    btn.title = "الحركة معطّلة حسب إعدادات تقليل الحركة في جهازك";
+    return;
+  }
+
+  var ctx = canvas.getContext("2d");
+  var running = false;
+  var rafId = null;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0;
+  var imgsLoaded = false;
+  var imgBlue = new Image(), imgOrange = new Image(), imgBall = new Image();
+
+  function loadImages(then){
+    if (imgsLoaded) { then(); return; }
+    var remaining = 3;
+    function done(){ remaining--; if (remaining === 0) { imgsLoaded = true; then(); } }
+    imgBlue.onload = done; imgOrange.onload = done; imgBall.onload = done;
+    imgBlue.onerror = imgOrange.onerror = imgBall.onerror = done;
+    imgBlue.src = "game-assets/blue-car.png";
+    imgOrange.src = "game-assets/orange-car.png";
+    imgBall.src = "game-assets/ball.png";
+  }
+
+  function resize(){
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  var CAR_W = 74, CAR_H = CAR_W * (147 / 320);
+  var BALL_R = 17;
+  var MAX_SPEED = 3.1, BOOST_SPEED = 5.6, TURN_RATE = 0.065, ACCEL = 0.16;
+
+  function makeCar(img, startX, startY){
+    return {
+      img: img, x: startX, y: startY, vx: 0, vy: 0,
+      angle: Math.random() * Math.PI * 2,
+      boostUntil: 0, nextBoostCheck: performance.now() + 1500 + Math.random() * 2000,
+      flashUntil: 0
+    };
+  }
+
+  var ball, carBlue, carOrange, trail;
+
+  function resetEntities(){
+    ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 };
+    carBlue = makeCar(imgBlue, W * 0.25, H * 0.3);
+    carOrange = makeCar(imgOrange, W * 0.75, H * 0.7);
+    trail = [];
+  }
+
+  function angleDiff(a, b){
+    var d = (b - a) % (Math.PI * 2);
+    if (d > Math.PI) d -= Math.PI * 2;
+    if (d < -Math.PI) d += Math.PI * 2;
+    return d;
+  }
+
+  function stepCar(car, now){
+    var boosting = now < car.boostUntil;
+    if (now > car.nextBoostCheck) {
+      car.nextBoostCheck = now + 2200 + Math.random() * 2600;
+      if (Math.random() < 0.55) car.boostUntil = now + 700 + Math.random() * 700;
+    }
+    var maxSpd = boosting ? BOOST_SPEED : MAX_SPEED;
+
+    var desired = Math.atan2(ball.y - car.y, ball.x - car.x);
+    car.angle += angleDiff(car.angle, desired) * TURN_RATE;
+
+    var ax = Math.cos(car.angle) * ACCEL * (boosting ? 1.8 : 1);
+    var ay = Math.sin(car.angle) * ACCEL * (boosting ? 1.8 : 1);
+    car.vx += ax; car.vy += ay;
+    var spd = Math.hypot(car.vx, car.vy);
+    if (spd > maxSpd) { car.vx = car.vx / spd * maxSpd; car.vy = car.vy / spd * maxSpd; }
+    car.vx *= 0.985; car.vy *= 0.985;
+    car.x += car.vx; car.y += car.vy;
+
+    var margin = CAR_W * 0.42;
+    if (car.x < margin) { car.x = margin; car.vx = Math.abs(car.vx) * 0.6; }
+    if (car.x > W - margin) { car.x = W - margin; car.vx = -Math.abs(car.vx) * 0.6; }
+    if (car.y < margin) { car.y = margin; car.vy = Math.abs(car.vy) * 0.6; }
+    if (car.y > H - margin) { car.y = H - margin; car.vy = -Math.abs(car.vy) * 0.6; }
+
+    var dx = ball.x - car.x, dy = ball.y - car.y;
+    var dist = Math.hypot(dx, dy);
+    var hitDist = CAR_W * 0.4 + BALL_R;
+    if (dist < hitDist && dist > 0.01) {
+      var nx = dx / dist, ny = dy / dist;
+      var power = (boosting ? 7.5 : 4.5) + Math.hypot(car.vx, car.vy);
+      ball.vx += nx * power * 0.5;
+      ball.vy += ny * power * 0.5;
+      var push = hitDist - dist;
+      car.x -= nx * push; car.y -= ny * push;
+      car.flashUntil = now + 160;
+      if (trail.length < 60) trail.push({ x: ball.x, y: ball.y, life: 1 });
+    }
+  }
+
+  function stepBall(){
+    ball.x += ball.vx; ball.y += ball.vy;
+    ball.vx *= 0.992; ball.vy *= 0.992;
+    if (ball.x < BALL_R) { ball.x = BALL_R; ball.vx = Math.abs(ball.vx) * 0.85; }
+    if (ball.x > W - BALL_R) { ball.x = W - BALL_R; ball.vx = -Math.abs(ball.vx) * 0.85; }
+    if (ball.y < BALL_R) { ball.y = BALL_R; ball.vy = Math.abs(ball.vy) * 0.85; }
+    if (ball.y > H - BALL_R) { ball.y = H - BALL_R; ball.vy = -Math.abs(ball.vy) * 0.85; }
+  }
+
+  function drawCar(car, now){
+    var boosting = now < car.boostUntil;
+    ctx.save();
+    ctx.translate(car.x, car.y);
+    if (boosting) {
+      ctx.save();
+      ctx.globalAlpha = 0.55 + Math.sin(now / 60) * 0.15;
+      var grad = ctx.createRadialGradient(0, 0, 2, 0, 0, CAR_W * 0.75);
+      grad.addColorStop(0, "rgba(255,210,120,.9)");
+      grad.addColorStop(1, "rgba(255,210,120,0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(0, 0, CAR_W * 0.75, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+    if (now < car.flashUntil) {
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(0, 0, CAR_W * 0.55, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+    ctx.rotate(car.angle);
+    ctx.drawImage(car.img, -CAR_W / 2, -CAR_H / 2, CAR_W, CAR_H);
+    ctx.restore();
+  }
+
+  function drawBall(now){
+    ctx.save();
+    ctx.translate(ball.x, ball.y);
+    ctx.rotate((ball.x + ball.y + now / 40) * 0.01);
+    var r = BALL_R;
+    ctx.drawImage(imgBall, -r, -r, r * 2, r * 2);
+    ctx.restore();
+  }
+
+  function drawTrail(){
+    for (var i = trail.length - 1; i >= 0; i--) {
+      var p = trail[i];
+      ctx.save();
+      ctx.globalAlpha = Math.max(p.life, 0) * 0.35;
+      ctx.fillStyle = "#f5c558";
+      ctx.beginPath(); ctx.arc(p.x, p.y, BALL_R * 0.9, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      p.life -= 0.05;
+      if (p.life <= 0) trail.splice(i, 1);
+    }
+  }
+
+  function loop(ts){
+    if (!running) return;
+    var now = performance.now();
+    stepCar(carBlue, now);
+    stepCar(carOrange, now);
+    stepBall();
+    ctx.clearRect(0, 0, W, H);
+    drawTrail();
+    drawCar(carBlue, now);
+    drawCar(carOrange, now);
+    drawBall(now);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function start(){
+    if (running) return;
+    loadImages(function(){
+      resize();
+      resetEntities();
+      running = true;
+      canvas.classList.add("show");
+      btn.classList.add("is-on");
+      btn.setAttribute("aria-pressed", "true");
+      btn.querySelector(".game-btn__label").textContent = "⏹ إيقاف اللعبة";
+      rafId = requestAnimationFrame(loop);
+    });
+  }
+
+  function stop(){
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    canvas.classList.remove("show");
+    btn.classList.remove("is-on");
+    btn.setAttribute("aria-pressed", "false");
+    btn.querySelector(".game-btn__label").textContent = "🚗⚽ لعبة السيارات";
+  }
+
+  btn.addEventListener("click", function(){ running ? stop() : start(); });
+
+  window.addEventListener("resize", function(){
+    if (!running) return;
+    var oldW = W, oldH = H;
+    resize();
+    if (ball) { ball.x = ball.x / oldW * W; ball.y = ball.y / oldH * H; }
+    [carBlue, carOrange].forEach(function(c){ if (c) { c.x = c.x / oldW * W; c.y = c.y / oldH * H; } });
+  });
+
+  document.addEventListener("visibilitychange", function(){
+    if (!running) return;
+    if (document.hidden) { if (rafId) cancelAnimationFrame(rafId); rafId = null; }
+    else if (!rafId) { rafId = requestAnimationFrame(loop); }
   });
 })();
 </script>
