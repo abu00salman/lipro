@@ -100,6 +100,17 @@
     box-shadow:0 2px 6px rgba(18,63,53,.15);
   }
   .share-btn:disabled{opacity:.65;cursor:wait}
+  .theme-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;flex:none;
+    background:rgba(255,255,255,.9);
+    border:1px solid rgba(27,94,75,.25);
+    border-radius:50%;
+    font-size:15px;cursor:pointer;
+    box-shadow:0 2px 6px rgba(18,63,53,.1);
+    transition:transform .15s ease;
+  }
+  .theme-btn:active{transform:scale(.88) rotate(25deg)}
   .share-toast{
     position:absolute;
     top:calc(100% + 8px);
@@ -253,7 +264,7 @@
     box-shadow:0 4px 12px rgba(195,154,47,.4);
   }
   .league--featured .league-head{
-    background:linear-gradient(100deg,#04452A,#046A38 55%,#035F32);
+    background:linear-gradient(100deg,var(--green-900),var(--green-700) 55%,var(--green-900));
     font-size:19px;padding:10px 14px;
   }
   .league--featured .league-badge{background:var(--gold-500);color:#fff;font-size:17px}
@@ -602,148 +613,9 @@
     .team{font-size:15px}
     .time{font-size:13px}
   }
-
-  /* ===================================================================
-     التصميم العصري (اختياري) — نفس البيانات، طريقة عرض مختلفة فقط
-     =================================================================== */
-  .view-toggle{
-    position:fixed;top:14px;left:14px;z-index:500;
-    display:inline-flex;align-items:center;gap:7px;
-    background:var(--green-900);color:#fff;border:1px solid rgba(212,173,69,.5);
-    border-radius:999px;padding:9px 16px;cursor:pointer;
-    font-family:'Cairo',sans-serif;font-weight:800;font-size:12.5px;
-    box-shadow:0 8px 20px -8px rgba(0,0,0,.45);
-    transition:transform .15s ease, background .2s ease;
-  }
-  .view-toggle:active{transform:scale(.95)}
-  .view-toggle.is-modern{background:linear-gradient(135deg,var(--gold-500),#a9821f);color:#123f35}
-
-  .modern{
-    display:none;min-height:100vh;background:#f7f8fa;
-    font-family:'Cairo',sans-serif;direction:rtl;
-    padding:70px 16px 40px;
-  }
-  .modern.show{display:block}
-  .modern__head{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px}
-  .modern__logo{width:46px;height:46px;object-fit:contain}
-  .modern__brand-ar{font-weight:900;font-size:15px;color:var(--green-900)}
-  .modern__brand-en{font-weight:700;font-size:10px;letter-spacing:2px;color:var(--gold-500)}
-  .modern__title{
-    text-align:center;font-weight:900;font-size:32px;color:var(--green-900);
-    margin:8px 0 18px;
-  }
-  .modern__dates{
-    display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;margin-bottom:6px;
-    scrollbar-width:none;
-  }
-  .modern__dates::-webkit-scrollbar{display:none}
-  .modern-date{
-    flex:none;min-width:68px;text-align:center;cursor:pointer;
-    background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:9px 6px;
-    font-weight:800;color:#555;transition:all .15s ease;
-  }
-  .modern-date__day{font-size:11px;opacity:.8}
-  .modern-date__num{font-size:17px;margin-top:2px}
-  .modern-date.active{
-    background:linear-gradient(135deg,var(--green-700),var(--green-900));
-    color:#fff;border-color:var(--green-900);
-    box-shadow:0 8px 18px -10px rgba(18,63,53,.6);
-  }
-  .modern__loading, .modern__empty{text-align:center;color:#888;font-weight:700;padding:40px 0}
-
-  .modern-league{
-    background:#fff;border:1px solid #edeef0;border-radius:18px;
-    margin-bottom:16px;overflow:hidden;
-    box-shadow:0 2px 10px -6px rgba(0,0,0,.08);
-  }
-  .modern-league__head{
-    display:flex;align-items:center;gap:10px;padding:13px 16px;
-    background:linear-gradient(90deg,var(--green-900),var(--green-700));color:#fff;
-  }
-  .modern-league__head.featured{background:linear-gradient(90deg,#a9821f,var(--gold-500))}
-  .modern-league__badge{
-    width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.2);
-    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;flex:none;
-  }
-  .modern-league__name{font-weight:800;font-size:14.5px}
-
-  .modern-card{
-    display:flex;align-items:center;gap:10px;padding:13px 16px;
-    border-top:1px solid #f1f1f3;cursor:pointer;transition:background .15s ease;
-  }
-  .modern-card:hover{background:#fafbfc}
-  .modern-card.is-fav{background:linear-gradient(90deg,#eef6ff,#fff 60%);box-shadow:inset 3px 0 0 #1e40af}
-  .modern-crest{
-    width:34px;height:34px;border-radius:50%;flex:none;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:900;font-size:12px;color:#fff;
-    background:linear-gradient(135deg,var(--green-700),var(--green-900));
-  }
-  .modern-crest.alt{background:linear-gradient(135deg,var(--gold-500),#a9821f);color:#123f35}
-  .modern-teams{flex:1;min-width:0}
-  .modern-teams__row{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px;color:#1a1a1a;margin-bottom:4px}
-  .modern-teams__row:last-child{margin-bottom:0}
-  .modern-teams__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .modern-teams__name.fav{color:#1e40af}
-  .modern-score{font-weight:900;font-size:13px;color:var(--green-900);min-width:18px;text-align:center}
-  .modern-meta{flex:none;text-align:left;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-  .modern-time{
-    font-size:11.5px;font-weight:800;color:#fff;background:var(--gold-500);
-    border-radius:7px;padding:3px 9px;direction:ltr;
-  }
-  .modern-time.live{background:#e8453f;display:flex;align-items:center;gap:4px}
-  .modern-time.live .dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:modernPulse 1.2s infinite}
-  @keyframes modernPulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .modern-chan{font-size:10.5px;color:#888;font-weight:700}
-
-  .modern-modal{
-    position:fixed;inset:0;z-index:600;background:rgba(10,20,18,.55);
-    display:flex;align-items:flex-end;justify-content:center;
-    opacity:0;pointer-events:none;transition:opacity .25s ease;
-  }
-  .modern-modal.open{opacity:1;pointer-events:auto}
-  .modern-modal__sheet{
-    width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;
-    padding:22px 20px 28px;max-height:82vh;overflow-y:auto;
-    transform:translateY(16px);transition:transform .3s cubic-bezier(.32,1.2,.4,1);
-    font-family:'Cairo',sans-serif;
-  }
-    @media (min-width:640px){
-      .modern-modal{align-items:center}
-      .modern-modal__sheet{border-radius:22px;transform:scale(.96);max-width:420px}
-      .modern-modal.open .modern-modal__sheet{transform:scale(1)}
-    }
-  .modern-modal.open .modern-modal__sheet{transform:translateY(0)}
-  .modern-modal__close{
-    display:block;margin-right:auto;width:32px;height:32px;border-radius:50%;
-    background:#f1f1f3;border:none;font-size:15px;font-weight:900;color:#444;cursor:pointer;
-  }
-  .modern-modal__teams{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 6px}
-  .modern-modal__crest{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;color:#fff;background:linear-gradient(135deg,var(--green-700),var(--green-900))}
-  .modern-modal__crest.alt{background:linear-gradient(135deg,var(--gold-500),#a9821f);color:#123f35}
-  .modern-modal__vs{font-weight:900;color:#999;font-size:13px}
-  .modern-modal__name{text-align:center;font-weight:800;font-size:13px;margin-top:6px;max-width:120px}
-  .modern-modal__score{text-align:center;font-weight:900;font-size:26px;color:var(--green-900);margin:6px 0}
-  .modern-modal__info{
-    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0;
-  }
-  .modern-modal__pill{
-    background:#f3f4f6;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;color:#444;
-  }
-  .modern-modal__note{
-    text-align:center;font-size:12px;color:#999;font-weight:700;
-    background:#fafafa;border-radius:12px;padding:14px;margin-top:10px;
-  }
-
 </style>
 </head>
 <body>
-
-<!-- زر التبديل بين التصميمين — عائم فوق الاثنين -->
-<button class="view-toggle" id="viewToggle" type="button">
-  <span class="view-toggle__icon">✨</span>
-  <span class="view-toggle__label">التصميم العصري</span>
-</button>
 
 <div class="frame">
   <div class="ribbon"></div>
@@ -751,6 +623,7 @@
   <div class="topbar">
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="تغيير الألوان">🎨</button>
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
@@ -770,34 +643,6 @@
     <p class="tv-line">📺 شاهد الآن القنوات والمباريات على <a href="https://www.tv-pro.app" target="_blank" rel="noopener">www.tv-pro.app</a></p>
     <div class="site-pill">🌐 www.liproacademy.com</div>
   </footer>
-</div>
-
-<!-- ===== التصميم العصري (اختياري) ===== -->
-<div class="modern" id="modernRoot" hidden>
-  <div class="modern__head">
-    <img class="modern__logo" src="/logo-lipro.png" alt="ليبرو" onerror="this.remove()">
-    <div class="modern__brand">
-      <div class="modern__brand-ar">أكاديمية ليبرو الرياضية</div>
-      <div class="modern__brand-en">LIPRO ACADEMY</div>
-    </div>
-  </div>
-  <h1 class="modern__title">مباريات اليوم</h1>
-
-  <div class="modern__dates" id="modernDates"></div>
-
-  <div class="modern__body" id="modernBody">
-    <div class="modern__loading" id="modernLoading">⏳ جاري تحميل المباريات…</div>
-  </div>
-
-  <div class="modern__foot">
-    <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
-    <div class="site-pill">🌐 www.liproacademy.com</div>
-  </div>
-</div>
-
-<!-- تفاصيل المباراة (التصميم العصري) -->
-<div class="modern-modal" id="modernModal">
-  <div class="modern-modal__sheet" id="modernModalSheet"></div>
 </div>
 
 <!-- نافذة تشغيل مقاطع الأهداف -->
@@ -2162,191 +2007,36 @@ function tick(){
   });
 })();
 
-/* ===================================================================
-   التصميم العصري — نفس مصدر البيانات (EXTRA_MATCHES + ESPN)، عرض مختلف
-   =================================================================== */
+/* ===== زر تغيير الألوان ===== */
 (function(){
-  var toggleBtn = document.getElementById("viewToggle");
-  var modernRoot = document.getElementById("modernRoot");
-  var classicFrame = document.querySelector(".frame");
-  var datesEl = document.getElementById("modernDates");
-  var bodyEl = document.getElementById("modernBody");
-  var modal = document.getElementById("modernModal");
-  var modalSheet = document.getElementById("modernModalSheet");
-  if (!modernRoot || !toggleBtn) return;
+  var btn = document.getElementById("themeBtn");
+  if (!btn) return;
+  var THEMES = [
+    { label: "أخضر وذهبي", icon: "🎨", vars: { "--green-900":"#123f35", "--green-700":"#1b5e4b", "--green-600":"#20705a", "--gold-500":"#c39a2f", "--gold-400":"#d4ad45" } },
+    { label: "كحلي وذهبي", icon: "💙", vars: { "--green-900":"#0b2a4a", "--green-700":"#14406e", "--green-600":"#1a5290", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
+    { label: "عنابي وذهبي", icon: "❤️", vars: { "--green-900":"#4a0e14", "--green-700":"#6e171f", "--green-600":"#8a1e27", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } },
+    { label: "بنفسجي وذهبي", icon: "💜", vars: { "--green-900":"#2a1045", "--green-700":"#3f1968", "--green-600":"#512186", "--gold-500":"#c9a63c", "--gold-400":"#dcbb55" } }
+  ];
+  var KEY = "lipro_matches_theme";
+  var idx = 0;
+  try { idx = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) {}
+  if (!THEMES[idx]) idx = 0;
 
-  var VIEW_KEY = "lipro_matches_view";
-  var todayStr = riyadhDate(new Date());
-  var selectedDate = todayStr;
-  var cache = {}; /* ymd -> leagues[] */
-  var loadedOnce = false;
-
-  function crestInitial(name){ return (name || "?").trim().charAt(0); }
-
-  function buildModernLeagues(ymd, then){
-    if (cache[ymd]) { then(cache[ymd]); return; }
-    if (ymd === todayStr && typeof LEAGUES !== "undefined" && LEAGUES.length) {
-      /* أسرع مسار: اليوم الحالي مُحمّل أصلاً من التصميم الكلاسيكي */
-      cache[ymd] = LEAGUES;
-      then(LEAGUES);
-      return;
-    }
-    var codes = MATCH_LEAGUES.map(function(lg){ return lg.code; }).concat(EXTRA_SCORE_LEAGUES);
-    Promise.allSettled(codes.map(function(code){ return fetchLeagueDay(code, ymd); }))
-      .then(function(results){
-        var main = results.slice(0, MATCH_LEAGUES.length);
-        var built = buildFromEspn(main, ymd);
-        var liveMap = buildLiveMap(results, ymd);
-        var leagues = mergeExtra(built, ymd, liveMap);
-        cache[ymd] = leagues;
-        then(leagues);
-      })
-      .catch(function(){ then([]); });
+  function applyTheme(i){
+    var theme = THEMES[i];
+    Object.keys(theme.vars).forEach(function(k){
+      document.documentElement.style.setProperty(k, theme.vars[k]);
+    });
+    btn.textContent = theme.icon;
+    btn.title = theme.label;
   }
 
-  function dateLabel(d){
-    return d.toLocaleDateString("ar-SA-u-ca-gregory", { weekday: "short" });
-  }
-
-  function renderDateStrip(){
-    datesEl.innerHTML = "";
-    var base = riyadhNow();
-    for (var i = -2; i <= 3; i++){
-      var d = new Date(base);
-      d.setDate(d.getDate() + i);
-      var ymd = riyadhDate(d);
-      var chip = document.createElement("div");
-      chip.className = "modern-date" + (ymd === selectedDate ? " active" : "");
-      chip.dataset.ymd = ymd;
-      chip.innerHTML =
-        '<div class="modern-date__day">' + (i === 0 ? "اليوم" : dateLabel(d)) + '</div>' +
-        '<div class="modern-date__num">' + d.getDate() + '</div>';
-      chip.addEventListener("click", function(){
-        selectedDate = this.dataset.ymd;
-        renderDateStrip();
-        loadAndRender();
-      });
-      datesEl.appendChild(chip);
-    }
-  }
-
-  function teamRow(name, score, isFav, altCrest){
-    return '<div class="modern-teams__row">' +
-      '<span class="modern-crest' + (altCrest ? ' alt' : '') + '">' + crestInitial(name) + '</span>' +
-      '<span class="modern-teams__name' + (isFav ? ' fav' : '') + '">' + name + (isFav ? ' ⭐' : '') + '</span>' +
-      (score != null ? '<span class="modern-score">' + score + '</span>' : '') +
-      '</div>';
-  }
-
-  function cardHtml(m, leagueIdx, matchIdx){
-    var done = Array.isArray(m.score);
-    var live = selectedDate === todayStr && isLiveNow(m);
-    var isFav = m.home === FAV_TEAM || m.away === FAV_TEAM;
-    var timeHtml = live
-      ? '<span class="modern-time live"><span class="dot"></span>' + (m.minute || "مباشر") + '</span>'
-      : done
-        ? '<span class="modern-time">انتهت</span>'
-        : '<span class="modern-time">' + m.time + '</span>';
-    var info = MATCH_INFO[m.home + '|' + m.away] || MATCH_INFO[m.away + '|' + m.home] || {};
-    if (info.d && info.d !== selectedDate) info = {};
-    var chan = m.channel || info.ch || '';
-    return '<div class="modern-card' + (isFav ? ' is-fav' : '') + '" data-league="' + leagueIdx + '" data-match="' + matchIdx + '">' +
-      '<div class="modern-teams">' +
-        teamRow(m.home, done ? m.score[0] : null, m.home === FAV_TEAM, false) +
-        teamRow(m.away, done ? m.score[1] : null, m.away === FAV_TEAM, true) +
-      '</div>' +
-      '<div class="modern-meta">' + timeHtml + (chan ? '<span class="modern-chan">' + chan + '</span>' : '') + '</div>' +
-      '</div>';
-  }
-
-  var currentLeagues = [];
-
-  function renderModernBody(leagues){
-    currentLeagues = leagues || [];
-    if (!currentLeagues.length || !currentLeagues.some(function(l){ return l.matches.length; })) {
-      bodyEl.innerHTML = '<div class="modern__empty">لا توجد مباريات لهذا اليوم ⚽</div>';
-      return;
-    }
-    bodyEl.innerHTML = currentLeagues.map(function(league, leagueIdx){
-      if (!league.matches.length) return "";
-      return '<div class="modern-league">' +
-        '<div class="modern-league__head' + (league.featured ? ' featured' : '') + '">' +
-          '<span class="modern-league__badge">' + (league.badge || "⚽") + '</span>' +
-          '<span class="modern-league__name">' + league.name + '</span>' +
-        '</div>' +
-        league.matches.map(function(m, matchIdx){ return cardHtml(m, leagueIdx, matchIdx); }).join('') +
-        '</div>';
-    }).join('');
-  }
-
-  function loadAndRender(){
-    bodyEl.innerHTML = '<div class="modern__loading">⏳ جاري تحميل المباريات…</div>';
-    buildModernLeagues(selectedDate, renderModernBody);
-  }
-
-  function openModal(m){
-    var done = Array.isArray(m.score);
-    var info = MATCH_INFO[m.home + '|' + m.away] || MATCH_INFO[m.away + '|' + m.home] || {};
-    if (info.d && info.d !== selectedDate) info = {};
-    var chan = m.channel || info.ch || '';
-    var caster = m.commentator || info.caster || '';
-    modalSheet.innerHTML =
-      '<button class="modern-modal__close" id="modernModalClose" type="button">✕</button>' +
-      '<div class="modern-modal__teams">' +
-        '<div><div class="modern-modal__crest">' + crestInitial(m.home) + '</div><div class="modern-modal__name">' + m.home + '</div></div>' +
-        '<div class="modern-modal__vs">' + (done ? (m.score[0] + ' - ' + m.score[1]) : 'VS') + '</div>' +
-        '<div><div class="modern-modal__crest alt">' + crestInitial(m.away) + '</div><div class="modern-modal__name">' + m.away + '</div></div>' +
-      '</div>' +
-      '<div class="modern-modal__info">' +
-        '<span class="modern-modal__pill">🕐 ' + m.time + '</span>' +
-        (chan ? '<span class="modern-modal__pill">📺 ' + chan + '</span>' : '') +
-        (caster ? '<span class="modern-modal__pill">🎙 ' + caster + '</span>' : '') +
-      '</div>' +
-      '<div class="modern-modal__note">ℹ️ التشكيلة والإحصائيات التفصيلية تُعرض تلقائيًا عند توفرها من المصدر — غير متوفرة لهذه المباراة حاليًا.</div>';
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
-    document.getElementById("modernModalClose").addEventListener("click", closeModal);
-  }
-  function closeModal(){
-    modal.classList.remove("open");
-    document.body.style.overflow = "";
-  }
-  modal.addEventListener("click", function(e){ if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", function(e){
-    if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+  applyTheme(idx);
+  btn.addEventListener("click", function(){
+    idx = (idx + 1) % THEMES.length;
+    applyTheme(idx);
+    try { localStorage.setItem(KEY, String(idx)); } catch (e) {}
   });
-  bodyEl.addEventListener("click", function(e){
-    var card = e.target.closest(".modern-card");
-    if (!card) return;
-    var league = currentLeagues[Number(card.dataset.league)];
-    var m = league && league.matches[Number(card.dataset.match)];
-    if (m) openModal(m);
-  });
-
-  function setView(mode){
-    var isModern = mode === "modern";
-    modernRoot.hidden = !isModern;
-    modernRoot.classList.toggle("show", isModern);
-    classicFrame.style.display = isModern ? "none" : "";
-    toggleBtn.classList.toggle("is-modern", isModern);
-    toggleBtn.querySelector(".view-toggle__icon").textContent = isModern ? "📜" : "✨";
-    toggleBtn.querySelector(".view-toggle__label").textContent = isModern ? "التصميم الكلاسيكي" : "التصميم العصري";
-    try { localStorage.setItem(VIEW_KEY, mode); } catch (e) {}
-    if (isModern && !loadedOnce) {
-      loadedOnce = true;
-      renderDateStrip();
-      loadAndRender();
-    }
-  }
-
-  toggleBtn.addEventListener("click", function(){
-    var isModern = modernRoot.classList.contains("show");
-    setView(isModern ? "classic" : "modern");
-  });
-
-  var savedView = "classic";
-  try { savedView = localStorage.getItem(VIEW_KEY) || "classic"; } catch (e) {}
-  setView(savedView);
 })();
 </script>
 
