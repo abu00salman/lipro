@@ -111,21 +111,27 @@
     transition:transform .15s ease;
   }
   .theme-btn:active{transform:scale(.88) rotate(25deg)}
-  .game-btn-row{display:flex;justify-content:center;margin:2px 0 4px}
   .game-btn{
-    display:inline-flex;align-items:center;gap:6px;
-    background:radial-gradient(120% 160% at 30% 20%, #2a6bff, #0a1f6b 75%);
-    border:1px solid #4d8dff;
-    border-radius:999px;padding:5px 7px 5px 12px;cursor:pointer;
-    box-shadow:0 0 0 1px rgba(77,141,255,.25), 0 0 14px rgba(42,107,255,.55), 0 4px 10px -4px rgba(0,0,0,.5);
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;flex:none;
+    background:linear-gradient(90deg,var(--gold-500),var(--gold-400));
+    border:none;border-radius:50%;cursor:pointer;
+    font-size:14px;line-height:1;
+    box-shadow:0 2px 6px rgba(18,63,53,.15);
     transition:transform .15s ease, box-shadow .2s ease;
   }
-  .game-btn:active{transform:scale(.95)}
-  .game-btn.is-on{box-shadow:0 0 0 1px rgba(195,154,47,.5), 0 0 16px rgba(195,154,47,.6)}
-  .game-btn__icon{width:18px;height:18px;object-fit:contain;flex:none;filter:drop-shadow(0 0 4px rgba(77,141,255,.7))}
-  .game-btn__label{color:#fff;font-family:'Cairo',sans-serif;font-weight:800;font-size:11px;white-space:nowrap}
-  .game-btn__arrow{color:#9cc0ff;font-weight:900;font-size:13px;line-height:1}
+  .game-btn:active{transform:scale(.88)}
+  .game-btn.is-on{box-shadow:0 0 0 2px rgba(27,94,75,.3), 0 2px 10px rgba(18,63,53,.3)}
   .game-btn:disabled{opacity:.5;cursor:not-allowed}
+
+  .game-score{
+    position:fixed;top:10px;left:50%;transform:translateX(-50%);
+    z-index:160;background:rgba(10,20,18,.78);color:#fff;
+    font-family:'Cairo',sans-serif;font-weight:900;font-size:13px;
+    padding:5px 14px;border-radius:999px;letter-spacing:.3px;
+    border:1px solid rgba(212,173,69,.4);
+    pointer-events:none;direction:ltr;
+  }
 
   .rocket-canvas{
     position:fixed;inset:0;z-index:150;
@@ -134,6 +140,29 @@
     display:none;
   }
   .rocket-canvas.show{display:block}
+
+  .goal-flash{
+    position:fixed;inset:0;z-index:170;
+    display:flex;align-items:center;justify-content:center;
+    pointer-events:none;opacity:0;
+    transition:opacity .2s ease;
+  }
+  .goal-flash.show{opacity:1}
+  .goal-flash__text{
+    font-family:'Cairo',sans-serif;font-weight:900;
+    font-size:clamp(34px,10vw,64px);color:#fff;
+    text-shadow:0 0 20px rgba(245,197,88,.9), 0 0 40px rgba(255,80,40,.7), 0 6px 18px rgba(0,0,0,.5);
+    -webkit-text-stroke:1.5px rgba(18,63,53,.6);
+  }
+  .goal-flash.show .goal-flash__text{animation:goalShake .55s ease}
+  @keyframes goalShake{
+    0%{transform:scale(.4) rotate(-6deg);opacity:0}
+    30%{transform:scale(1.15) rotate(3deg);opacity:1}
+    50%{transform:translate(-6px,0) rotate(-2deg)}
+    65%{transform:translate(6px,0) rotate(2deg)}
+    80%{transform:translate(-3px,0) rotate(-1deg)}
+    100%{transform:scale(1) rotate(0);opacity:1}
+  }
   .share-toast{
     position:absolute;
     top:calc(100% + 8px);
@@ -647,18 +676,13 @@
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
       <button class="theme-btn" id="themeBtn" type="button" aria-label="تغيير الألوان">🎨</button>
+      <button class="game-btn" id="gameToggle" type="button" aria-pressed="false" aria-label="تشغيل لعبة السيارات والكرة" title="لعبة السيارات والكرة">🚗⚽</button>
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
   </div>
 
-  <div class="game-btn-row">
-    <button class="game-btn" id="gameToggle" type="button" aria-pressed="false">
-      <img src="game-assets/icon.png" alt="" class="game-btn__icon">
-      <span class="game-btn__label">العب الآن</span>
-      <span class="game-btn__arrow">›</span>
-    </button>
-  </div>
+  <div class="game-score" id="gameScore" hidden>🔵 0 - 0 🔴</div>
 
   <header>
     <!-- ضع شعار الأكاديمية هنا: بدّل src برابط الشعار في موقعك، أو احذف سطر img ليظهر الشعار النصي -->
@@ -678,6 +702,9 @@
 
 <!-- لعبة السيارات والكرة — طبقة عائمة فوق الصفحة، لا تعترض اللمس -->
 <canvas id="rocketCanvas" class="rocket-canvas" aria-hidden="true"></canvas>
+<div class="goal-flash" id="goalFlash" aria-hidden="true">
+  <div class="goal-flash__text">قووووول! ⚽🔥</div>
+</div>
 
 <!-- نافذة تشغيل مقاطع الأهداف -->
 <div class="video-lightbox" id="videoLightbox">
@@ -2079,6 +2106,8 @@ function tick(){
 (function(){
   var btn = document.getElementById("gameToggle");
   var canvas = document.getElementById("rocketCanvas");
+  var scoreEl = document.getElementById("gameScore");
+  var goalFlash = document.getElementById("goalFlash");
   if (!btn || !canvas || !canvas.getContext) return;
 
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2090,11 +2119,15 @@ function tick(){
 
   var ctx = canvas.getContext("2d");
   var running = false;
+  var celebrating = false;
   var rafId = null;
+  var celebrateTimer = null;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var W = 0, H = 0;
   var imgsLoaded = false;
   var imgBlue = new Image(), imgOrange = new Image(), imgBall = new Image();
+  var scoreBlue = 0, scoreOrange = 0;
+  var audioCtx = null;
 
   function loadImages(then){
     if (imgsLoaded) { then(); return; }
@@ -2120,11 +2153,12 @@ function tick(){
   var CAR_W = 74, CAR_H = CAR_W * (158 / 320);
   var BALL_R = 17;
   var MAX_SPEED = 3.1, BOOST_SPEED = 5.6, TURN_RATE = 0.065, ACCEL = 0.16;
+  var GOAL_H = 0; /* يُحسب عند resize */
 
-  function makeCar(img, startX, startY){
+  function makeCar(img, startX, startY, faceAngle){
     return {
       img: img, x: startX, y: startY, vx: 0, vy: 0,
-      angle: Math.random() * Math.PI * 2,
+      angle: faceAngle,
       boostUntil: 0, nextBoostCheck: performance.now() + 1500 + Math.random() * 2000,
       flashUntil: 0
     };
@@ -2132,11 +2166,21 @@ function tick(){
 
   var ball, carBlue, carOrange, trail;
 
-  function resetEntities(){
-    ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 };
-    carBlue = makeCar(imgBlue, W * 0.25, H * 0.3);
-    carOrange = makeCar(imgOrange, W * 0.75, H * 0.7);
+  function startPositions(){
+    ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4 };
+    carBlue = makeCar(imgBlue, W * 0.26, H * 0.5, 0);
+    carOrange = makeCar(imgOrange, W * 0.74, H * 0.5, Math.PI);
     trail = [];
+  }
+
+  function resetEntities(){
+    scoreBlue = 0; scoreOrange = 0;
+    updateScoreUI();
+    startPositions();
+  }
+
+  function updateScoreUI(){
+    if (scoreEl) scoreEl.textContent = "🔵 " + scoreBlue + " - " + scoreOrange + " 🔴";
   }
 
   function angleDiff(a, b){
@@ -2144,6 +2188,56 @@ function tick(){
     if (d > Math.PI) d -= Math.PI * 2;
     if (d < -Math.PI) d += Math.PI * 2;
     return d;
+  }
+
+  function playGoalSound(){
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      var t0 = audioCtx.currentTime;
+      /* نغمة صعود قصيرة (هتاف) */
+      [0, 0.09, 0.18].forEach(function(delay, i){
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(330 + i * 90, t0 + delay);
+        osc.frequency.exponentialRampToValueAtTime(660 + i * 120, t0 + delay + 0.22);
+        gain.gain.setValueAtTime(0.0001, t0 + delay);
+        gain.gain.exponentialRampToValueAtTime(0.16, t0 + delay + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + 0.4);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(t0 + delay); osc.stop(t0 + delay + 0.45);
+      });
+      /* ضجيج جمهور قصير */
+      var bufSize = audioCtx.sampleRate * 0.6;
+      var buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+      var noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      var noiseFilter = audioCtx.createBiquadFilter();
+      noiseFilter.type = "bandpass";
+      noiseFilter.frequency.value = 1400;
+      var noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.09, t0);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.6);
+      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+      noise.start(t0);
+    } catch (e) {}
+  }
+
+  function triggerGoal(scorer){
+    if (celebrating) return;
+    celebrating = true;
+    if (scorer === "blue") scoreBlue++; else scoreOrange++;
+    updateScoreUI();
+    playGoalSound();
+    goalFlash.classList.add("show");
+    celebrateTimer = setTimeout(function(){
+      goalFlash.classList.remove("show");
+      startPositions();
+      celebrating = false;
+    }, 2000);
   }
 
   function stepCar(car, now){
@@ -2189,10 +2283,40 @@ function tick(){
   function stepBall(){
     ball.x += ball.vx; ball.y += ball.vy;
     ball.vx *= 0.992; ball.vy *= 0.992;
-    if (ball.x < BALL_R) { ball.x = BALL_R; ball.vx = Math.abs(ball.vx) * 0.85; }
-    if (ball.x > W - BALL_R) { ball.x = W - BALL_R; ball.vx = -Math.abs(ball.vx) * 0.85; }
+
+    var goalTop = H / 2 - GOAL_H / 2, goalBottom = H / 2 + GOAL_H / 2;
+
+    if (ball.x < BALL_R) {
+      if (ball.y > goalTop && ball.y < goalBottom) { triggerGoal("orange"); return; }
+      ball.x = BALL_R; ball.vx = Math.abs(ball.vx) * 0.85;
+    }
+    if (ball.x > W - BALL_R) {
+      if (ball.y > goalTop && ball.y < goalBottom) { triggerGoal("blue"); return; }
+      ball.x = W - BALL_R; ball.vx = -Math.abs(ball.vx) * 0.85;
+    }
     if (ball.y < BALL_R) { ball.y = BALL_R; ball.vy = Math.abs(ball.vy) * 0.85; }
     if (ball.y > H - BALL_R) { ball.y = H - BALL_R; ball.vy = -Math.abs(ball.vy) * 0.85; }
+  }
+
+  function drawGoals(){
+    var goalTop = H / 2 - GOAL_H / 2, goalBottom = H / 2 + GOAL_H / 2;
+    ctx.save();
+    ctx.strokeStyle = "rgba(245,197,88,.55)";
+    ctx.lineWidth = 3;
+    ctx.shadowColor = "rgba(245,197,88,.6)";
+    ctx.shadowBlur = 8;
+    [0, W].forEach(function(x){
+      ctx.beginPath();
+      ctx.moveTo(x, goalTop); ctx.lineTo(x, goalBottom);
+      ctx.stroke();
+    });
+    ctx.setLineDash([5, 7]);
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, goalTop); ctx.lineTo(10, goalTop); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, goalBottom); ctx.lineTo(10, goalBottom); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W, goalTop); ctx.lineTo(W - 10, goalTop); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W, goalBottom); ctx.lineTo(W - 10, goalBottom); ctx.stroke();
+    ctx.restore();
   }
 
   function drawCar(car, now){
@@ -2243,13 +2367,16 @@ function tick(){
     }
   }
 
-  function loop(ts){
+  function loop(){
     if (!running) return;
     var now = performance.now();
-    stepCar(carBlue, now);
-    stepCar(carOrange, now);
-    stepBall();
+    if (!celebrating) {
+      stepCar(carBlue, now);
+      stepCar(carOrange, now);
+      stepBall();
+    }
     ctx.clearRect(0, 0, W, H);
+    drawGoals();
     drawTrail();
     drawCar(carBlue, now);
     drawCar(carOrange, now);
@@ -2261,24 +2388,28 @@ function tick(){
     if (running) return;
     loadImages(function(){
       resize();
+      GOAL_H = Math.min(H * 0.34, 190);
       resetEntities();
       running = true;
       canvas.classList.add("show");
+      if (scoreEl) scoreEl.hidden = false;
       btn.classList.add("is-on");
       btn.setAttribute("aria-pressed", "true");
-      btn.querySelector(".game-btn__label").textContent = "إيقاف اللعبة";
       rafId = requestAnimationFrame(loop);
     });
   }
 
   function stop(){
     running = false;
+    celebrating = false;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = null;
+    if (celebrateTimer) clearTimeout(celebrateTimer);
+    goalFlash.classList.remove("show");
     canvas.classList.remove("show");
+    if (scoreEl) scoreEl.hidden = true;
     btn.classList.remove("is-on");
     btn.setAttribute("aria-pressed", "false");
-    btn.querySelector(".game-btn__label").textContent = "العب الآن";
   }
 
   btn.addEventListener("click", function(){ running ? stop() : start(); });
@@ -2287,6 +2418,7 @@ function tick(){
     if (!running) return;
     var oldW = W, oldH = H;
     resize();
+    GOAL_H = Math.min(H * 0.34, 190);
     if (ball) { ball.x = ball.x / oldW * W; ball.y = ball.y / oldH * H; }
     [carBlue, carOrange].forEach(function(c){ if (c) { c.x = c.x / oldW * W; c.y = c.y / oldH * H; } });
   });
