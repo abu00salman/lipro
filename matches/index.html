@@ -2155,10 +2155,10 @@ function tick(){
   var MAX_SPEED = 3.1, BOOST_SPEED = 5.6, TURN_RATE = 0.065, ACCEL = 0.16;
   var GOAL_H = 0; /* يُحسب عند resize */
 
-  function makeCar(img, startX, startY, faceAngle){
+  function makeCar(img, startX, startY, faceAngle, team){
     return {
       img: img, x: startX, y: startY, vx: 0, vy: 0,
-      angle: faceAngle,
+      angle: faceAngle, team: team,
       boostUntil: 0, nextBoostCheck: performance.now() + 1500 + Math.random() * 2000,
       flashUntil: 0
     };
@@ -2168,8 +2168,8 @@ function tick(){
 
   function startPositions(){
     ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4 };
-    carBlue = makeCar(imgBlue, W * 0.26, H * 0.5, 0);
-    carOrange = makeCar(imgOrange, W * 0.74, H * 0.5, Math.PI);
+    carBlue = makeCar(imgBlue, W * 0.26, H * 0.5, 0, "blue");
+    carOrange = makeCar(imgOrange, W * 0.74, H * 0.5, Math.PI, "orange");
     trail = [];
   }
 
@@ -2267,12 +2267,20 @@ function tick(){
 
     var dx = ball.x - car.x, dy = ball.y - car.y;
     var dist = Math.hypot(dx, dy);
-    var hitDist = CAR_W * 0.4 + BALL_R;
+    var hitDist = CAR_W * 0.46 + BALL_R;
     if (dist < hitDist && dist > 0.01) {
       var nx = dx / dist, ny = dy / dist;
-      var power = (boosting ? 7.5 : 4.5) + Math.hypot(car.vx, car.vy);
-      ball.vx += nx * power * 0.5;
-      ball.vy += ny * power * 0.5;
+      /* يميل الضرب نحو مرمى الخصم بدل الارتداد العشوائي البحت — لمحاكاة "تسديد" حقيقي */
+      var goalX = car.team === "blue" ? W : 0;
+      var gx = goalX - ball.x, gy = (H / 2) - ball.y;
+      var gd = Math.hypot(gx, gy) || 1;
+      gx /= gd; gy /= gd;
+      var aimX = nx * 0.45 + gx * 0.55, aimY = ny * 0.45 + gy * 0.55;
+      var aimLen = Math.hypot(aimX, aimY) || 1;
+      aimX /= aimLen; aimY /= aimLen;
+      var power = (boosting ? 8.5 : 5.5) + Math.hypot(car.vx, car.vy) * 1.3;
+      ball.vx += aimX * power * 0.55;
+      ball.vy += aimY * power * 0.55;
       var push = hitDist - dist;
       car.x -= nx * push; car.y -= ny * push;
       car.flashUntil = now + 160;
@@ -2282,7 +2290,7 @@ function tick(){
 
   function stepBall(){
     ball.x += ball.vx; ball.y += ball.vy;
-    ball.vx *= 0.992; ball.vy *= 0.992;
+    ball.vx *= 0.995; ball.vy *= 0.995;
 
     var goalTop = H / 2 - GOAL_H / 2, goalBottom = H / 2 + GOAL_H / 2;
 
@@ -2350,7 +2358,8 @@ function tick(){
     ctx.translate(ball.x, ball.y);
     ctx.rotate((ball.x + ball.y + now / 40) * 0.01);
     var r = BALL_R;
-    ctx.drawImage(imgBall, -r, -r, r * 2, r * 2);
+    var bh = r * 2 * (imgBall.naturalHeight / imgBall.naturalWidth || 1);
+    ctx.drawImage(imgBall, -r, -bh / 2, r * 2, bh);
     ctx.restore();
   }
 
@@ -2388,7 +2397,7 @@ function tick(){
     if (running) return;
     loadImages(function(){
       resize();
-      GOAL_H = Math.min(H * 0.34, 190);
+      GOAL_H = Math.min(H * 0.42, 230);
       resetEntities();
       running = true;
       canvas.classList.add("show");
@@ -2418,7 +2427,7 @@ function tick(){
     if (!running) return;
     var oldW = W, oldH = H;
     resize();
-    GOAL_H = Math.min(H * 0.34, 190);
+    GOAL_H = Math.min(H * 0.42, 230);
     if (ball) { ball.x = ball.x / oldW * W; ball.y = ball.y / oldH * H; }
     [carBlue, carOrange].forEach(function(c){ if (c) { c.x = c.x / oldW * W; c.y = c.y / oldH * H; } });
   });
