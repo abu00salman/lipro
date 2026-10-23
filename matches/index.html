@@ -138,30 +138,64 @@
     width:100%;height:100%;
     pointer-events:none;
     display:none;
+    transition:filter .25s ease, opacity .25s ease;
   }
   .rocket-canvas.show{display:block}
+  .rocket-canvas.celebrating{filter:blur(9px) brightness(.5);opacity:.6}
 
   .goal-flash{
     position:fixed;inset:0;z-index:170;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    background:radial-gradient(ellipse at 50% 50%, rgba(10,25,20,.82), rgba(4,10,8,.95) 75%);
     pointer-events:none;opacity:0;
-    transition:opacity .2s ease;
+    transition:opacity .25s ease;
   }
   .goal-flash.show{opacity:1}
-  .goal-flash__text{
-    font-family:'Cairo',sans-serif;font-weight:900;
-    font-size:clamp(34px,10vw,64px);color:#fff;
-    text-shadow:0 0 20px rgba(245,197,88,.9), 0 0 40px rgba(255,80,40,.7), 0 6px 18px rgba(0,0,0,.5);
-    -webkit-text-stroke:1.5px rgba(18,63,53,.6);
+  .goal-flash__scorer{
+    font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(14px,3.6vw,18px);
+    color:#f5c558;letter-spacing:1px;
+    text-shadow:0 2px 10px rgba(0,0,0,.6);
+    opacity:0;
   }
-  .goal-flash.show .goal-flash__text{animation:goalShake .55s ease}
+  .goal-flash.show .goal-flash__scorer{animation:goalFade .4s ease .35s forwards}
+  .goal-flash__text{
+    display:flex;align-items:center;gap:10px;
+    position:relative;
+  }
+  .goal-flash__word{
+    font-family:'Cairo',sans-serif;font-weight:900;
+    font-size:clamp(40px,12vw,76px);color:#fff;
+    background:linear-gradient(180deg,#fff,#ffe9b0 55%,#f5c558);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    text-shadow:0 0 26px rgba(245,197,88,.75), 0 0 55px rgba(255,80,40,.6);
+    -webkit-text-stroke:1.5px rgba(18,63,53,.7);
+  }
+  .goal-flash__emoji{
+    font-size:clamp(32px,9vw,58px);line-height:1;
+    filter:drop-shadow(0 0 14px rgba(245,197,88,.8));
+    animation:goalEmojiPop 1.8s ease infinite;
+  }
+  @keyframes goalEmojiPop{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.18) rotate(-8deg)}}
+  .goal-flash.show .goal-flash__text{animation:goalShake 1.8s cubic-bezier(.2,.9,.3,1) forwards}
   @keyframes goalShake{
-    0%{transform:scale(.4) rotate(-6deg);opacity:0}
-    30%{transform:scale(1.15) rotate(3deg);opacity:1}
-    50%{transform:translate(-6px,0) rotate(-2deg)}
-    65%{transform:translate(6px,0) rotate(2deg)}
-    80%{transform:translate(-3px,0) rotate(-1deg)}
-    100%{transform:scale(1) rotate(0);opacity:1}
+    0%{transform:scale(.3) rotate(-10deg);opacity:0;filter:blur(4px)}
+    22%{transform:scale(1.25) rotate(4deg);opacity:1;filter:blur(0)}
+    34%{transform:translate(-8px,0) scale(1.1) rotate(-3deg)}
+    44%{transform:translate(8px,0) scale(1.1) rotate(3deg)}
+    54%{transform:translate(-4px,0) scale(1.05) rotate(-1deg)}
+    64%{transform:translate(4px,0) scale(1.05) rotate(1deg)}
+    75%{transform:scale(1) rotate(0)}
+    100%{transform:scale(1.04) rotate(0);opacity:1}
+  }
+  @keyframes goalFade{to{opacity:1}}
+  .goal-flash__spark{
+    position:absolute;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,#f5c558,rgba(245,197,88,0) 70%);
+    animation:goalSpark 1.1s ease-out forwards;
+  }
+  @keyframes goalSpark{
+    0%{transform:translate(0,0) scale(0);opacity:1}
+    100%{transform:translate(var(--sp-tx,0),var(--sp-ty,0)) scale(1);opacity:0}
   }
   .share-toast{
     position:absolute;
@@ -703,7 +737,11 @@
 <!-- لعبة السيارات والكرة — طبقة عائمة فوق الصفحة، لا تعترض اللمس -->
 <canvas id="rocketCanvas" class="rocket-canvas" aria-hidden="true"></canvas>
 <div class="goal-flash" id="goalFlash" aria-hidden="true">
-  <div class="goal-flash__text">قووووول! ⚽🔥</div>
+  <div class="goal-flash__scorer" id="goalScorerLabel"></div>
+  <div class="goal-flash__text">
+    <span class="goal-flash__word">قووووول!</span>
+    <span class="goal-flash__emoji">⚽🔥</span>
+  </div>
 </div>
 
 <!-- نافذة تشغيل مقاطع الأهداف -->
@@ -2125,19 +2163,18 @@ function tick(){
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var W = 0, H = 0;
   var imgsLoaded = false;
-  var imgBlue = new Image(), imgOrange = new Image(), imgBall = new Image();
+  var imgBlue = new Image(), imgOrange = new Image();
   var scoreBlue = 0, scoreOrange = 0;
   var audioCtx = null;
 
   function loadImages(then){
     if (imgsLoaded) { then(); return; }
-    var remaining = 3;
+    var remaining = 2;
     function done(){ remaining--; if (remaining === 0) { imgsLoaded = true; then(); } }
-    imgBlue.onload = done; imgOrange.onload = done; imgBall.onload = done;
-    imgBlue.onerror = imgOrange.onerror = imgBall.onerror = done;
+    imgBlue.onload = done; imgOrange.onload = done;
+    imgBlue.onerror = imgOrange.onerror = done;
     imgBlue.src = "game-assets/blue-car.png";
     imgOrange.src = "game-assets/orange-car.png";
-    imgBall.src = "game-assets/ball.png";
   }
 
   function resize(){
@@ -2167,7 +2204,7 @@ function tick(){
   var ball, carBlue, carOrange, trail;
 
   function startPositions(){
-    ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4 };
+    ball = { x: W / 2, y: H / 2, vx: (Math.random() - 0.5) * 1.4, vy: (Math.random() - 0.5) * 1.4, haloUntil: 0 };
     carBlue = makeCar(imgBlue, W * 0.26, H * 0.5, 0, "blue");
     carOrange = makeCar(imgOrange, W * 0.74, H * 0.5, Math.PI, "orange");
     trail = [];
@@ -2226,15 +2263,41 @@ function tick(){
     } catch (e) {}
   }
 
+  function spawnGoalSparks(){
+    var old = goalFlash.querySelectorAll(".goal-flash__spark");
+    old.forEach(function(el){ el.remove(); });
+    var n = 16;
+    for (var i = 0; i < n; i++) {
+      var el = document.createElement("div");
+      el.className = "goal-flash__spark";
+      var ang = (Math.PI * 2 * i) / n + Math.random() * 0.3;
+      var dist = 90 + Math.random() * 140;
+      var size = 6 + Math.random() * 10;
+      el.style.width = size + "px";
+      el.style.height = size + "px";
+      el.style.left = "calc(50% - " + (size / 2) + "px)";
+      el.style.top = "calc(50% - " + (size / 2) + "px)";
+      el.style.setProperty("--sp-tx", (Math.cos(ang) * dist) + "px");
+      el.style.setProperty("--sp-ty", (Math.sin(ang) * dist) + "px");
+      el.style.animationDelay = (Math.random() * 0.15) + "s";
+      goalFlash.appendChild(el);
+    }
+  }
+
   function triggerGoal(scorer){
     if (celebrating) return;
     celebrating = true;
     if (scorer === "blue") scoreBlue++; else scoreOrange++;
     updateScoreUI();
     playGoalSound();
+    var label = document.getElementById("goalScorerLabel");
+    if (label) label.textContent = scorer === "blue" ? "🔵 الفريق الأزرق يسجّل!" : "🔴 الفريق البرتقالي يسجّل!";
+    spawnGoalSparks();
     goalFlash.classList.add("show");
+    canvas.classList.add("celebrating");
     celebrateTimer = setTimeout(function(){
       goalFlash.classList.remove("show");
+      canvas.classList.remove("celebrating");
       startPositions();
       celebrating = false;
     }, 2000);
@@ -2284,6 +2347,7 @@ function tick(){
       var push = hitDist - dist;
       car.x -= nx * push; car.y -= ny * push;
       car.flashUntil = now + 160;
+      ball.haloUntil = now + 260;
       if (trail.length < 60) trail.push({ x: ball.x, y: ball.y, life: 1 });
     }
   }
@@ -2356,10 +2420,23 @@ function tick(){
   function drawBall(now){
     ctx.save();
     ctx.translate(ball.x, ball.y);
-    ctx.rotate((ball.x + ball.y + now / 40) * 0.01);
     var r = BALL_R;
-    var bh = r * 2 * (imgBall.naturalHeight / imgBall.naturalWidth || 1);
-    ctx.drawImage(imgBall, -r, -bh / 2, r * 2, bh);
+    if (now < ball.haloUntil) {
+      var p = 1 - (ball.haloUntil - now) / 260;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - p) * 0.8;
+      var hg = ctx.createRadialGradient(0, 0, r * 0.3, 0, 0, r * (1.4 + p * 1.6));
+      hg.addColorStop(0, "rgba(245,197,88,.85)");
+      hg.addColorStop(1, "rgba(245,197,88,0)");
+      ctx.fillStyle = hg;
+      ctx.beginPath(); ctx.arc(0, 0, r * (1.4 + p * 1.6), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+    ctx.rotate((ball.x + ball.y + now / 40) * 0.01);
+    ctx.font = (r * 2.3) + "px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("⚽", 0, r * 0.1);
     ctx.restore();
   }
 
@@ -2415,6 +2492,7 @@ function tick(){
     rafId = null;
     if (celebrateTimer) clearTimeout(celebrateTimer);
     goalFlash.classList.remove("show");
+    canvas.classList.remove("celebrating");
     canvas.classList.remove("show");
     if (scoreEl) scoreEl.hidden = true;
     btn.classList.remove("is-on");
