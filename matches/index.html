@@ -111,19 +111,21 @@
     transition:transform .15s ease;
   }
   .theme-btn:active{transform:scale(.88) rotate(25deg)}
+  .game-btn-row{display:flex;justify-content:center;margin:2px 0 4px}
   .game-btn{
-    display:inline-flex;align-items:center;gap:7px;
-    background:linear-gradient(135deg,#0b3c8a,#1456c7 55%,#0b3c8a);
-    border:1px solid var(--gold-500);
-    border-radius:999px;padding:6px 14px 6px 8px;cursor:pointer;
-    box-shadow:0 4px 14px -6px rgba(11,60,138,.6);
+    display:inline-flex;align-items:center;gap:6px;
+    background:radial-gradient(120% 160% at 30% 20%, #2a6bff, #0a1f6b 75%);
+    border:1px solid #4d8dff;
+    border-radius:999px;padding:5px 7px 5px 12px;cursor:pointer;
+    box-shadow:0 0 0 1px rgba(77,141,255,.25), 0 0 14px rgba(42,107,255,.55), 0 4px 10px -4px rgba(0,0,0,.5);
     transition:transform .15s ease, box-shadow .2s ease;
   }
   .game-btn:active{transform:scale(.95)}
-  .game-btn.is-on{box-shadow:0 0 0 2px rgba(195,154,47,.5), 0 4px 18px -4px rgba(11,60,138,.8)}
-  .game-btn__icon{width:22px;height:22px;object-fit:contain;flex:none}
-  .game-btn__label{color:#fff;font-family:'Cairo',sans-serif;font-weight:800;font-size:11.5px;white-space:nowrap}
-  .game-btn:disabled{opacity:.55;cursor:not-allowed}
+  .game-btn.is-on{box-shadow:0 0 0 1px rgba(195,154,47,.5), 0 0 16px rgba(195,154,47,.6)}
+  .game-btn__icon{width:18px;height:18px;object-fit:contain;flex:none;filter:drop-shadow(0 0 4px rgba(77,141,255,.7))}
+  .game-btn__label{color:#fff;font-family:'Cairo',sans-serif;font-weight:800;font-size:11px;white-space:nowrap}
+  .game-btn__arrow{color:#9cc0ff;font-weight:900;font-size:13px;line-height:1}
+  .game-btn:disabled{opacity:.5;cursor:not-allowed}
 
   .rocket-canvas{
     position:fixed;inset:0;z-index:150;
@@ -645,13 +647,17 @@
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
       <button class="theme-btn" id="themeBtn" type="button" aria-label="تغيير الألوان">🎨</button>
-      <button class="game-btn" id="gameToggle" type="button" aria-pressed="false">
-        <img src="game-assets/icon.png" alt="" class="game-btn__icon">
-        <span class="game-btn__label">🚗⚽ لعبة السيارات</span>
-      </button>
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
+  </div>
+
+  <div class="game-btn-row">
+    <button class="game-btn" id="gameToggle" type="button" aria-pressed="false">
+      <img src="game-assets/icon.png" alt="" class="game-btn__icon">
+      <span class="game-btn__label">العب الآن</span>
+      <span class="game-btn__arrow">›</span>
+    </button>
   </div>
 
   <header>
@@ -2111,7 +2117,7 @@ function tick(){
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  var CAR_W = 74, CAR_H = CAR_W * (147 / 320);
+  var CAR_W = 74, CAR_H = CAR_W * (158 / 320);
   var BALL_R = 17;
   var MAX_SPEED = 3.1, BOOST_SPEED = 5.6, TURN_RATE = 0.065, ACCEL = 0.16;
 
@@ -2260,7 +2266,7 @@ function tick(){
       canvas.classList.add("show");
       btn.classList.add("is-on");
       btn.setAttribute("aria-pressed", "true");
-      btn.querySelector(".game-btn__label").textContent = "⏹ إيقاف اللعبة";
+      btn.querySelector(".game-btn__label").textContent = "إيقاف اللعبة";
       rafId = requestAnimationFrame(loop);
     });
   }
@@ -2272,7 +2278,7 @@ function tick(){
     canvas.classList.remove("show");
     btn.classList.remove("is-on");
     btn.setAttribute("aria-pressed", "false");
-    btn.querySelector(".game-btn__label").textContent = "🚗⚽ لعبة السيارات";
+    btn.querySelector(".game-btn__label").textContent = "العب الآن";
   }
 
   btn.addEventListener("click", function(){ running ? stop() : start(); });
