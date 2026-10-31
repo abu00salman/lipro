@@ -710,13 +710,13 @@
     <a class="back-btn" href="/">🏠 العودة للرئيسية</a>
     <div class="share-group">
       <button class="theme-btn" id="themeBtn" type="button" aria-label="تغيير الألوان">🎨</button>
-      <button class="game-btn" id="gameToggle" type="button" aria-pressed="false" aria-label="تشغيل لعبة السيارات والكرة" title="لعبة السيارات والكرة — ريال مدريد ⚪ × برشلونة 🔴">🚗⚽</button>
+      <button class="game-btn" id="gameToggle" type="button" aria-pressed="false" aria-label="تشغيل لعبة السيارات والكرة" title="لعبة السيارات والكرة — الهلال 🔵 × الفتح 🟢">🚗⚽</button>
       <button class="share-btn" id="shareBtn" type="button">📤 حفظ / مشاركة</button>
       <div class="share-toast" id="shareToast"></div>
     </div>
   </div>
 
-  <div class="game-score" id="gameScore" hidden>⚪ 0 - 0 🔴</div>
+  <div class="game-score" id="gameScore" hidden>🔵 0 - 0 🟢</div>
 
   <header>
     <!-- ضع شعار الأكاديمية هنا: بدّل src برابط الشعار في موقعك، أو احذف سطر img ليظهر الشعار النصي -->
@@ -2322,7 +2322,7 @@ function tick(){
   }
 
   function updateScoreUI(){
-    if (scoreEl) scoreEl.textContent = "⚪ " + scoreBlue + " - " + scoreOrange + " 🔴";
+    if (scoreEl) scoreEl.textContent = "🔵 " + scoreBlue + " - " + scoreOrange + " 🟢";
   }
 
   function angleDiff(a, b){
@@ -2396,7 +2396,7 @@ function tick(){
     updateScoreUI();
     playGoalSound();
     var label = document.getElementById("goalScorerLabel");
-    if (label) label.textContent = scorer === "blue" ? "⚪ ريال مدريد يسجّل!" : "🔴 برشلونة يسجّل!";
+    if (label) label.textContent = scorer === "blue" ? "🔵 الهلال يسجّل!" : "🟢 الفتح يسجّل!";
     spawnGoalSparks();
     goalFlash.classList.add("show");
     canvas.classList.add("celebrating");
@@ -2519,11 +2519,11 @@ function tick(){
     }
     ctx.rotate(car.angle);
     if (car.team === "blue") {
-      /* سيارة بيضاء (ريال مدريد) */
-      ctx.filter = "grayscale(1) brightness(1.55) contrast(.92)";
+      /* سيارة زرقاء (الهلال) */
+      ctx.filter = "saturate(1.5) hue-rotate(10deg) brightness(1.05) contrast(1.05)";
     } else {
-      /* سيارة حمراء داكنة (برشلونة) */
-      ctx.filter = "saturate(1.6) hue-rotate(-18deg) brightness(.98)";
+      /* سيارة خضراء (الفتح) */
+      ctx.filter = "saturate(1.6) hue-rotate(90deg) brightness(1.02)";
     }
     ctx.drawImage(car.img, -CAR_W / 2, -CAR_H / 2, CAR_W, CAR_H);
     ctx.filter = "none";
