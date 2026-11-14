@@ -463,6 +463,47 @@ section[id]{scroll-margin-top:calc(var(--topbar-h) + 14px)}
 .promo-modal__close:hover{background:rgba(255,255,255,.22)}
 [dir="rtl"] .promo-modal__close{left:auto;right:0}
 
+/* ===== الفيلم الرسمي ===== */
+.film{background:linear-gradient(180deg,var(--pitch),#021E1A);color:#fff;position:relative;overflow:hidden}
+.film::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 50% at 50% 0%,rgba(23,168,143,.28),transparent 70%)}
+.film .wrap{position:relative}
+.film__head{text-align:center;max-width:720px;margin:0 auto 34px}
+.film .eyebrow{color:var(--gold);justify-content:center}
+.film .section-title{color:#fff}
+.film .section-lead{color:#A9C7C0;margin-inline:auto}
+.film__player{
+  position:relative;margin:0 auto;width:100%;max-width:1000px;aspect-ratio:16/9;
+  border-radius:20px;overflow:hidden;background:#021714;
+  box-shadow:0 0 0 2px rgba(245,179,37,.5),0 40px 90px -30px rgba(0,0,0,.85),0 0 80px -30px rgba(23,168,143,.7);
+}
+.film__player picture,.film__player img,.film__player video{position:absolute;inset:0;width:100%;height:100%;display:block}
+.film__player img{object-fit:cover}
+.film__player video{object-fit:contain;background:#000}
+.film__btn{
+  position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,rgba(2,23,20,0) 45%,rgba(2,23,20,.8));
+  display:flex;align-items:flex-end;justify-content:center;gap:14px;padding:0 16px 26px;
+  font-family:var(--display);font-weight:700;font-size:18px;
+}
+.film__btn > span{display:flex;align-items:center}
+.film__play{
+  width:64px;height:64px;border-radius:50%;justify-content:center;flex:none;
+  background:linear-gradient(145deg,var(--gold),var(--gold-deep));color:#062F2A;
+  box-shadow:0 0 0 8px rgba(245,179,37,.2),0 18px 40px -10px rgba(0,0,0,.7);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.film__btn:hover .film__play,.film__btn:focus-visible .film__play{transform:scale(1.08);box-shadow:0 0 0 13px rgba(245,179,37,.16),0 18px 40px -10px rgba(0,0,0,.7)}
+.film__btn > span:not(.film__play){height:64px}
+.film__dur{font-family:var(--body);font-size:13px;font-weight:600;color:#DDE9E5}
+.film__dur::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold);margin-inline-end:10px}
+@media (max-width:640px) and (orientation:portrait){
+  .film__player{aspect-ratio:9/16;max-width:min(340px,82vw);border-radius:18px}
+  .film__btn{padding-bottom:20px;gap:11px;font-size:16px}
+  .film__play{width:54px;height:54px}
+  .film__btn > span:not(.film__play){height:54px}
+}
+
 @keyframes scrollNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 
 .hfeats{background:var(--bg);padding:70px 0 24px}
@@ -1912,6 +1953,28 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
+<!-- الفيلم الرسمي -->
+<section class="section section--tight film" id="film" aria-label="الفيلم الرسمي لأكاديمية ليبرو">
+  <div class="wrap reveal">
+    <div class="film__head">
+      <div class="eyebrow">الفيلم الرسمي</div>
+      <h2 class="section-title">هنا تبدأ رحلة الأبطال</h2>
+      <p class="section-lead">دقيقة وربع من داخل ملاعبنا — تدريب، انضباط، وروح فريق، بلقطات حقيقية من لاعبي ليبرو ومدربيها.</p>
+    </div>
+    <div class="film__player" id="filmPlayer">
+      <picture>
+        <source media="(max-width:640px) and (orientation:portrait)" srcset="film/poster-9x16.jpg">
+        <img src="film/poster-16x9.jpg" alt="لقطة من الفيلم الرسمي لأكاديمية ليبرو الرياضية" loading="lazy" decoding="async" width="1280" height="720">
+      </picture>
+      <button class="film__btn" id="filmPlay" type="button" aria-label="تشغيل الفيلم الرسمي لأكاديمية ليبرو">
+        <span class="film__play"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11.3-6.8a1 1 0 0 0 0-1.72L9.5 4.34A1 1 0 0 0 8 5.2Z"/></svg></span>
+        <span>شاهد الفيلم</span>
+        <span class="film__dur">١:١٧</span>
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- بطاقة التعريف -->
 <section class="section section--tight intro" id="intro">
   <div class="wrap reveal">
@@ -3062,6 +3125,25 @@ function fallback(text, cb){
     badge.hidden = true;
   }).then(function(){
     if(timer) clearTimeout(timer);
+  });
+})();
+
+/* ===== الفيلم الرسمي: لا يُحمَّل الفيديو إلا عند الضغط، ويُختار المقاس حسب الشاشة ===== */
+(function(){
+  var box = document.getElementById("filmPlayer");
+  var btn = document.getElementById("filmPlay");
+  if(!box || !btn) return;
+  btn.addEventListener("click", function(){
+    var tall = window.matchMedia("(max-width:640px) and (orientation:portrait)").matches;
+    var v = document.createElement("video");
+    v.controls = true; v.playsInline = true; v.preload = "auto";
+    v.setAttribute("playsinline", "");
+    v.poster = tall ? "film/poster-9x16.jpg" : "film/poster-16x9.jpg";
+    v.src = tall ? "film/lipro-film-web-9x16.mp4" : "film/lipro-film-web-16x9.mp4";
+    v.setAttribute("aria-label", "الفيلم الرسمي لأكاديمية ليبرو الرياضية");
+    box.appendChild(v);
+    btn.remove();
+    var p = v.play(); if(p && p.catch) p.catch(function(){});
   });
 })();
 

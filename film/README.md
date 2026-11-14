@@ -63,7 +63,7 @@ retimed with frame blending. Photos: `banner-1/3/4.jpg`, `branch-*.jpg`.
 - `prepare.sh` — extracts the training shots into `src/frames/` (ignored by git, ~140 MB).
 - `render.py` — headless-Chromium frame renderer (Playwright), parallel workers.
 - `audio.py` — builds `out/soundtrack.wav`: music + narration + synthesized whooshes/impacts.
-- `build.sh` — runs everything and encodes all deliverables with FFmpeg.
+- `build.sh` — runs everything; `encode.sh` is the encode-only step (FFmpeg) for when only the audio changed.
 - `assets/` — the logo re-mastered at 4× from `logo-lipro.png`, split into layers for animation.
 - `fonts/` — Changa and IBM Plex Sans Arabic (the website's fonts, SIL Open Font License).
 
@@ -89,6 +89,10 @@ Without them the soundtrack is an original score synthesized by `audio.py` itsel
 audio, so no licensing concerns) and the film has no spoken narration — the on-screen typography
 carries the script. After adding either file, re-run `python3 audio.py` and the encode steps at the
 bottom of `build.sh` (the picture frames do not need re-rendering).
+
+**Current state of the shipped files:** they carry the synthesized score and sound effects only —
+no spoken narration yet (the generated voice-over and AI music could not be downloaded into the build
+environment). Drop them into `src/audio/` and re-run `python3 audio.py && ./encode.sh <work_dir>`.
 
 To change timing or wording, edit the `data-t0 / data-t1 / data-at` attributes in `film.html`;
 all times are in seconds.

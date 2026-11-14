@@ -15,7 +15,7 @@ cones 35.5 37.8 0.6
 pass 38.4 41.2 0.7
 coach1 13.4 14.7 0.5
 coach2 41.6 44.5 0.7
-jump 52.3 54.0 0.5
+jump 52.92 54.0 0.34
 hurdles_wide 3.3 7.8 1.0
 discipline 17.6 20.3 0.8
 lineup 60.0 62.3 0.6

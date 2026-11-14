@@ -4,6 +4,7 @@
   python3 render.py --format wide --scale 2 --out /path/frames_wide     # 3840x2160 frames
   python3 render.py --format tall --scale 1 --out /path/frames_tall     # 1080x1920 frames
   python3 render.py --format wide --stills 3,9,21 --out /path/stills    # quick check of single seconds
+  python3 render.py --format wide --scale 2 --out /path/frames_wide --redo 556-630   # redo a frame range
 
 Frames are rendered by N parallel workers (--jobs); each frame is a pure function of its index,
 so shards can be rendered in any order and re-run individually.
@@ -24,7 +25,7 @@ def serve():
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv.server_address[1]
 
-def worker(fmt, scale, out, frames):
+def worker(fmt, scale, out, frames, redo=False):
     port = serve()
     w, h = (1080, 1920) if fmt == "tall" else (1920, 1080)
     with sync_playwright() as p:
@@ -34,7 +35,7 @@ def worker(fmt, scale, out, frames):
         page.evaluate("window.ready")
         for f in frames:
             path = os.path.join(out, f"{f:05d}.jpg")
-            if os.path.exists(path):
+            if os.path.exists(path) and not redo:
                 continue
             page.evaluate("f => renderFrame(f)", f)
             page.screenshot(path=path + ".tmp", type="jpeg", quality=96)
@@ -49,16 +50,19 @@ if __name__ == "__main__":
     ap.add_argument("--out", required=True)
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 2)
     ap.add_argument("--stills", help="comma-separated seconds to render as single frames")
+    ap.add_argument("--redo", help="re-render these frame ranges even if they exist, e.g. 556-630,1078-1184")
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--duration", type=float, default=77)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     if a.stills:
         frames = [round(float(s) * a.fps) for s in a.stills.split(",")]
+    elif a.redo:
+        frames = [f for r in a.redo.split(",") for f in range(int(r.split("-")[0]), int(r.split("-")[1]) + 1)]
     else:
         frames = list(range(int(a.duration * a.fps)))
     shards = [frames[i::a.jobs] for i in range(a.jobs)]
     t0 = time.time()
     with ProcessPoolExecutor(a.jobs) as ex:
-        n = sum(ex.map(worker, [a.format] * a.jobs, [a.scale] * a.jobs, [a.out] * a.jobs, shards))
+        n = sum(ex.map(worker, [a.format] * a.jobs, [a.scale] * a.jobs, [a.out] * a.jobs, shards, [bool(a.redo)] * a.jobs))
     print(f"rendered {n} frames in {time.time() - t0:.0f}s -> {a.out}")
