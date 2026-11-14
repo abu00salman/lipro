@@ -1,0 +1,4 @@
+frames/
+out/
+audio/_*
+__pycache__/

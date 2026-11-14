@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Lipro Academy — Official Film (render source)</title>
+<style>
+@font-face{font-family:"Changa";font-weight:500;src:url(fonts/changa-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C-200E}
+@font-face{font-family:"Changa";font-weight:700;src:url(fonts/changa-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C-200E}
+@font-face{font-family:"Changa";font-weight:800;src:url(fonts/changa-arabic-800-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C-200E}
+@font-face{font-family:"Changa";font-weight:500;src:url(fonts/changa-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2013-2026}
+@font-face{font-family:"Changa";font-weight:700;src:url(fonts/changa-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2013-2026}
+@font-face{font-family:"Changa";font-weight:800;src:url(fonts/changa-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2013-2026}
+@font-face{font-family:"Plex";font-weight:400;src:url(fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C-200E}
+@font-face{font-family:"Plex";font-weight:600;src:url(fonts/ibm-plex-sans-arabic-arabic-600-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C-200E}
+@font-face{font-family:"Plex";font-weight:400;src:url(fonts/ibm-plex-sans-arabic-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2013-2026}
+@font-face{font-family:"Plex";font-weight:600;src:url(fonts/ibm-plex-sans-arabic-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2013-2026}
+
+:root{--pitch:#04322C;--deep:#021714;--teal:#17A88F;--logo:#4CA794;--gold:#F5B325;--gold2:#FFD873;--chalk:#EFF4F1}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--deep);
+  font-family:"Plex",sans-serif;color:#fff;--h1:140px;--h2:66px;--eb:40px;--pad:110px}
+.tall #stage{width:1080px;height:1920px;--h1:118px;--h2:60px;--eb:40px;--pad:70px}
+.scene{position:absolute;inset:0;opacity:0;overflow:hidden}
+img{display:block}
+.wide .only-tall,.tall .only-wide{display:none!important}
+
+/* ---------- media ---------- */
+.bg{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:brightness(.5) saturate(1.3)}
+.bgphoto{filter:blur(34px) brightness(.4) saturate(1.2)}
+.card{position:absolute;overflow:hidden;border-radius:26px;
+  box-shadow:0 0 0 2px rgba(245,179,37,.55),0 50px 120px -30px rgba(0,0,0,.9),0 0 90px -20px rgba(23,168,143,.55)}
+.card img,.bleed{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;
+  filter:contrast(1.1) saturate(1.16) brightness(.98)}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,50,44,.0) 55%,rgba(2,23,20,.55));mix-blend-mode:multiply}
+.grade{position:absolute;inset:0;background:
+  radial-gradient(120% 90% at 50% 40%,rgba(0,0,0,0) 45%,rgba(0,0,0,.55)),
+  linear-gradient(200deg,rgba(23,168,143,.16),rgba(0,0,0,0) 45%,rgba(245,179,37,.07));pointer-events:none}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,23,20,.25),rgba(2,23,20,0) 30%,rgba(2,23,20,.0) 45%,rgba(2,23,20,.93))}
+
+/* portrait source: card + blurred backdrop on wide, full bleed on tall */
+.wide .pA .card{top:50px;height:980px;width:784px}
+.wide .pA .card.L{left:120px}
+.wide .pA .card.R{right:120px}
+.tall .pA .bg{display:none}
+.tall .pA .card{inset:0;border-radius:0;box-shadow:none}
+.tall .pA .card::after{background:linear-gradient(180deg,rgba(2,23,20,.35),rgba(2,23,20,0) 25%,rgba(2,23,20,0) 48%,rgba(2,23,20,.94))}
+/* landscape source: full bleed on wide, framed card on tall */
+.wide .pB .bg{display:none}
+.wide .pB .card{inset:0;border-radius:0;box-shadow:none}
+.wide .pB .card img{object-position:50% 30%}
+.wide .pB .card::after{background:linear-gradient(180deg,rgba(2,23,20,.3),rgba(2,23,20,0) 28%,rgba(2,23,20,.1) 50%,rgba(2,23,20,.95))}
+.tall .pB .card{left:50px;right:50px;top:400px;height:640px}
+
+/* ---------- typography ---------- */
+h1,h2,p{margin:0}
+.tb{position:absolute;display:flex;flex-direction:column;gap:14px}
+.wide .tb.R{right:var(--pad);top:0;bottom:0;width:860px;justify-content:center;text-align:right}
+.wide .tb.L{left:var(--pad);top:0;bottom:0;width:860px;justify-content:center;text-align:right}
+.wide .tb.B{right:var(--pad);left:var(--pad);bottom:90px;text-align:right}
+.tall .tb{left:var(--pad);right:var(--pad);bottom:250px;text-align:center;align-items:center}
+.tall .tb.under{bottom:auto;top:1110px}
+h1{font-family:"Changa";font-weight:800;font-size:var(--h1);line-height:1.22;text-shadow:0 6px 40px rgba(0,0,0,.55)}
+h2{font-family:"Changa";font-weight:700;font-size:var(--h2);line-height:1.35;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.gold{color:var(--gold);background:linear-gradient(180deg,#FFE08A,#F5B325 55%,#C88908);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 6px 26px rgba(245,179,37,.35))}
+.gold .w{background:inherit;-webkit-background-clip:text;background-clip:text}
+.eb{font-size:var(--eb);font-weight:600;color:var(--gold2);display:inline-flex;align-items:center;gap:16px}
+.eb::before{content:"";width:56px;height:4px;border-radius:2px;background:var(--gold)}
+.tall .eb::after{content:"";width:56px;height:4px;border-radius:2px;background:var(--gold)}
+.w{display:inline-block;will-change:transform}
+.rule{height:5px;width:180px;border-radius:3px;background:linear-gradient(90deg,var(--gold),#ffe08a);transform-origin:right}
+.tall .rule{transform-origin:center}
+.chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:22px}
+.tall .chips{justify-content:center}
+.chip{font-size:40px;font-weight:600;padding:16px 34px;border-radius:999px;border:2px solid rgba(245,179,37,.6);
+  background:rgba(4,50,44,.72);color:#fff}
+.chip b{color:var(--gold);font-weight:600}
+.wide .s7h{font-size:92px}.tall .s7h{font-size:92px}
+.big{font-size:230px;line-height:1.1}
+.tall .big{font-size:190px}
+
+/* ---------- intro / outro ---------- */
+.night{background:radial-gradient(90% 70% at 50% 108%,#0b5a4d 0%,#04322C 34%,#021714 70%,#010b0a 100%)}
+.beam{position:absolute;top:-30%;width:70%;height:170%;opacity:0;mix-blend-mode:screen;
+  background:conic-gradient(from 180deg at 50% 0%,rgba(255,255,255,0) 160deg,rgba(190,255,240,.20) 176deg,rgba(255,255,255,.34) 180deg,rgba(190,255,240,.20) 184deg,rgba(255,255,255,0) 200deg);filter:blur(14px)}
+.beam.a{left:-22%;transform:rotate(-24deg)}
+.beam.b{right:-22%;transform:rotate(24deg)}
+.lamp{position:absolute;width:520px;height:520px;border-radius:50%;opacity:0;mix-blend-mode:screen;
+  background:radial-gradient(circle,rgba(255,255,255,.95) 0,rgba(210,255,246,.55) 9%,rgba(120,230,210,.18) 30%,rgba(0,0,0,0) 62%)}
+.lamp.a{left:-90px;top:-170px}.lamp.b{right:-90px;top:-170px}
+.pitchlines{position:absolute;left:50%;bottom:-46%;width:150%;aspect-ratio:1;transform:translateX(-50%) perspective(900px) rotateX(74deg);
+  border:4px solid rgba(239,244,241,.13);border-radius:50%;box-shadow:inset 0 0 0 220px rgba(239,244,241,0),0 0 0 4px rgba(239,244,241,0)}
+.pitchlines::after{content:"";position:absolute;left:-40%;right:-40%;top:50%;height:4px;background:rgba(239,244,241,.13)}
+.logo3d{position:absolute;left:50%;perspective:1500px}
+.wide .logo3d{top:120px;width:420px;height:475px;margin-left:-210px}
+.tall .logo3d{top:330px;width:500px;height:566px;margin-left:-250px}
+.lg-rot{position:absolute;inset:0;transform-style:preserve-3d}
+.lg-rot img,.shine{position:absolute;inset:0;width:100%;height:100%}
+.lg-ex{filter:brightness(.38) saturate(.8)}
+.shine{-webkit-mask-image:url(assets/logo_full.png);mask-image:url(assets/logo_full.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;overflow:hidden}
+.shine i{position:absolute;top:-20%;height:140%;width:34%;left:0;transform:skewX(-20deg);
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0))}
+.halo{position:absolute;left:50%;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,rgba(23,168,143,.55),rgba(245,179,37,.13) 45%,rgba(0,0,0,0) 68%)}
+.wide .halo{top:-80px;width:1100px;height:1100px;margin-left:-550px}
+.tall .halo{top:60px;width:1300px;height:1300px;margin-left:-650px}
+.ttl{position:absolute;left:0;right:0;text-align:center}
+.wide .ttl{top:640px}.tall .ttl{top:970px}
+.ttl h1{font-size:104px}.tall .ttl h1{font-size:96px}
+.lat{font-family:"Changa";font-weight:500;font-size:34px;letter-spacing:.52em;color:var(--gold2);direction:ltr;margin-top:6px;padding-left:.52em}
+.tall .lat{font-size:27px;letter-spacing:.4em}
+.tag{font-family:"Changa";font-weight:800;font-size:76px;margin-top:20px}
+.tall .tag{font-size:84px;line-height:1.3;margin-top:36px}
+.cta{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:26px;align-items:center}
+.wide .cta{bottom:70px}.tall .cta{bottom:170px;flex-direction:column;gap:22px}
+.btn{font-family:"Changa";font-weight:800;font-size:40px;color:#062F2A;padding:14px 44px;border-radius:999px;
+  background:linear-gradient(180deg,#FFE08A,#F5B325 60%,#C88908);box-shadow:0 20px 60px -18px rgba(245,179,37,.8)}
+.tall .btn{font-size:50px;padding:18px 60px}
+.url{font-family:"Changa";font-weight:700;font-size:38px;direction:ltr;color:#fff;padding:14px 34px;border-radius:999px;border:2px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06)}
+.tall .url{font-size:44px}
+
+/* ---------- triptych ---------- */
+.tri .card::after{background:linear-gradient(180deg,rgba(2,23,20,0) 45%,rgba(2,23,20,.9))}
+.wide .tri .card{top:150px;height:860px;width:548px}
+.wide .tri .c0{right:108px}.wide .tri .c1{right:686px}.wide .tri .c2{right:1264px}
+.tall .tri .card{inset:0;border-radius:0;box-shadow:none}
+.tall .tri .card::after{background:linear-gradient(180deg,rgba(2,23,20,.8),rgba(2,23,20,0) 26%,rgba(2,23,20,0) 48%,rgba(2,23,20,.94))}
+.tall .tri .lab{bottom:300px;text-align:center}.tall .tri .lab small{font-size:46px}.tall .tri .lab b{font-size:170px}
+.tall .tri .head{z-index:5;text-shadow:0 4px 30px rgba(0,0,0,.8)}
+.tri .lab{position:absolute;right:38px;left:38px;bottom:34px;text-align:right;z-index:3}
+.tri .lab small{display:block;font-size:30px;font-weight:600;color:var(--gold2)}
+.tri .lab b{display:block;font-family:"Changa";font-weight:800;font-size:92px;line-height:1.15}
+.tri .head{position:absolute;left:0;right:0;text-align:center;font-family:"Changa";font-weight:700}
+.wide .tri .head{top:44px;font-size:56px}
+.tall .tri .head{top:190px;font-size:56px;line-height:1.3;padding:0 20px}
+
+/* ---------- branches ---------- */
+.grid{position:absolute;display:grid;gap:16px}
+.wide .grid{left:90px;top:90px;width:1090px;height:900px;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
+.tall .grid{left:50px;right:50px;top:640px;height:1060px;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr)}
+.tile{position:relative;overflow:hidden;border-radius:20px;box-shadow:0 0 0 2px rgba(245,179,37,.4),0 30px 60px -30px #000}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.12) contrast(1.05)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,23,20,0) 40%,rgba(2,23,20,.92))}
+.tile span{position:absolute;right:20px;bottom:12px;z-index:2;font-family:"Changa";font-weight:700;font-size:38px}
+.wide .tile.tallt{grid-row:span 2}
+.tile.brand{display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#0b4a40,#04322C)}
+.tile.brand::after{display:none}
+.tile.brand img{position:static;width:auto;height:74%;object-fit:contain;filter:none}
+.wide .btx{position:absolute;right:90px;top:0;bottom:0;width:600px;display:flex;flex-direction:column;justify-content:center;gap:10px;text-align:right}
+.tall .btx{position:absolute;left:60px;right:60px;top:120px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+.btx .num{font-family:"Changa";font-weight:800;font-size:250px;line-height:.95}
+.tall .btx .num{font-size:210px}
+.btx .chip{font-size:36px}
+
+/* ---------- global overlays ---------- */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:50}
+#vig{position:absolute;inset:0;background:radial-gradient(115% 100% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.5))}
+#grain{position:absolute;inset:-10%;opacity:.085;mix-blend-mode:overlay}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,#fff,#ffe9a8 45%,#f5b325);opacity:0;mix-blend-mode:screen}
+#sweep{position:absolute;top:-30%;height:160%;width:46%;left:0;opacity:0;mix-blend-mode:screen;transform:skewX(-18deg);
+  background:linear-gradient(90deg,rgba(255,224,138,0),rgba(255,236,170,.75) 45%,rgba(255,255,255,.95) 50%,rgba(255,236,170,.75) 55%,rgba(255,224,138,0))}
+#black{position:absolute;inset:0;background:#000;opacity:0}
+#bug{position:absolute;opacity:0;height:84px;width:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,.7))}
+.wide #bug{left:30px;top:36px;height:68px}.tall #bug{left:46px;top:56px;height:84px}
+.dust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.95),rgba(245,179,37,0) 70%);mix-blend-mode:screen}
+svg.cup{width:96px;height:96px}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ============ S1 · logo intro ============ -->
+<section class="scene night" data-t0="0" data-t1="7.0" data-xin="0">
+  <div class="pitchlines"></div>
+  <div class="beam a" id="i-beam-a"></div><div class="beam b" id="i-beam-b"></div>
+  <div class="lamp a" id="i-lamp-a"></div><div class="lamp b" id="i-lamp-b"></div>
+  <div class="halo" id="i-halo"></div>
+  <div class="logo3d" id="i-logo"></div>
+  <div class="ttl">
+    <h1 class="kt" data-at="2.7" data-st="0.14">أكاديمية ليبرو الرياضية</h1>
+    <div class="lat fx" data-in="3.5" data-fx="fade" data-d="1.0">LIPRO SPORTS ACADEMY</div>
+  </div>
+</section>
+
+<!-- ============ S2 · every big dream ============ -->
+<section class="scene pA" data-t0="6.6" data-t1="10.45" data-xin="0.5">
+  <img class="clip bg" data-clip="wide" data-b="1" data-at="6.3">
+  <div class="card L"><img class="clip" data-clip="wide" data-at="6.3" data-kb="1.04,1.13"></div><div class="grade"></div>
+</section>
+<section class="scene pA" data-t0="10.45" data-t1="13.5" data-xin="0">
+  <img class="clip bg" data-clip="kidball" data-b="1" data-at="10.45">
+  <div class="card L"><img class="clip" data-clip="kidball" data-at="10.45" data-kb="1.12,1.03"></div><div class="grade"></div>
+</section>
+<section class="scene" data-t0="6.9" data-t1="13.5" data-xin="0.3">
+  <div class="tb R">
+    <h1 class="kt" data-at="7.3" data-st="0.2" data-out="13.1">كل حلم كبير…</h1>
+    <h1 class="kt gold" data-at="9.7" data-st="0.22" data-out="13.15">يبدأ بخطوة</h1>
+    <div class="rule fx" data-in="10.3" data-fx="grow" data-out="13.1"></div>
+  </div>
+</section>
+
+<!-- ============ S3 · every champion ============ -->
+<section class="scene pA" data-t0="13.5" data-t1="15.8" data-xin="0">
+  <img class="clip bg" data-clip="dribble" data-b="1" data-at="13.5">
+  <div class="card R"><img class="clip" data-clip="dribble" data-at="13.5" data-kb="1.03,1.12"></div><div class="grade"></div>
+</section>
+<section class="scene pA" data-t0="15.8" data-t1="18.05" data-xin="0">
+  <img class="clip bg" data-clip="kidjump" data-b="1" data-at="15.8">
+  <div class="card R"><img class="clip" data-clip="kidjump" data-at="15.8" data-kb="1.12,1.04"></div><div class="grade"></div>
+</section>
+<section class="scene" data-t0="13.6" data-t1="18.05" data-xin="0.2">
+  <div class="tb L">
+    <h1 class="kt" data-at="14.0" data-st="0.2" data-out="17.7">وكل بطل…</h1>
+    <h1 class="kt gold" data-at="15.7" data-st="0.2" data-out="17.75">كانت له بداية</h1>
+    <div class="rule fx" data-in="16.3" data-fx="grow" data-out="17.7"></div>
+  </div>
+</section>
+
+<!-- ============ S4 · passion / skills / confidence ============ -->
+<section class="scene night tri" data-t0="18.05" data-t1="29.6" data-xin="0.35">
+  <div class="beam a" style="opacity:.5"></div><div class="beam b" style="opacity:.5"></div>
+  <div class="head kt" data-at="18.5" data-st="0.12" data-out="29.2">في أكاديمية ليبرو الرياضية <span class="gold">نصنع بيئةً</span></div>
+  <div class="card c0 fx" data-in="19.6" data-fx="rise" data-d="0.9" data-out="29.15">
+    <img class="clip" data-clip="hurdle_close" data-at="19.6" data-loop="pp" data-kb="1.03,1.14" data-end="29.6">
+    <div class="lab"><small class="fx" data-in="21.2" data-fx="up">ينمو فيها</small><b class="gold fx" data-in="21.5" data-fx="up">الشغف</b></div>
+  </div>
+  <div class="card c1 fx" data-in="22.4" data-fx="rise" data-d="0.9" data-out="29.25">
+    <img class="clip" data-clip="cones" data-at="22.4" data-loop="pp" data-kb="1.03,1.14" data-end="29.6">
+    <div class="lab"><small class="fx" data-in="23.4" data-fx="up">تتطوّر فيها</small><b class="gold fx" data-in="23.7" data-fx="up">المهارات</b></div>
+  </div>
+  <div class="card c2 fx" data-in="25.0" data-fx="rise" data-d="0.9" data-out="29.35">
+    <img class="clip" data-clip="pass" data-at="25.0" data-loop="pp" data-kb="1.03,1.14" data-end="29.6">
+    <div class="lab"><small class="fx" data-in="25.9" data-fx="up">تُبنى فيها</small><b class="gold fx" data-in="26.2" data-fx="up">الثقة</b></div>
+  </div>
+</section>
+
+<!-- ============ S5 · licensed coaches ============ -->
+<section class="scene pA" data-t0="29.6" data-t1="32.1" data-xin="0.35">
+  <img class="clip bg" data-clip="coach1" data-b="1" data-at="29.6">
+  <div class="card L"><img class="clip" data-clip="coach1" data-at="29.6" data-kb="1.04,1.12"></div><div class="grade"></div>
+</section>
+<section class="scene pA" data-t0="32.1" data-t1="36.1" data-xin="0">
+  <img class="clip bg" data-clip="coach2" data-b="1" data-at="32.1">
+  <div class="card L"><img class="clip" data-clip="coach2" data-at="32.1" data-kb="1.12,1.03"></div><div class="grade"></div>
+</section>
+<section class="scene" data-t0="29.8" data-t1="36.1" data-xin="0.2">
+  <div class="tb R">
+    <div class="eb fx" data-in="30.1" data-fx="up" data-out="35.7">على يد مختصّين</div>
+    <h1 class="kt" data-at="30.4" data-st="0.16" data-out="35.7" style="font-size:calc(var(--h1)*.86)">مدربون معتمدون</h1>
+    <h1 class="kt gold" data-at="31.0" data-st="0.16" data-out="35.75" style="font-size:calc(var(--h1)*.86)">آسيويًا وأفريقيًا</h1>
+    <div class="chips">
+      <div class="chip fx" data-in="32.3" data-fx="up" data-out="35.7">مرخّصة من <b>وزارة الرياضة</b></div>
+      <div class="chip fx" data-in="32.7" data-fx="up" data-out="35.75">عضوية <b>الاتحاد السعودي لكرة القدم</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S6 · first touch → first achievement ============ -->
+<section class="scene pA" data-t0="36.1" data-t1="39.3" data-xin="0.3">
+  <img class="clip bg" data-clip="jump" data-b="1" data-at="36.1">
+  <div class="card R"><img class="clip" data-clip="jump" data-at="36.1" data-kb="1.03,1.12"></div><div class="grade"></div>
+</section>
+<section class="scene" data-t0="36.2" data-t1="39.3" data-xin="0.2">
+  <div class="tb L"><h1 class="kt" data-at="36.6" data-st="0.2" data-out="39.0">من أوّل لمسة…</h1></div>
+</section>
+<section class="scene pA" data-t0="39.3" data-t1="43.1" data-xin="0">
+  <img class="bg bgphoto" src="../../banner-3.jpg">
+  <div class="card R"><img class="still" src="../../banner-3.jpg" data-at="39.3" data-end="43.1" data-kb="1.16,1.03" style="object-position:50% 30%"></div><div class="grade"></div>
+</section>
+<section class="scene" data-t0="39.3" data-t1="43.1" data-xin="0">
+  <div class="tb L">
+    <h1 class="kt gold" data-at="39.5" data-st="0.18" data-out="42.8">إلى أوّل إنجاز</h1>
+    <div class="rule fx" data-in="40.2" data-fx="grow" data-out="42.8"></div>
+  </div>
+</section>
+
+<!-- ============ S7 · the title ============ -->
+<section class="scene pB" data-t0="43.1" data-t1="46.9" data-xin="0.5">
+  <img class="bg bgphoto" src="../../banner-1.jpg">
+  <div class="card"><img class="still" src="../../banner-1.jpg" data-at="42.6" data-end="46.9" data-kb="1.02,1.12"></div>
+</section>
+<section class="scene pB" data-t0="46.9" data-t1="50.6" data-xin="0.6">
+  <img class="bg bgphoto" src="../../banner-4.jpg">
+  <div class="card"><img class="still" src="../../banner-4.jpg" data-at="46.3" data-end="50.6" data-kb="1.12,1.02"></div>
+</section>
+<section class="scene" data-t0="43.3" data-t1="50.6" data-xin="0.3">
+  <div class="tb B under">
+    <div class="eb fx" data-in="43.6" data-fx="up" data-out="50.2">
+      <svg class="cup" viewBox="0 0 24 24" fill="none" stroke="#F5B325" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v6a5 5 0 0 1-10 0Z" fill="rgba(245,179,37,.25)"/><path d="M7 5H4a3 3 0 0 0 3 4M17 5h3a3 3 0 0 1-3 4M12 15v3M8.5 20h7M10 18h4"/></svg>
+      إنجاز حقيقي</div>
+    <h1 class="kt s7h" data-at="44.0" data-st="0.13" data-out="50.2">بطل بطولة الاتحاد السعودي لكرة القدم</h1>
+    <h2 class="kt gold" data-at="45.3" data-st="0.14" data-out="50.25">منطقة جازان · فئة براعم ١١</h2>
+  </div>
+</section>
+
+<!-- ============ S8 · four beats ============ -->
+<section class="scene pA" data-t0="50.6" data-t1="52.9" data-xin="0.3">
+  <img class="clip bg" data-clip="hurdles_wide" data-b="1" data-at="50.6">
+  <div class="card L"><img class="clip" data-clip="hurdles_wide" data-at="50.6" data-kb="1.05,1.12"></div><div class="grade"></div>
+  <div class="tb R"><h1 class="big kt" data-at="50.85" data-st="0.1" data-out="52.75">تدريب</h1></div>
+</section>
+<section class="scene pA" data-t0="52.9" data-t1="55.2" data-xin="0">
+  <img class="clip bg" data-clip="discipline" data-b="1" data-at="52.9">
+  <div class="card L"><img class="clip" data-clip="discipline" data-at="52.9" data-kb="1.12,1.05"></div><div class="grade"></div>
+  <div class="tb R"><h1 class="big kt" data-at="53.0" data-st="0.1" data-out="55.05">انضباط</h1></div>
+</section>
+<section class="scene pA" data-t0="55.2" data-t1="57.7" data-xin="0">
+  <img class="clip bg" data-clip="lineup" data-b="1" data-at="55.2">
+  <div class="card L"><img class="clip" data-clip="lineup" data-at="55.2" data-kb="1.05,1.12"></div><div class="grade"></div>
+  <div class="tb R"><h1 class="big kt" data-at="55.3" data-st="0.14" data-out="57.55" style="font-size:calc(var(--h1)*1.5)">روح الفريق</h1></div>
+</section>
+<section class="scene pA" data-t0="57.7" data-t1="60.6" data-xin="0">
+  <img class="clip bg" data-clip="coach3" data-b="1" data-at="57.7">
+  <div class="card L"><img class="clip" data-clip="coach3" data-at="57.7" data-kb="1.12,1.04"></div><div class="grade"></div>
+  <div class="tb R"><h1 class="kt" data-at="57.8" data-st="0.12" data-out="60.3" style="font-size:calc(var(--h1)*1.3)">وطموح</h1>
+    <h1 class="kt gold" data-at="58.3" data-st="0.14" data-out="60.3" style="font-size:calc(var(--h1)*1.3)">لا يتوقّف</h1></div>
+</section>
+
+<!-- ============ S9 · branches ============ -->
+<section class="scene night" data-t0="60.6" data-t1="68.0" data-xin="0.4">
+  <div class="beam a" style="opacity:.45"></div><div class="beam b" style="opacity:.45"></div>
+  <div class="grid">
+    <div class="tile tallt fx" data-in="61.0" data-fx="pop" data-out="67.5"><img src="../../branch-albaha.jpg" style="object-position:50% 62%"><span>ليبرو الباحة</span></div>
+    <div class="tile fx" data-in="61.15" data-fx="pop" data-out="67.5"><img src="../../branch-jizan.jpg"><span>ليبرو جيزان</span></div>
+    <div class="tile fx" data-in="61.3" data-fx="pop" data-out="67.5"><img src="../../branch-khamis.jpg"><span>ليبرو خميس مشيط</span></div>
+    <div class="tile fx" data-in="61.45" data-fx="pop" data-out="67.5"><img src="../../branch-bish.jpg"><span>ليبرو بيش</span></div>
+    <div class="tile fx" data-in="61.6" data-fx="pop" data-out="67.5"><img src="../../branch-madaya.jpg"><span>ليبرو المضايا</span></div>
+    <div class="tile fx" data-in="61.75" data-fx="pop" data-out="67.5"><img src="../../branch-mataan.jpg"><span>ليبرو المطعن</span></div>
+    <div class="tile fx" data-in="61.9" data-fx="pop" data-out="67.5"><img src="../../branch-aliyah.jpg"><span>ليبرو العالية</span></div>
+    <div class="tile brand fx" data-in="62.05" data-fx="pop" data-out="67.5"><img src="assets/logo_full.png"></div>
+  </div>
+  <div class="btx">
+    <div class="num gold fx" data-in="61.0" data-fx="up" data-out="67.5">٧ فروع</div>
+    <h2 class="kt" data-at="61.6" data-st="0.16" data-out="67.5">جازان · عسير · الباحة</h2>
+    <div class="chips">
+      <div class="chip fx" data-in="63.0" data-fx="up" data-out="67.5"><b>٣</b> أيام تدريب أسبوعيًا</div>
+      <div class="chip fx" data-in="63.3" data-fx="up" data-out="67.55">من عمر <b>٥</b> إلى <b>١٨</b> سنة</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S10 · outro ============ -->
+<section class="scene night" data-t0="68.0" data-t1="77" data-xin="0.5">
+  <div class="pitchlines"></div>
+  <div class="beam a" id="o-beam-a"></div><div class="beam b" id="o-beam-b"></div>
+  <div class="lamp a" id="o-lamp-a"></div><div class="lamp b" id="o-lamp-b"></div>
+  <div class="halo" id="o-halo"></div>
+  <div class="logo3d" id="o-logo"></div>
+  <div class="ttl">
+    <h1 class="kt" data-at="68.7" data-st="0.13" style="font-size:78px">أكاديمية ليبرو الرياضية</h1>
+    <div class="tag kt gold" data-at="70.8" data-st="0.2">هنا تبدأ رحلة الأبطال</div>
+  </div>
+  <div class="cta">
+    <div class="btn fx" data-in="72.4" data-fx="up">سجّل ابنك الآن</div>
+    <div class="url fx" data-in="72.7" data-fx="up">liproacademy.com</div>
+    <div class="url fx" data-in="73.0" data-fx="up">0530634750</div>
+  </div>
+</section>
+
+<div id="fx">
+  <div id="dust"></div>
+  <img id="bug" src="assets/logo_full.png">
+  <div id="sweep"></div><div id="flash"></div>
+  <div id="vig"></div><div id="grain"></div><div id="black"></div>
+</div>
+</div>
+
+<script src="frames/manifest.js"></script>
+<script>
+"use strict";
+const Q = new URLSearchParams(location.search);
+const TALL = Q.get("format") === "tall";
+document.documentElement.classList.add(TALL ? "tall" : "wide");
+const FPS = 30, DURATION = 77;
+const W = TALL ? 1080 : 1920, H = TALL ? 1920 : 1080;
+
+/* cut accents: [time, strength] — a warm flash that hides the cut */
+const FLASHES = [[6.6,.55],[10.45,.22],[13.5,.4],[15.8,.2],[18.05,.5],[29.6,.45],[32.1,.2],[36.1,.4],[39.3,.9],
+                 [43.1,.5],[50.6,.55],[52.9,.35],[55.2,.35],[57.7,.35],[60.6,.55],[68.0,.6]];
+const SWEEPS = [6.6,18.05,29.6,43.1,60.6,68.0];
+
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const eo3=p=>1-Math.pow(1-p,3), eo5=p=>1-Math.pow(1-p,5), eio=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+const eback=p=>{const c=1.70158;return 1+(c+1)*Math.pow(p-1,3)+c*Math.pow(p-1,2)};
+const pr=(t,a,d)=>clamp((t-a)/d);
+const rnd=i=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const num=(el,k,d)=>el.dataset[k]!==undefined?parseFloat(el.dataset[k]):d;
+
+/* ----- build: split kinetic text into words (Arabic stays joined inside a word) ----- */
+function splitWords(node){
+  [...node.childNodes].forEach(n=>{
+    if(n.nodeType===3){
+      const frag=document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach(tok=>{
+        if(!tok) return;
+        if(/^\s+$/.test(tok)){frag.appendChild(document.createTextNode(" "));return;}
+        const s=document.createElement("span");s.className="w";s.textContent=tok;frag.appendChild(s);
+      });
+      node.replaceChild(frag,n);
+    } else if(n.nodeType===1) splitWords(n);
+  });
+}
+$$(".kt").forEach(el=>{splitWords(el);el._w=[...el.querySelectorAll(".w")];});
+
+/* ----- build: 3D logo ----- */
+function buildLogo(root){
+  const rot=document.createElement("div");rot.className="lg-rot";
+  let h="";
+  for(let i=9;i>=1;i--) h+=`<img class="lg-ex" src="assets/logo_full.png" style="transform:translateZ(${-i*3.2}px)">`;
+  h+=`<img class="p s0" src="assets/logo_shield_0.png"><img class="p s1" src="assets/logo_shield_1.png"><img class="p g" src="assets/logo_gold.png">`;
+  for(let i=0;i<5;i++) h+=`<img class="p l${i}" src="assets/logo_letter_${i}.png">`;
+  h+=`<div class="shine"><i></i></div>`;
+  rot.innerHTML=h;root.appendChild(rot);
+  root._rot=rot;root._ex=[...rot.querySelectorAll(".lg-ex")];
+  root._s0=rot.querySelector(".s0");root._s1=rot.querySelector(".s1");root._g=rot.querySelector(".g");
+  root._l=[0,1,2,3,4].map(i=>rot.querySelector(".l"+i));root._sh=rot.querySelector(".shine i");
+}
+function logo3d(root,lt,quick){
+  const k=quick?0.7:1;
+  let p=eo5(pr(lt,.35*k,1.25*k));
+  root._s0.style.opacity=p;root._s0.style.transform=`translateX(${lerp(-320,0,p)}px) translateZ(${lerp(500,0,p)}px) rotateY(${lerp(80,0,p)}deg)`;
+  p=eo5(pr(lt,.55*k,1.25*k));
+  root._s1.style.opacity=p;root._s1.style.transform=`translateX(${lerp(320,0,p)}px) translateZ(${lerp(500,0,p)}px) rotateY(${lerp(-80,0,p)}deg)`;
+  p=pr(lt,1.45*k,.7*k);
+  root._g.style.opacity=clamp(p*3);root._g.style.transform=`translateY(${lerp(-260,0,eback(p))}px)`;
+  const glow=Math.max(0,1-Math.abs(lt-2.15*k)/.5);
+  root._g.style.filter=`brightness(${1+glow*1.3}) drop-shadow(0 0 ${glow*40}px rgba(255,220,120,${glow}))`;
+  root._l.forEach((el,i)=>{const q=eo3(pr(lt,(1.9+i*.09)*k,.55));el.style.opacity=q;el.style.transform=`translateY(${lerp(46,0,q)}px)`;});
+  const e=pr(lt,1.6*k,.5);root._ex.forEach(el=>el.style.opacity=e);
+  const ry=lerp(-20,13,eio(pr(lt,0,7.5))), rx=lerp(9,-2,eio(pr(lt,0,7.5)));
+  root._rot.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(${lerp(.9,1.03,eo3(pr(lt,0,7)))})`;
+  const s=pr(lt,2.3*k,1.1);
+  root._sh.style.left=lerp(-45,115,eio(s))+"%";root._sh.style.opacity=(s>0&&s<1)?.9:0;
+}
+buildLogo($("#i-logo"));buildLogo($("#o-logo"));
+
+/* ----- build: dust + grain ----- */
+const dust=$("#dust"), DUST=[];
+for(let i=0;i<34;i++){const d=document.createElement("div");d.className="dust";const s=4+rnd(i)*12;d.style.width=d.style.height=s+"px";dust.appendChild(d);DUST.push(d);}
+(function(){const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d");const im=x.createImageData(256,256);
+  for(let i=0;i<256*256;i++){const v=Math.floor(rnd(i*1.37+5)*255);im.data[i*4]=im.data[i*4+1]=im.data[i*4+2]=v;im.data[i*4+3]=255;}
+  x.putImageData(im,0,0);$("#grain").style.backgroundImage=`url(${c.toDataURL()})`;})();
+
+const SCENES=$$(".scene").map(el=>({el,t0:num(el,"t0",0),t1:num(el,"t1",0),xin:num(el,"xin",.4)}));
+const KT=$$(".kt"), FX=$$(".fx"), CLIPS_EL=$$("img.clip"), STILLS=$$("img.still");
+const sceneOf=el=>SCENES.find(s=>s.el.contains(el));
+CLIPS_EL.forEach(el=>{el._sc=sceneOf(el)});STILLS.forEach(el=>{el._sc=sceneOf(el)});
+
+const pad=n=>String(n).padStart(4,"0");
+let pending=[];
+function setSrc(img,src){
+  if(img.dataset.cur===src) return;
+  img.dataset.cur=src;img.src=src;
+  pending.push(img.decode().catch(()=>{}));
+}
+
+function exitP(el,t){const o=num(el,"out",1e9);return pr(t,o,.35);}
+
+window.renderFrame = async function(frame){
+  const t=frame/FPS; pending=[];
+
+  /* scenes */
+  for(const s of SCENES){
+    const vis=t>=s.t0-1e-6&&t<s.t1-1e-6;
+    s.on=vis;
+    s.el.style.visibility=vis?"visible":"hidden";
+    if(vis) s.el.style.opacity=s.xin>0?eio(pr(t,s.t0,s.xin)):1;
+  }
+
+  /* footage */
+  for(const el of CLIPS_EL){
+    if(!el._sc.on) continue;
+    const n=window.CLIPS[el.dataset.clip], lt=Math.max(0,t-num(el,"at",el._sc.t0));
+    let f=Math.floor(lt*FPS);
+    if(el.dataset.loop==="pp"){const m=f%(2*(n-1));f=m<n?m:2*(n-1)-m;} else f=Math.min(f,n-1);
+    setSrc(el,`frames/${el.dataset.clip}/${el.dataset.b?"b":""}${pad(f+1)}.jpg`);
+    kb(el,t);
+  }
+  for(const el of STILLS){ if(el._sc.on) kb(el,t); }
+
+  /* kinetic words */
+  for(const el of KT){
+    const at=num(el,"at",0), st=num(el,"st",.12), x=exitP(el,t);
+    el._w.forEach((w,i)=>{
+      const p=eo5(pr(t,at+i*st,.75));
+      const o=p*(1-x);
+      w.style.opacity=o;
+      w.style.transform=`translateY(${lerp(54,0,p)-x*26}px) scale(${lerp(1.12,1,p)})`;
+      w.style.filter=p<1||x>0?`blur(${(1-p)*14+x*8}px)`:"none";
+    });
+  }
+
+  /* generic effects */
+  for(const el of FX){
+    const d=num(el,"d",.7), p0=pr(t,num(el,"in",0),d), p=eo5(p0), x=exitP(el,t), o=clamp(p0*2.2)*(1-x);
+    let tr="";
+    switch(el.dataset.fx){
+      case "up":   tr=`translateY(${lerp(44,0,p)-x*20}px)`;break;
+      case "rise": tr=TALL?`scale(${lerp(1.1,1,p)})`:`translateY(${lerp(120,0,p)-x*30}px) scale(${lerp(.92,1,p)})`;break;
+      case "pop":  tr=`scale(${lerp(.72,1,eback(pr(t,num(el,"in",0),d)))*(1-x*.06)})`;break;
+      case "grow": tr=`scaleX(${p*(1-x)})`;break;
+      default: tr="none";
+    }
+    el.style.opacity=o;el.style.transform=tr;
+  }
+
+  /* logos, lamps */
+  stadium("i",t-0.0,t);logo3d($("#i-logo"),t-0.5,false);
+  stadium("o",t-68.0,t);logo3d($("#o-logo"),t-68.1,true);
+  /* intro pushes forward into the film */
+  const push=eio(pr(t,6.2,.8));
+  SCENES[0].el.style.transform=`scale(${1+push*.55})`;SCENES[0].el.style.filter=push>0?`blur(${push*10}px)`:"none";
+
+  /* overlays */
+  let fl=0;for(const [ft,s] of FLASHES){const d=t-ft;if(d>-.12&&d<.5) fl=Math.max(fl,s*(d<0?1+d/.12:Math.pow(1-d/.5,2)));}
+  $("#flash").style.opacity=fl;
+  let sw=-1;for(const st of SWEEPS){const p=pr(t,st-.3,.85);if(p>0&&p<1) sw=p;}
+  const sweep=$("#sweep");sweep.style.opacity=sw<0?0:Math.sin(sw*Math.PI)*.75;sweep.style.left=lerp(-60,115,sw<0?0:eio(sw))+"%";
+  $("#bug").style.opacity=Math.min(pr(t,7.2,.8),1-pr(t,67.4,.6))*.95;
+  $("#black").style.opacity=Math.max(1-pr(t,0,.9),pr(t,75.6,1.2));
+  $("#grain").style.backgroundPosition=`${Math.floor(rnd(frame)*256)}px ${Math.floor(rnd(frame+999)*256)}px`;
+  DUST.forEach((d,i)=>{
+    const sp=14+rnd(i+50)*30, x=rnd(i+9)*W+Math.sin(t*.35+i)*36, y=((rnd(i+3)*H - t*sp)%H+H)%H;
+    d.style.transform=`translate(${x}px,${y}px)`;d.style.opacity=(.18+.5*Math.abs(Math.sin(t*.9+i*2.1)))*.8;
+  });
+
+  await Promise.all(pending);
+  await new Promise(r=>requestAnimationFrame(()=>r()));
+  return t;
+};
+
+function kb(el,t){
+  if(!el.dataset.kb) return;
+  const [a,b]=el.dataset.kb.split(",").map(Number), at=num(el,"at",el._sc.t0), end=num(el,"end",el._sc.t1);
+  el.style.transform=`scale(${lerp(a,b,pr(t,at,end-at))})`;
+}
+function stadium(pfx,lt,t){
+  const on=clamp(lt/1.1), flick=lt<1.1?(rnd(Math.floor(t*30))>.35?1:.45):1;
+  const breathe=1+Math.sin(t*1.3)*.04;
+  for(const s of ["a","b"]){
+    $(`#${pfx}-lamp-${s}`).style.opacity=on*flick*.95*breathe;
+    $(`#${pfx}-beam-${s}`).style.opacity=eo3(pr(lt,.5,1.6))*.85;
+  }
+  $(`#${pfx}-halo`).style.opacity=eo3(pr(lt,1.2,2.2))*.9;
+}
+
+window.FILM={FPS,DURATION,W,H,frames:DURATION*FPS};
+window.ready=(async()=>{
+  await document.fonts.ready;
+  await Promise.all([...document.fonts].map(f=>f.load().catch(()=>{})));
+  await Promise.all($$("img[src]").map(i=>i.decode().catch(()=>{})));
+  /* live preview: film.html?play=1 */
+  if(Q.get("play")){const t0=performance.now()-(parseFloat(Q.get("from"))||0)*1000;
+    (async function loop(){const f=Math.floor((performance.now()-t0)/1000*FPS);if(f<FPS*DURATION) await renderFrame(f);requestAnimationFrame(loop);})();}
+  return true;
+})();
+</script>
+</body>
+</html>
